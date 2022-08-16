@@ -1,0 +1,2 @@
+//CSD
+char sql_CreateCSD[] = "CREATE TABLE IF NOT EXISTS mh_CSD (steamid VARCHAR(32) NOT NULL, enabled INT(12) NOT NULL DEFAULT '0', PRIMARY KEY(steamid)) DEFAULT CHARSET=utf8mb4;";
