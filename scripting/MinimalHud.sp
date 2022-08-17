@@ -17,8 +17,10 @@ public Plugin myinfo =
 // INCLUDES
 /////
 #include <colorlib>
+#include <sourcemod>
 #include <surftimer>
 #include <sdkhooks>
+#include <chat-processor>
 #include "mh-globals.sp"
 #include "mh-commands.sp"
 #include "mh-csd.sp"
@@ -41,6 +43,11 @@ public void OnPluginStart()
     CreateHooks();
 
     g_fTickrate = (1 / GetTickInterval());
+    
+    // CSD Hud Synchronizer
+    HUD_Handle = CreateHudSynchronizer();
+    Sync_Handle = CreateHudSynchronizer();
+    IDK_Handle = CreateHudSynchronizer();
 }
 
 public void OnClientPutInServer(int client)
@@ -59,8 +66,14 @@ public void OnClientPutInServer(int client)
 
 public void onclientDisconenct(){}
 
-public void onMapStart()
+public void onMapEnd()
 {
-	// CSD Hud Synchronizer
-	HUD_Handle = CreateHudSynchronizer();
+    HUD_Handle = null;
+    delete HUD_Handle;
+
+    Sync_Handle = null;
+    delete Sync_Handle;
+
+    IDK_Handle = null;
+    delete IDK_Handle;
 }

@@ -131,10 +131,18 @@ native void surftimer_GetPlayerData(int& client, char[] time, int& rank, char[] 
 native void surftimer_GetPlayerInfo(int& client, int& iWrcpTimer, int& iPracMode, int& iStage, int& iBonus);
 
 /**
+ * Retrieves the client's current sync.
+ *
+ * @param client			The client's ID.
+ * @return					Client's sync.
+ */
+native any surftimer_GetClientSync(int client);
+
+/**
  * Retrieves the client's current style.
  *
  * @param client			The client's ID.
- * @param iStyle		    Int to store the client's style.
+ * @return					Current client's style.
  */
 native int surftimer_GetClientStyle(int client);
 
