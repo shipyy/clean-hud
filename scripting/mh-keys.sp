@@ -1,3 +1,7 @@
+public Init_KEYS(){
+	Keys_Handle = CreateHudSynchronizer();
+}
+
 public Keys_SetDefaults(int client){
 	g_bKeys[client] = 0;
 	g_fKeys_POSX[client] = 0.5;
@@ -9,33 +13,38 @@ public Keys_SetDefaults(int client){
 	g_iKeys_UpdateRate[client] = 0;
 }
 
-public void MHUD_Keys(int client)
+public void MHUD_KEYS(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
 	Menu menu = CreateMenu(MHUD_Keys_Handler);
+	char szItem[128];
+
 	SetMenuTitle(menu, "Key Options Menu\n \n");
 
-	// Centre Speed Display
+	// Toggle
 	if (g_bKeys[client])
-		AddMenuItem(menu, "", " On | Toggle");
+		AddMenuItem(menu, "", "Toggle   | On");
 	else
-		AddMenuItem(menu, "", "Off | Toggle");
+		AddMenuItem(menu, "", "Toggle   | Off");
 
-	// CENTER SPEED POSITIONS
-	AddMenuItem(menu, "", "Position");
 
-	// Speed Color
-	AddMenuItem(menu, "", "Color");
+	// Position
+	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fKeys_POSX[client], g_fKeys_POSY[client]);
+	AddMenuItem(menu, "", szItem);
 
-	// CSD Update Rate
+	// Color
+	Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);
+	AddMenuItem(menu, "", szItem);
+
+	// Update Rate
 	if (g_iKeys_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", " Slow  | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | SLOW");
 	else if (g_iKeys_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Medium | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | MEDIUM");
 	else
-		AddMenuItem(menu, "", " Fast  | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | FAST ");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -76,7 +85,7 @@ public void Keys_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_Keys(client);
+        MHUD_KEYS(client);
     }
 }
 
@@ -113,7 +122,7 @@ public int MHUD_Keys_Position_Handler(Menu menu, MenuAction action, int param1, 
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_Keys(param1);
+		MHUD_KEYS(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -176,7 +185,7 @@ public int Keys_Color_Change_Handler(Menu menu, MenuAction action, int param1, i
 	if (action == MenuAction_Select)
 		Keys_Color_Change(param1, -1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_Keys(param1);
+		MHUD_KEYS(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -192,39 +201,31 @@ public void Keys_Color_Change(int client, int color_type, int color_index)
 
 public void Keys_Display(int client)
 {   
-    int update_rate;
-	
-    if(g_bKeys[client]){
-		switch(g_iKeys_UpdateRate[client]){
-			case 0: update_rate = 15;
-			case 1:	update_rate = 10;
-			case 2: update_rate = 5;
-			default: update_rate = 15;
-		}
-	}
-    
-    if(g_iClientTick[client] - g_iCurrentTick[client] >= update_rate)
-	{
-		g_iCurrentTick[client] += update_rate;
-		if (g_bKeys[client] && IsValidClient(client) && !IsFakeClient(client) && IsClientInGame(client)) {
-			//BUTTONS
-			int Buttons;
+	if (g_bKeys[client] && !IsFakeClient(client)) {
+		if(g_iClientTick[client][1] - g_iCurrentTick[client][1] >= GetUpdateRate(g_iKeys_UpdateRate[client])) 
+		{
+			g_iCurrentTick[client][1] += GetUpdateRate(g_iKeys_UpdateRate[client]);
+
+			int target;
 
 			if (IsPlayerAlive(client))
-				Buttons = g_iLastButton[client];
-			else {
-				int ObservedUser;
-				ObservedUser = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-				Buttons = g_iLastButton[ObservedUser];
-			}
+				target = client;
+			else
+				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 			
+			if(target == -1)
+				return;
+
 			//COLOR
 			int displayColor[3];
 			displayColor[0] = g_iKeys_Color[client][0];
 			displayColor[1] = g_iKeys_Color[client][1];
 			displayColor[2] = g_iKeys_Color[client][2];
 			
-			char Keys[8][5];
+			//KEYS
+			int Buttons;
+			Buttons = g_iLastButton[target];
+			char Keys[10][5];
 			
 			Keys[0] = (Buttons & IN_FORWARD == IN_FORWARD) ? "W" : "_";
 			Keys[1] = (Buttons & IN_MOVELEFT == IN_MOVELEFT) ? "A" : "_";
@@ -234,13 +235,15 @@ public void Keys_Display(int client)
 			Keys[5] = (Buttons & IN_JUMP == IN_JUMP) ? "J" : "_";
 			Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "🠔" : "_";
 			Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "🠖" : "_";
-				
+			Keys[8] = (g_imouseDir[target][0] < 0)  ? "<" : "_";
+			Keys[9] = (g_imouseDir[target][0] > 0)  ? ">" : "_";
+
 			//FINAL STRING
 			char szKeys[32];
 			
-			Format(szKeys, sizeof szKeys, "   %s  \n%s %s %s\n%s    %s\n%s    %s", Keys[0], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
+			Format(szKeys, sizeof szKeys, "%s  %s  %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
 			
-			SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], GetUpdateRate(g_iKeys_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 			ShowSyncHudText(client, Keys_Handle, szKeys);
 		}
 	}
@@ -257,7 +260,7 @@ void Keys_UpdateRate(int client, bool from_menu)
 		g_iKeys_UpdateRate[client] = 0;
 
 	if (from_menu) {
-		MHUD_Keys(client);
+		MHUD_KEYS(client);
 	}
 }
 
@@ -268,7 +271,7 @@ public void db_LoadKeys(int client)
 {
 	char szQuery[1024];
 
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_Keys WHERE steamid = '%s';", g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_KEYS WHERE steamid = '%s';", g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_LoadKeysCallback, szQuery, client, DBPrio_Low);
 }
 
@@ -305,7 +308,7 @@ public void SQL_LoadKeysCallback(Handle owner, Handle hndl, const char[] error, 
 	}
 	else {
         char szQuery[1024];
-        Format(szQuery, sizeof szQuery, "INSERT INTO mh_Keys (steamid) VALUES('%s')", g_szSteamID[client]);
+        Format(szQuery, sizeof szQuery, "INSERT INTO mh_KEYS (steamid) VALUES('%s')", g_szSteamID[client]);
         PrintToServer(szQuery);
         SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
@@ -318,7 +321,7 @@ public void db_updateKeys(int client)
 {
 	char szQuery[1024];
 
-	char szPosition[32];
+	char szPosition[12];
 	char szPosX[4];
 	char szPosY[4];
 	char szColor[32];
@@ -328,13 +331,13 @@ public void db_updateKeys(int client)
 
 	FloatToString(g_fKeys_POSX[client], szPosX, sizeof szPosX);
 	FloatToString(g_fKeys_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%f|%f", szPosX, szPosY);
+	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
 
 	IntToString(g_iKeys_Color[client][0], szColor_R, sizeof szColor_R);
 	IntToString(g_iKeys_Color[client][1], szColor_G, sizeof szColor_G);
 	IntToString(g_iKeys_Color[client][2], szColor_B, sizeof szColor_B);
 	Format(szColor, sizeof szColor, "%d|%d|%d", szColor_R, szColor_G, szColor_B);
 
-	Format(szQuery, sizeof szQuery, "UPDATE mh_KEYS SET enable = '%i', pos = '%s', color = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bCSD ? '1' : '0', szPosition, szColor, g_iKeys_UpdateRate[client], g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE mh_KEYS SET enabled = '%i', pos = '%s', color = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bKeys ? '1' : '0', szPosition, szColor, g_iKeys_UpdateRate[client], g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 }

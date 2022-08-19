@@ -99,3 +99,13 @@ public void FormatTimeFloat(int client, float time, char[] string, int length, b
 	}
 
 }
+
+public int GetUpdateRate(int value)
+{
+	switch(value){
+		case 0: return 15;
+		case 1:	return 10;
+		case 2: return 5;
+		default: return 10;
+	}
+}

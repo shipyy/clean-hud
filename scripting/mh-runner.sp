@@ -3,35 +3,39 @@ void CreateHooks()
 	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
 }
 
+
+
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	if(IsValidClient(client)) {
-		CSD_Display(client);
-		Keys_Display(client);
+	CSD_Display(client);
+	Keys_Display(client);
+	Sync_Display(client);
 
-		g_fLastSpeed[client] = GetSpeed(client);
-		g_iLastButton[client] = buttons;
-	}
-
+	g_fLastSpeed[client] = GetSpeed(client);
+	g_iLastButton[client] = buttons;
+	g_imouseDir[client] = mouse;
+	
 	return Plugin_Continue;
+}
+
+public void Hook_PostThinkPost(int entity)
+{
+	for(int i = 0; i < 6; i++)
+		++g_iClientTick[entity][i];
 }
 
 public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)
 {
 	int clientid = GetEventInt(event, "userid");
-	int client   = GetClientOfUserId(clientid);
+	int client = GetClientOfUserId(clientid);
 
-	if (IsValidClient(client) && !IsFakeClient(client))
-	{
+	if (IsValidClient(client) && !IsFakeClient(client)) {
 		db_updateCSD(client);
+		db_updateKeys(client);
+		db_updateSync(client);
 	}
 
 	return Plugin_Handled;
-}
-
-public void Hook_PostThinkPost(int entity)
-{
-	++g_iClientTick[entity];
 }
 
 /////
@@ -79,6 +83,7 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 						//-5 CPs
 						switch (g_iColorType[client]) {
 							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value;
+							case -2: g_iSync_Color[client][g_iColorIndex[client]] = color_value;
 						}
 					}
 				}

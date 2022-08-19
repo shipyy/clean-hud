@@ -1,3 +1,7 @@
+public Init_CSD(){
+	CSD_Handle = CreateHudSynchronizer();
+}
+
 public CSD_SetDefaults(int client){
 	g_bCSD[client] = 0;
 	g_iCSD_SpeedAxis[client] = 0;
@@ -17,35 +21,39 @@ public void MHUD_CSD(int client)
 		return;
 
 	Menu menu = CreateMenu(MHUD_CSD_Handler);
+	char szItem[128];
+
 	SetMenuTitle(menu, "Center Speed Options Menu\n \n");
 
-	// Centre Speed Display
+	// Toggle
 	if (g_bCSD[client])
-		AddMenuItem(menu, "", " ON | Toggle");
+		AddMenuItem(menu, "", "Toggle   | On");
 	else
-		AddMenuItem(menu, "", "OFF | Toggle");
+		AddMenuItem(menu, "", "Toggle   | Off");
 
-	// Speed Mode
+	// Axis
 	if (g_iCSD_SpeedAxis[client] == 0)
-		AddMenuItem(menu, "", " XY | Axis");
+		AddMenuItem(menu, "", "Axis       | XY");
 	else if (g_iCSD_SpeedAxis[client] == 1)
-		AddMenuItem(menu, "", "XYZ | Axis");
+		AddMenuItem(menu, "", "Axis       | XYZ");
 	else
-		AddMenuItem(menu, "", "  Z | Axis");
+		AddMenuItem(menu, "", "Axis       | Z");
 
-	// CENTER SPEED POSITIONS
-	AddMenuItem(menu, "", "Position");
+	// Position
+	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fCSD_POSX[client], g_fCSD_POSY[client]);
+	AddMenuItem(menu, "", szItem);
 
-	// Speed Color
-	AddMenuItem(menu, "", "Color");
+	// Color
+	Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iCSD_SpeedColor[client][g_iCSD_SpeedAxis[client]][0], g_iCSD_SpeedColor[client][g_iCSD_SpeedAxis[client]][1], g_iCSD_SpeedColor[client][g_iCSD_SpeedAxis[client]][2]);
+	AddMenuItem(menu, "", szItem);
 
-	// CSD Update Rate
+	// Refresh
 	if (g_iCSD_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", " SLOW  | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | SLOW");
 	else if (g_iCSD_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "MEDIUM | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | MEDIUM");
 	else
-		AddMenuItem(menu, "", " FAST  | Update Rate");
+		AddMenuItem(menu, "", "Refresh  | FAST ");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -58,6 +66,7 @@ public int MHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 		switch (param2)
 		{
 			case 0: CSD_Toggle(param1, true);
+			case 1: CSD_Axis(param1, true);
 			case 2: CSD_Position(param1);
 			case 3: CSD_Color(param1);
 			case 4: CSD_UpdateRate(param1, true);
@@ -87,6 +96,21 @@ public void CSD_Toggle(int client, bool from_menu)
     if (from_menu) {
         MHUD_CSD(client);
     }
+}
+
+/////
+//AXIS
+/////
+void CSD_Axis(int client, bool from_menu)
+{
+	if (g_iCSD_SpeedAxis[client] != 2)
+		g_iCSD_SpeedAxis[client]++;
+	else
+		g_iCSD_SpeedAxis[client] = 0;
+
+	if (from_menu) {
+		MHUD_CSD(client);
+	}
 }
 
 /////
@@ -281,48 +305,34 @@ int[] GetSpeedColourCSD(int client, float speed)
 
 public void CSD_Display(int client)
 {
-	//THE LOWER THE NUMBER THE FASTER THE UPDATING IS
-	int update_rate;
-
-	if(g_bCSD[client]){
-		switch(g_iCSD_UpdateRate[client]){
-			case 0: update_rate = 15;
-			case 1:	update_rate = 10;
-			case 2: update_rate = 5;
-			default: update_rate = 15;
-		}
-	}
-
-	if(g_iClientTick[client] - g_iCurrentTick[client] >= update_rate)
-	{
-		g_iCurrentTick[client] += update_rate;
-		if (g_bCSD[client] && IsValidClient(client) && !IsFakeClient(client) && IsClientInGame(client))
+	if (g_bCSD[client] && !IsFakeClient(client)) {
+		if(g_iClientTick[client][0] - g_iCurrentTick[client][0] >= GetUpdateRate(g_iCSD_UpdateRate[client]))
 		{
+			g_iCurrentTick[client][0] += GetUpdateRate(g_iCSD_UpdateRate[client]);
+			
 			char szSpeed[128];
 			int displayColor[3];
+			int target;
 			displayColor = GetSpeedColourCSD(client, GetSpeed(client));
 
-			// player alive
 			if (IsPlayerAlive(client))
-			{
-				Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[client]));
-			}
-			else { // player not alive (check wether spec'ing a bot or another player)
-				int ObservedUser;
-				ObservedUser = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-				
-				int ObservedUser_Style = surftimer_GetClientStyle(ObservedUser);
+				target = client;
+			else
+				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-				if (ObservedUser_Style == 5)
-					g_fLastSpeed[ObservedUser] /= 0.5;
-				else if (ObservedUser_Style == 6)
-					g_fLastSpeed[ObservedUser] /= 1.5;
-				
-				Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[ObservedUser]));
-			}
+			if(target == -1)
+				return;
 
-			SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? -1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? -1.0 : g_fCSD_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-			ShowSyncHudText(client, HUD_Handle, szSpeed);
+			int target_style = surftimer_GetClientStyle(target);
+			if (target_style == 5)
+				g_fLastSpeed[target] /= 0.5;
+			else if (target_style == 6)
+				g_fLastSpeed[target] /= 1.5;
+
+			Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[target]));
+
+			SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? -1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? -1.0 : g_fCSD_POSY[client], GetUpdateRate(g_iCSD_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			ShowSyncHudText(client, CSD_Handle, szSpeed);
 		}
 	}
 }
@@ -402,7 +412,7 @@ public void db_updateCSD(int client)
 {
 	char szQuery[1024];
 
-	char szPosition[32];
+	char szPosition[12];
 	char szPosX[4];
 	char szPosY[4];
 	char szGain[32];
@@ -420,7 +430,7 @@ public void db_updateCSD(int client)
 
 	FloatToString(g_fCSD_POSX[client], szPosX, sizeof szPosX);
 	FloatToString(g_fCSD_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%f|%f", szPosX, szPosY);
+	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
 
 	IntToString(g_iCSD_SpeedColor[client][0][0], szGain_R, sizeof szGain_R);
 	IntToString(g_iCSD_SpeedColor[client][0][1], szGain_G, sizeof szGain_G);
@@ -437,6 +447,6 @@ public void db_updateCSD(int client)
 	IntToString(g_iCSD_SpeedColor[client][2][2], szMaintain_B, sizeof szMaintain_B);
 	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
 
-	Format(szQuery, sizeof szQuery, "UPDATE mh_CSD SET enable = '%i', speedaxis = '%s', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bCSD ? '1' : '0', g_iCSD_SpeedAxis[client], szPosition, szGain, szLoss, szMaintain, g_iCSD_UpdateRate[client], g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE mh_CSD SET enabled = '%i', speedaxis = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bCSD ? '1' : '0', g_iCSD_SpeedAxis[client], szPosition, szGain, szLoss, szMaintain, g_iCSD_UpdateRate[client], g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 }
