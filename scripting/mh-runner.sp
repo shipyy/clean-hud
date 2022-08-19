@@ -10,6 +10,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	CSD_Display(client);
 	Keys_Display(client);
 	Sync_Display(client);
+	Timer_Display(client);
 
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;
@@ -74,6 +75,7 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 						switch (g_iArrayToChange[client]) {
 							case 1: g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
 							case 2: g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
+							case 3: g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
 						}
 					}
 					else {
@@ -125,6 +127,7 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 						switch (g_iArrayToChange[client]) {
 							case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
 							case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+							case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
 						}
 					}
 					else {

@@ -78,6 +78,7 @@ public int MHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 
 	return 0;
 }
+
 /////
 //TOGGLE
 /////
@@ -121,12 +122,11 @@ public void CSD_Position(int client)
 	Menu menu = CreateMenu(MHUD_CSD_Position_Handler);
 	SetMenuTitle(menu, "Center Speed | Position\n \n");
 
-	// CENTER SPEED POSITIONS
 	char Display_String[256];
-	// POS X
+
 	Format(Display_String, 256, "Position X : %.2f", g_fCSD_POSX[client]);
 	AddMenuItem(menu, "", Display_String);
-	// POX Y
+
 	Format(Display_String, 256, "Position Y : %.2f", g_fCSD_POSY[client]);
 	AddMenuItem(menu, "", Display_String);
 
@@ -351,8 +351,7 @@ public void CSD_Display(int client)
 //SQL
 /////
 public void db_LoadCSD(int client)
-{	
-	
+{
 	char szQuery[1024];
 	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_CSD WHERE steamid = '%s';", g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_LoadCSDCallback, szQuery, client, DBPrio_Low);
@@ -367,7 +366,6 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 	}
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		//CSD_SetDefaults(client);
 
 		g_bCSD[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
 		g_iCSD_SpeedAxis[client] = SQL_FetchInt(hndl, 2);

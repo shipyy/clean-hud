@@ -28,6 +28,7 @@ public Plugin myinfo =
 #include "mh-keys.sp"
 #include "mh-sync.sp"
 #include "mh-checkpoints.sp"
+#include "mh-timer.sp"
 #include "mh-misc.sp"
 #include "mh-queries.sp"
 #include "mh-sql.sp"
@@ -53,6 +54,7 @@ public void OnPluginStart()
     Init_KEYS();
     Init_SYNC();
     Init_CP();
+    Init_TIMER();
 }
 
 public void OnClientPutInServer(int client)

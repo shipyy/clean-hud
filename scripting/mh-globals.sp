@@ -25,6 +25,7 @@ Handle CSD_Handle = null;
 Handle Keys_Handle = null;
 Handle Sync_Handle = null;
 Handle CP_Handle = null;
+Handle Timer_Handle = null;
 
 /*
 MAYBE DO THIS INSTEAD
@@ -69,3 +70,10 @@ float g_fCP_POSY[MAXPLAYERS + 1];
 int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iCP_HoldTime[MAXPLAYERS + 1];
 int g_iCompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+
+//CHECKPOINTS
+int g_bTimer[MAXPLAYERS + 1];
+float g_fTimer_POSX[MAXPLAYERS + 1];
+float g_fTimer_POSY[MAXPLAYERS + 1];
+int g_iTimer_Color[MAXPLAYERS + 1][2][3]; // client | type(faster,slower,equal) | value(R,G,B)
+int g_iTimer_UpdateRate[MAXPLAYERS + 1];
