@@ -18,7 +18,8 @@ public void db_setupDatabase()
 	}
 
 	// If tables haven't been created yet.
-	if (!SQL_FastQuery(g_hDb, "SELECT enable FROM mh_CSD LIMIT 1"))
+	SQL_LockDatabase(g_hDb);
+	if (!SQL_FastQuery(g_hDb, "SELECT enabled FROM mh_CSD LIMIT 1"))
 	{
 		SQL_UnlockDatabase(g_hDb);
 		db_createTables();
@@ -34,6 +35,7 @@ public void db_createTables()
 	Transaction createTableTnx = SQL_CreateTransaction();
 
 	SQL_AddQuery(createTableTnx, sql_CreateCSD);
+	SQL_AddQuery(createTableTnx, sql_CreateKeys);
 
 	SQL_ExecuteTransaction(g_hDb, createTableTnx, SQLTxn_CreateDatabaseSuccess, SQLTxn_CreateDatabaseFailed);
 

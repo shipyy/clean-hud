@@ -9,8 +9,6 @@ public CSD_SetDefaults(int client){
 			g_iCSD_SpeedColor[client][i][j] = 0;
 	
 	g_iCSD_UpdateRate[client] = 0;
-
-	g_iWaitingForResponse[client] = None;
 }
 
 public void MHUD_CSD(int client)
@@ -312,19 +310,17 @@ public void CSD_Display(int client)
 			else { // player not alive (check wether spec'ing a bot or another player)
 				int ObservedUser;
 				ObservedUser = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-				g_SpecTarget[client] = ObservedUser;
 				
-				int ObservedUser_Style = surftimer_GetClientStyle(g_SpecTarget[client]);
+				int ObservedUser_Style = surftimer_GetClientStyle(ObservedUser);
 
 				if (ObservedUser_Style == 5)
-					g_fLastSpeed[g_SpecTarget[client]] /= 0.5;
+					g_fLastSpeed[ObservedUser] /= 0.5;
 				else if (ObservedUser_Style == 6)
-					g_fLastSpeed[g_SpecTarget[client]] /= 1.5;
+					g_fLastSpeed[ObservedUser] /= 1.5;
 				
-				Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[g_SpecTarget[client]]));
+				Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[ObservedUser]));
 			}
-			//ShowHudText(client, -1, szSpeed);
-			//SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? 1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? 1.0 : g_fCSD_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+
 			SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? -1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? -1.0 : g_fCSD_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 			ShowSyncHudText(client, HUD_Handle, szSpeed);
 		}
@@ -335,25 +331,61 @@ public void CSD_Display(int client)
 //SQL
 /////
 public void db_LoadCSD(int client)
-{
+{	
+	
 	char szQuery[1024];
-
 	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_CSD WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadPlayerSettingsCallback, szQuery, client, DBPrio_Low);
+	SQL_TQuery(g_hDb, SQL_LoadCSDCallback, szQuery, client, DBPrio_Low);
 }
 
-public void SQL_LoadPlayerSettingsCallback(Handle owner, Handle hndl, const char[] error, any client)
+public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
 	if (hndl == null)
 	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadPlayerSettingsCallback): %s", error);
+		LogError("[Minimal HUD] SQL Error (SQL_LoadCSDCallback): %s", error);
 		return;
 	}
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		CSD_SetDefaults(client);
+		//CSD_SetDefaults(client);
 
-		g_bCSD[client] = (SQL_FetchInt(hndl, 0) == 1 ? true : false);
+		g_bCSD[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+		g_iCSD_SpeedAxis[client] = SQL_FetchInt(hndl, 2);
+
+		//POSITION
+		char CSDPos[32];
+		char CSDPos_SPLIT[2][12];
+		SQL_FetchString(hndl, 3, CSDPos, sizeof CSDPos);
+		ExplodeString(CSDPos, "|", CSDPos_SPLIT, sizeof CSDPos_SPLIT, sizeof CSDPos_SPLIT[]);
+		g_fCSD_POSX[client] = StringToFloat(CSDPos_SPLIT[0]);
+		g_fCSD_POSY[client] = StringToFloat(CSDPos_SPLIT[1]);
+
+		char CSDColor_SPLIT[3][12];
+		//GAIN COLOR
+		char CSDColor_Gain[32];
+		SQL_FetchString(hndl, 4, CSDColor_Gain, sizeof CSDColor_Gain);
+		ExplodeString(CSDColor_Gain, "|", CSDColor_SPLIT, sizeof CSDColor_SPLIT, sizeof CSDColor_SPLIT[]);
+		g_iCSD_SpeedColor[client][0][0] = StringToInt(CSDColor_SPLIT[0]);
+		g_iCSD_SpeedColor[client][0][1] = StringToInt(CSDColor_SPLIT[1]);
+		g_iCSD_SpeedColor[client][0][2] = StringToInt(CSDColor_SPLIT[2]);
+
+		//LOSS COLOR
+		char CSDColor_Loss[32];
+		SQL_FetchString(hndl, 5, CSDColor_Loss, sizeof CSDColor_Loss);
+		ExplodeString(CSDColor_Loss, "|", CSDColor_SPLIT, sizeof CSDColor_SPLIT, sizeof CSDColor_SPLIT[]);
+		g_iCSD_SpeedColor[client][1][0] = StringToInt(CSDColor_SPLIT[0]);
+		g_iCSD_SpeedColor[client][1][1] = StringToInt(CSDColor_SPLIT[1]);
+		g_iCSD_SpeedColor[client][1][2] = StringToInt(CSDColor_SPLIT[2]);
+		
+		//MAINTAIN COLOR
+		char CSDColor_Maintain[32];
+		SQL_FetchString(hndl, 6, CSDColor_Maintain, sizeof CSDColor_Maintain);
+		ExplodeString(CSDColor_Maintain, "|", CSDColor_SPLIT, sizeof CSDColor_SPLIT, sizeof CSDColor_SPLIT[]);
+		g_iCSD_SpeedColor[client][2][0] = StringToInt(CSDColor_SPLIT[0]);
+		g_iCSD_SpeedColor[client][2][1] = StringToInt(CSDColor_SPLIT[1]);
+		g_iCSD_SpeedColor[client][2][2] = StringToInt(CSDColor_SPLIT[2]);
+
+		g_iCSD_UpdateRate[client] = SQL_FetchInt(hndl, 7);
 	}
 	else {
 		char szQuery[1024];
@@ -370,6 +402,41 @@ public void db_updateCSD(int client)
 {
 	char szQuery[1024];
 
-	Format(szQuery, sizeof szQuery, "UPDATE mh_CSD SET enable = '%i' WHERE steamid = '%s';", g_bCSD ? '1' : '0' ,g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadPlayerSettingsCallback, szQuery, client, DBPrio_Low);
+	char szPosition[32];
+	char szPosX[4];
+	char szPosY[4];
+	char szGain[32];
+	char szLoss[32];
+	char szMaintain[32];
+	char szGain_R[3];
+	char szGain_G[3];
+	char szGain_B[3];
+	char szLoss_R[3];
+	char szLoss_G[3];
+	char szLoss_B[3];
+	char szMaintain_R[3];
+	char szMaintain_G[3];
+	char szMaintain_B[3];
+
+	FloatToString(g_fCSD_POSX[client], szPosX, sizeof szPosX);
+	FloatToString(g_fCSD_POSY[client], szPosY, sizeof szPosY);
+	Format(szPosition, sizeof szPosition, "%f|%f", szPosX, szPosY);
+
+	IntToString(g_iCSD_SpeedColor[client][0][0], szGain_R, sizeof szGain_R);
+	IntToString(g_iCSD_SpeedColor[client][0][1], szGain_G, sizeof szGain_G);
+	IntToString(g_iCSD_SpeedColor[client][0][2], szGain_B, sizeof szGain_B);
+	Format(szGain, sizeof szGain, "%d|%d|%d", szGain_R, szGain_G, szGain_B);
+
+	IntToString(g_iCSD_SpeedColor[client][1][0], szLoss_R, sizeof szLoss_R);
+	IntToString(g_iCSD_SpeedColor[client][1][1], szLoss_G, sizeof szLoss_G);
+	IntToString(g_iCSD_SpeedColor[client][1][2], szLoss_B, sizeof szLoss_B);
+	Format(szLoss, sizeof szLoss, "%d|%d|%d", szLoss_R, szLoss_G, szLoss_B);
+
+	IntToString(g_iCSD_SpeedColor[client][2][0], szMaintain_R, sizeof szMaintain_R);
+	IntToString(g_iCSD_SpeedColor[client][2][1], szMaintain_G, sizeof szMaintain_G);
+	IntToString(g_iCSD_SpeedColor[client][2][2], szMaintain_B, sizeof szMaintain_B);
+	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
+
+	Format(szQuery, sizeof szQuery, "UPDATE mh_CSD SET enable = '%i', speedaxis = '%s', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bCSD ? '1' : '0', g_iCSD_SpeedAxis[client], szPosition, szGain, szLoss, szMaintain, g_iCSD_UpdateRate[client], g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 }

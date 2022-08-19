@@ -6,17 +6,13 @@ void CreateHooks()
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	CSD_Display(client);
+	if(IsValidClient(client)) {
+		CSD_Display(client);
+		Keys_Display(client);
 
-	// SetHudTextParams(-1.0, 0.8, 0.5, 0, 0, 255, 255, 0, 0.0, 0.0, 0.0);
-	// ShowSyncHudText(client, Sync_Handle, "%.02f%", surftimer_GetClientSync(client));
-
-	// SetHudTextParams(-1.0, 0.2, 0.5, 0, 0, 255, 255, 0, 0.0, 0.0, 0.0);
-	// char sztemp[32];
-	// FormatTimeFloat(client, surftimer_GetCurrentTime(client), sztemp, sizeof sztemp, true);
-	// ShowSyncHudText(client, IDK_Handle, sztemp);
-
-	g_fLastSpeed[client] = GetSpeed(client);
+		g_fLastSpeed[client] = GetSpeed(client);
+		g_iLastButton[client] = buttons;
+	}
 
 	return Plugin_Continue;
 }
@@ -74,7 +70,18 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 					else if (color_value < 0)
 						color_value = 0;
 
-					g_iCSD_SpeedColor[client][g_iColorType[client]][g_iColorIndex[client]] = color_value;
+					if( g_iColorType[client] != -1)
+						g_iCSD_SpeedColor[client][g_iColorType[client]][g_iColorIndex[client]] = color_value;
+					else {
+						//-1 Keys
+						//-2 Sync
+						//-3 Map Info
+						//-4 Timer
+						//-5 CPs
+						switch (g_iColorType[client]) {
+							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value;
+						}
+					}
 				}
 			}
 			return Plugin_Changed;

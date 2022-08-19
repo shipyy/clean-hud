@@ -18,9 +18,13 @@ public Action MHUD_MainMenu(int client, int args)
 public void MHUD_MainMenu_Display(int client)
 {
     Menu menu = new Menu(MHUD_MainMenu_Handler);
+    SetMenuTitle(menu, "Minimal HUD\n \n");
 
-    //MENU ITEMS
+    //CSD
     AddMenuItem(menu, "", "Center Speed Display");
+
+    //KEYS
+    AddMenuItem(menu, "", "Keys");
     
     SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -31,6 +35,7 @@ public int MHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
     if (action == MenuAction_Select) {
         switch(param2){
             case 0: MHUD_CSD(param1);
+            case 1: MHUD_Keys(param1);
         }
     }
     else if (action == MenuAction_End) {

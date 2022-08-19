@@ -24,6 +24,7 @@ public Plugin myinfo =
 #include "mh-globals.sp"
 #include "mh-commands.sp"
 #include "mh-csd.sp"
+#include "mh-keys.sp"
 #include "mh-misc.sp"
 #include "mh-queries.sp"
 #include "mh-sql.sp"
@@ -44,10 +45,9 @@ public void OnPluginStart()
 
     g_fTickrate = (1 / GetTickInterval());
     
-    // CSD Hud Synchronizer
+    //HUD SUNCHRONIZERS
     HUD_Handle = CreateHudSynchronizer();
-    Sync_Handle = CreateHudSynchronizer();
-    IDK_Handle = CreateHudSynchronizer();
+    Keys_Handle = CreateHudSynchronizer();
 }
 
 public void OnClientPutInServer(int client)
@@ -58,22 +58,21 @@ public void OnClientPutInServer(int client)
     
     GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
     
-    db_LoadCSD(client);
+    if(!IsFakeClient(client) && IsValidClient(client)) {
+        db_LoadCSD(client);
+        db_LoadKeys(client);
+    }
     
+    g_iWaitingForResponse[client] = None;
+
     g_iCurrentTick[client] = 0;
     SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
-public void onclientDisconenct(){}
-
-public void onMapEnd()
+public void OnClientDisconnect(int client)
 {
-    HUD_Handle = null;
-    delete HUD_Handle;
-
-    Sync_Handle = null;
-    delete Sync_Handle;
-
-    IDK_Handle = null;
-    delete IDK_Handle;
+    if(IsValidClient(client) && !IsFakeClient(client)) {
+        db_updateCSD(client);
+        db_updateKeys(client);
+    }
 }
