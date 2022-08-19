@@ -19,23 +19,23 @@ public void MHUD_Keys(int client)
 
 	// Centre Speed Display
 	if (g_bKeys[client])
-		AddMenuItem(menu, "", "On  | Toggle");
+		AddMenuItem(menu, "", " On | Toggle");
 	else
 		AddMenuItem(menu, "", "Off | Toggle");
 
 	// CENTER SPEED POSITIONS
-	AddMenuItem(menu, "", "Keys Position");
+	AddMenuItem(menu, "", "Position");
 
 	// Speed Color
-	AddMenuItem(menu, "", "Keys Color");
+	AddMenuItem(menu, "", "Color");
 
 	// CSD Update Rate
 	if (g_iKeys_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Slow   | Update Rate");
+		AddMenuItem(menu, "", " Slow  | Update Rate");
 	else if (g_iKeys_UpdateRate[client] == 1)
 		AddMenuItem(menu, "", "Medium | Update Rate");
 	else
-		AddMenuItem(menu, "", "Fast   | Update Rate");
+		AddMenuItem(menu, "", " Fast  | Update Rate");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);

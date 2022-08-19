@@ -21,31 +21,31 @@ public void MHUD_CSD(int client)
 
 	// Centre Speed Display
 	if (g_bCSD[client])
-		AddMenuItem(menu, "", "[ON] Centre Speed Display");
+		AddMenuItem(menu, "", " ON | Toggle");
 	else
-		AddMenuItem(menu, "", "[OFF] Centre Speed Display");
+		AddMenuItem(menu, "", "OFF | Toggle");
 
 	// Speed Mode
 	if (g_iCSD_SpeedAxis[client] == 0)
-		AddMenuItem(menu, "", "[XY] Speed Mode");
+		AddMenuItem(menu, "", " XY | Axis");
 	else if (g_iCSD_SpeedAxis[client] == 1)
-		AddMenuItem(menu, "", "[XYZ] Speed Mode");
+		AddMenuItem(menu, "", "XYZ | Axis");
 	else
-		AddMenuItem(menu, "", "[Z] Speed Mode");
+		AddMenuItem(menu, "", "  Z | Axis");
 
 	// CENTER SPEED POSITIONS
-	AddMenuItem(menu, "", "Speed Position");
+	AddMenuItem(menu, "", "Position");
 
 	// Speed Color
-	AddMenuItem(menu, "", "Speed Color");
+	AddMenuItem(menu, "", "Color");
 
 	// CSD Update Rate
 	if (g_iCSD_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "[SLOW] CSD Update Rate");
+		AddMenuItem(menu, "", " SLOW  | Update Rate");
 	else if (g_iCSD_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "[MEDIUM] CSD Update Rate");
+		AddMenuItem(menu, "", "MEDIUM | Update Rate");
 	else
-		AddMenuItem(menu, "", "[FAST] CSD Update Rate");
+		AddMenuItem(menu, "", " FAST  | Update Rate");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);

@@ -18,7 +18,7 @@ public Action MHUD_MainMenu(int client, int args)
 public void MHUD_MainMenu_Display(int client)
 {
     Menu menu = new Menu(MHUD_MainMenu_Handler);
-    SetMenuTitle(menu, "Minimal HUD\n \n");
+    AddMenuItem(menu, "", "Minimal HUD\n \n", ITEMDRAW_RAWLINE);
 
     //CSD
     AddMenuItem(menu, "", "Center Speed Display");
