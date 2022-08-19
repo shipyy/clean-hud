@@ -204,7 +204,7 @@ public void Sync_Display(int client)
         if(g_iClientTick[client][2] - g_iCurrentTick[client][2] >= GetUpdateRate(g_iSync_UpdateRate[client])) 
         {
             g_iCurrentTick[client][2] += GetUpdateRate(g_iSync_UpdateRate[client]);
-            
+
             int target;
 
             //FINAL STRING
@@ -304,7 +304,7 @@ public void db_updateSync(int client)
 {
 	char szQuery[1024];
 
-	char szPosition[12];
+	char szPosition[32];
 	char szPosX[4];
 	char szPosY[4];
 	char szColor[32];

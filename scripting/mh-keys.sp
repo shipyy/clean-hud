@@ -321,7 +321,7 @@ public void db_updateKeys(int client)
 {
 	char szQuery[1024];
 
-	char szPosition[12];
+	char szPosition[32];
 	char szPosX[4];
 	char szPosY[4];
 	char szColor[32];

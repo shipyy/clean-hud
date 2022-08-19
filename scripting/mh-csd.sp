@@ -309,7 +309,7 @@ public void CSD_Display(int client)
 		if(g_iClientTick[client][0] - g_iCurrentTick[client][0] >= GetUpdateRate(g_iCSD_UpdateRate[client]))
 		{
 			g_iCurrentTick[client][0] += GetUpdateRate(g_iCSD_UpdateRate[client]);
-			
+
 			char szSpeed[128];
 			int displayColor[3];
 			int target;
@@ -412,7 +412,7 @@ public void db_updateCSD(int client)
 {
 	char szQuery[1024];
 
-	char szPosition[12];
+	char szPosition[32];
 	char szPosX[4];
 	char szPosY[4];
 	char szGain[32];
