@@ -206,62 +206,60 @@ public void Keys_Display(int client)
     if(g_iClientTick[client] - g_iCurrentTick[client] >= update_rate)
 	{
 		g_iCurrentTick[client] += update_rate;
-		if (g_bKeys[client] && IsValidClient(client) && !IsFakeClient(client) && IsClientInGame(client))
-		{
-            //BUTTONS
-            int Buttons;
+		if (g_bKeys[client] && IsValidClient(client) && !IsFakeClient(client) && IsClientInGame(client)) {
+			//BUTTONS
+			int Buttons;
 
-            if (IsPlayerAlive(client))
-                Buttons = g_iLastButton[client];
+			if (IsPlayerAlive(client))
+				Buttons = g_iLastButton[client];
 			else {
-                int ObservedUser;
-                ObservedUser = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+				int ObservedUser;
+				ObservedUser = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+				Buttons = g_iLastButton[ObservedUser];
+			}
+			
+			//COLOR
+			int displayColor[3];
+			displayColor[0] = g_iKeys_Color[client][0];
+			displayColor[1] = g_iKeys_Color[client][1];
+			displayColor[2] = g_iKeys_Color[client][2];
 
-                Buttons = g_iLastButton[ObservedUser];
-            }
-            
-            //COLOR
-            int displayColor[3];
-            displayColor[0] = g_iKeys_Color[client][0];
-            displayColor[1] = g_iKeys_Color[client][1];
-            displayColor[2] = g_iKeys_Color[client][2];
-            
-            //BUTTONS
-            bool holdingS = (Buttons & IN_BACK == IN_BACK);
-            bool holdingC = (Buttons & IN_DUCK == IN_DUCK);
-            bool holdingW = (Buttons & IN_FORWARD == IN_FORWARD);
-            bool holdingA = (Buttons & IN_MOVELEFT == IN_MOVELEFT);
-            bool holdingD = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT);
-            bool holdingJ = (Buttons & IN_JUMP == IN_JUMP);
-            bool turnbindLeft = (Buttons & IN_LEFT == IN_LEFT);
-            bool turnbindRight = (Buttons & IN_RIGHT == IN_RIGHT);
-
-            char Keys[8][3] = { "W", "A", "S", "D", "C", "J", "◄", "►"};
-
-            if (!holdingW) 
-                Keys[0] = "_";
-            if (!holdingA) 
-                Keys[1] = "_";
-            if (!holdingS) 
-                Keys[2] = "_";
-            if (!holdingD) 
-                Keys[3] = "_";
-            if (!holdingC) 
-                Keys[4] = "_";
-            if (!holdingJ) 
-                Keys[5] = "_";
-            if (!turnbindLeft) 
-                Keys[6] = "_";
-            if (!turnbindRight) 
-                Keys[7] = "_";
-            
-            //FINAL STRING
-            char szKeys[32];
-
-            Format(szKeys, sizeof szKeys, "   %s  \n%s %s %s\n%s    %s\n%s    %s", Keys[0], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
-
-            SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-            ShowSyncHudText(client, Keys_Handle, szKeys);
+			//BUTTONS
+			bool holdingW = (Buttons & IN_FORWARD == IN_FORWARD);
+			bool holdingA = (Buttons & IN_MOVELEFT == IN_MOVELEFT);
+			bool holdingS = (Buttons & IN_BACK == IN_BACK);
+			bool holdingD = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT);
+			bool holdingC = (Buttons & IN_DUCK == IN_DUCK);
+			bool holdingJ = (Buttons & IN_JUMP == IN_JUMP);
+			bool turnbindLeft = (Buttons & IN_LEFT == IN_LEFT);
+			bool turnbindRight = (Buttons & IN_RIGHT == IN_RIGHT);
+			
+			char Keys[8][3];
+				
+			if (!holdingW) 
+				Keys[0] = "_";
+			if (!holdingA) 
+				Keys[1] = "_";
+			if (!holdingS) 
+				Keys[2] = "_";
+			if (!holdingD) 
+				Keys[3] = "_";
+			if (!holdingC) 
+				Keys[4] = "_";
+			if (!holdingJ) 
+				Keys[5] = "_";
+			if (!turnbindLeft) 
+				Keys[6] = "_";
+			if (!turnbindRight) 
+				Keys[7] = "_";
+				
+			//FINAL STRING
+			char szKeys[32];
+			
+			Format(szKeys, sizeof szKeys, "   %s  \n%s %s %s\n%s    %s\n%s    %s", Keys[0], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
+			
+			SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], update_rate / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			ShowSyncHudText(client, Keys_Handle, szKeys);
 		}
 	}
 }
