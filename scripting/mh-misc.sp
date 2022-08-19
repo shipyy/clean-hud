@@ -109,3 +109,19 @@ public int GetUpdateRate(int value)
 		default: return 10;
 	}
 }
+
+public void SaveSettings(int client)
+{
+	db_updateCSD(client);
+	db_updateKeys(client);
+	db_updateSync(client);
+	db_updateCP(client);
+}
+
+public void LoadSettings(int client)
+{
+	db_LoadCSD(client);
+	db_LoadKeys(client);
+	db_LoadSync(client);
+	db_LoadCP(client);
+}

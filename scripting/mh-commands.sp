@@ -28,6 +28,9 @@ public void MHUD_MainMenu_Display(int client)
     
     //SYNC
     AddMenuItem(menu, "", "Sync");
+
+    //CHECKPOINTS
+    AddMenuItem(menu, "", "Checkpoints");
     
     SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -40,6 +43,7 @@ public int MHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
             case 0: MHUD_CSD(param1);
             case 1: MHUD_KEYS(param1);
             case 2: MHUD_SYNC(param1);
+            case 3: MHUD_CP(param1);
         }
     }
     else if (action == MenuAction_End) {

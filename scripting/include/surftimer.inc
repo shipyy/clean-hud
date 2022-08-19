@@ -136,7 +136,7 @@ native void surftimer_GetPlayerInfo(int& client, int& iWrcpTimer, int& iPracMode
  * @param client			The client's ID.
  * @return					Client's sync.
  */
-native any surftimer_GetClientSync(int client);
+native float surftimer_GetClientSync(int client);
 
 /**
  * Retrieves the client's current style.
@@ -175,7 +175,7 @@ forward Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the client from searching.
  */
-forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], char fSrCp, char sSrDiff[16]);
+forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16]);
 
 
 /**

@@ -98,12 +98,11 @@ public void Keys_Position(int client)
 	Menu menu = CreateMenu(MHUD_Keys_Position_Handler);
 	SetMenuTitle(menu, "Keys | Position\n \n");
 
-	// CENTER SPEED POSITIONS
 	char Display_String[256];
-	// POS X
+
 	Format(Display_String, 256, "Position X : %.2f", g_fKeys_POSX[client]);
 	AddMenuItem(menu, "", Display_String);
-	// POX Y
+
 	Format(Display_String, 256, "Position Y : %.2f", g_fKeys_POSY[client]);
 	AddMenuItem(menu, "", Display_String);
 
@@ -159,7 +158,7 @@ void Keys_PosY(int client)
 public void Keys_Color(int client)
 {   
     Menu menu = CreateMenu(Keys_Color_Change_Handler);
-    SetMenuTitle(menu, "Center Speed | Color\n \n");
+    SetMenuTitle(menu, "Keys | Color\n \n");
 
     //COLOR OPTIONS
     char szBuffer[128];
@@ -198,6 +197,10 @@ public void Keys_Color_Change(int client, int color_type, int color_index)
 	g_iColorType[client] = color_type;
 	g_iWaitingForResponse[client] = ChangeColor;
 }
+
+/////
+//DISPLAY
+/////
 
 public void Keys_Display(int client)
 {   
@@ -309,7 +312,6 @@ public void SQL_LoadKeysCallback(Handle owner, Handle hndl, const char[] error, 
 	else {
         char szQuery[1024];
         Format(szQuery, sizeof szQuery, "INSERT INTO mh_KEYS (steamid) VALUES('%s')", g_szSteamID[client]);
-        PrintToServer(szQuery);
         SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
         Keys_SetDefaults(client);

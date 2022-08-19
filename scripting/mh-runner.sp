@@ -29,11 +29,8 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	int clientid = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(clientid);
 
-	if (IsValidClient(client) && !IsFakeClient(client)) {
-		db_updateCSD(client);
-		db_updateKeys(client);
-		db_updateSync(client);
-	}
+	if (IsValidClient(client) && !IsFakeClient(client))
+		SaveSettings(client);
 
 	return Plugin_Handled;
 }
@@ -73,17 +70,16 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 					else if (color_value < 0)
 						color_value = 0;
 
-					if( g_iColorType[client] != -1)
-						g_iCSD_SpeedColor[client][g_iColorType[client]][g_iColorIndex[client]] = color_value;
+					if( g_iColorType[client] >= 0) {
+						switch (g_iArrayToChange[client]) {
+							case 1: g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
+							case 2: g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
+						}
+					}
 					else {
-						//-1 Keys
-						//-2 Sync
-						//-3 Map Info
-						//-4 Timer
-						//-5 CPs
 						switch (g_iColorType[client]) {
-							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value;
-							case -2: g_iSync_Color[client][g_iColorIndex[client]] = color_value;
+							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value; //KEYS
+							case -2: g_iSync_Color[client][g_iColorIndex[client]] = color_value; //SYNC
 						}
 					}
 				}
@@ -106,7 +102,18 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 			// Check if client is cancelling
 			if (StrEqual(message, "cancel"))
 			{
-				CSD_Color_Change_MENU(client, g_iColorType[client]);
+				if( g_iColorType[client] >= 0) {
+					switch (g_iArrayToChange[client]) {
+						case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
+						case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+					}
+				}
+				else {
+					switch (g_iColorType[client]) {
+						case -1: MHUD_KEYS(client);
+						case -2: MHUD_SYNC(client);
+					}
+				}
 			}
 
 			// Check which function we're waiting for
@@ -114,7 +121,18 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 			{
 				case ChangeColor:
 				{
-					CSD_Color_Change_MENU(client, g_iColorType[client]);
+					if( g_iColorType[client] >= 0) {
+						switch (g_iArrayToChange[client]) {
+							case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
+							case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+						}
+					}
+					else {
+						switch (g_iColorType[client]) {
+							case -1: MHUD_KEYS(client);
+							case -2: MHUD_SYNC(client);
+						}
+					}
 				}
 			}
 

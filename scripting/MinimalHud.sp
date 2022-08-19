@@ -23,9 +23,11 @@ public Plugin myinfo =
 #include <chat-processor>
 #include "mh-globals.sp"
 #include "mh-commands.sp"
+#include "mh-forwards.sp"
 #include "mh-csd.sp"
 #include "mh-keys.sp"
 #include "mh-sync.sp"
+#include "mh-checkpoints.sp"
 #include "mh-misc.sp"
 #include "mh-queries.sp"
 #include "mh-sql.sp"
@@ -50,6 +52,7 @@ public void OnPluginStart()
     Init_CSD();
     Init_KEYS();
     Init_SYNC();
+    Init_CP();
 }
 
 public void OnClientPutInServer(int client)
@@ -62,11 +65,8 @@ public void OnClientPutInServer(int client)
 	{
         GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
         
-        if(!IsFakeClient(client) && IsValidClient(client)) {
-            db_LoadCSD(client);
-            db_LoadKeys(client);
-            db_LoadSync(client);
-        }
+        if(!IsFakeClient(client) && IsValidClient(client))
+            LoadSettings(client);
 
         g_fLastSpeed[client] = 0.0;
         g_iLastButton[client] = 0;
