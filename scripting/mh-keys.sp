@@ -223,35 +223,17 @@ public void Keys_Display(int client)
 			displayColor[0] = g_iKeys_Color[client][0];
 			displayColor[1] = g_iKeys_Color[client][1];
 			displayColor[2] = g_iKeys_Color[client][2];
-
-			//BUTTONS
-			bool holdingW = (Buttons & IN_FORWARD == IN_FORWARD);
-			bool holdingA = (Buttons & IN_MOVELEFT == IN_MOVELEFT);
-			bool holdingS = (Buttons & IN_BACK == IN_BACK);
-			bool holdingD = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT);
-			bool holdingC = (Buttons & IN_DUCK == IN_DUCK);
-			bool holdingJ = (Buttons & IN_JUMP == IN_JUMP);
-			bool turnbindLeft = (Buttons & IN_LEFT == IN_LEFT);
-			bool turnbindRight = (Buttons & IN_RIGHT == IN_RIGHT);
 			
-			char Keys[8][3];
-				
-			if (!holdingW) 
-				Keys[0] = "_";
-			if (!holdingA) 
-				Keys[1] = "_";
-			if (!holdingS) 
-				Keys[2] = "_";
-			if (!holdingD) 
-				Keys[3] = "_";
-			if (!holdingC) 
-				Keys[4] = "_";
-			if (!holdingJ) 
-				Keys[5] = "_";
-			if (!turnbindLeft) 
-				Keys[6] = "_";
-			if (!turnbindRight) 
-				Keys[7] = "_";
+			char Keys[8][5];
+			
+			Keys[0] = (Buttons & IN_FORWARD == IN_FORWARD) ? "W" : "_";
+			Keys[1] = (Buttons & IN_MOVELEFT == IN_MOVELEFT) ? "A" : "_";
+			Keys[2] = (Buttons & IN_BACK == IN_BACK) ? "S" : "_";
+			Keys[3] = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT) ? "D" : "_";
+			Keys[4] = (Buttons & IN_DUCK == IN_DUCK) ? "C" : "_";
+			Keys[5] = (Buttons & IN_JUMP == IN_JUMP) ? "J" : "_";
+			Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "🠔" : "_";
+			Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "🠖" : "_";
 				
 			//FINAL STRING
 			char szKeys[32];
