@@ -294,11 +294,11 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 			FormatTimeFloat(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
 
 			if (pb_runtime - runtime > 0) {
-				Format(szPBFormatted, sizeof szPBFormatted, "-%s", szPBFormatted);
+				Format(szPBFormatted, sizeof szPBFormatted, "PB -%s", szPBFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else if (pb_runtime - runtime < 0) {
-				Format(szPBFormatted, sizeof szPBFormatted, "+%s", szPBFormatted);
+				Format(szPBFormatted, sizeof szPBFormatted, "PB +%s", szPBFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else {
@@ -311,11 +311,11 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 			FormatTimeFloat(client, runtime - pb_runtime, szWRFormatted, sizeof szWRFormatted, true);
 
 			if (wr_runtime - runtime > 0) {
-				Format(szWRFormatted, sizeof szWRFormatted, "-%s", szWRFormatted);
+				Format(szWRFormatted, sizeof szWRFormatted, "WR -%s", szWRFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else if (wr_runtime - runtime < 0) {
-				Format(szWRFormatted, sizeof szWRFormatted, "+%s", szWRFormatted);
+				Format(szWRFormatted, sizeof szWRFormatted, "WR +%s", szWRFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else {

@@ -44,7 +44,6 @@ public void GetCookie(int client, int module)
     switch (module) {
         case 0 : {
             GetClientCookie(client, g_hCSD_Cookie, szData, sizeof szData);
-            PrintToServer("data:%s", szData);
             if(strcmp(szData, "", false) == 0)
                 CSD_SetDefaults(client);
             else
@@ -53,7 +52,6 @@ public void GetCookie(int client, int module)
         }
         case 1 : {
             GetClientCookie(client, g_hKeys_Cookie, szData, sizeof szData);
-            PrintToServer("data:%s|", szData);
             if(strcmp(szData, "", false) == 0)
                 Keys_SetDefaults(client);
             else

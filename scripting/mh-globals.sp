@@ -1,6 +1,3 @@
-//DATABASE
-Handle g_hDb = null;
-
 //CLIENT STEAMID
 char g_szSteamID[MAXPLAYERS + 1][32];
 

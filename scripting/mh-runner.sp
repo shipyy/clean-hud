@@ -28,8 +28,6 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 {
 	int clientid = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(clientid);
-	
-	PrintToServer("client id : %d", client);
 
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;

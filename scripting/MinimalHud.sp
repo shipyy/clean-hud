@@ -33,8 +33,6 @@ public Plugin myinfo =
 #include "mh-mapinfo.sp"
 #include "mh-finish.sp"
 #include "mh-misc.sp"
-#include "mh-queries.sp"
-#include "mh-sql.sp"
 #include "mh-runner.sp"
 #include "mh-clientprefs.sp"
 
