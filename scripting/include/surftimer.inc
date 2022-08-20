@@ -168,7 +168,7 @@ native bool surftimer_SafeTeleport(int client, float fDestination[3], float fAng
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the client from searching.
  */
-forward Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], int rank, int total, int style);
+forward Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime[54], float PBDiff, float WRDiff, int rank, int total, int style);
 
 /**
  * Called when a player reaches a checkpoint zone or a stage.
@@ -185,7 +185,7 @@ forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], int rank, int total, int bonusid);
+forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], int rank, int total, int bonusid, int style);
 
 /**
  * Called when a client finishes a map in practice mode

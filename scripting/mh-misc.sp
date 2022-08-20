@@ -118,14 +118,18 @@ public void SaveSettings(int client)
 	db_updateCP(client);
 	db_updateTimer(client);
 	db_updateMapInfo(client);
+	db_updateFinish(client);
 }
 
-public void LoadSettings(int client)
+public void LoadSettings(int client, int setting_index)
 {
-	db_LoadCSD(client);
-	db_LoadKeys(client);
-	db_LoadSync(client);
-	db_LoadCP(client);
-	db_LoadTimer(client);
-	db_LoadMapInfo(client);
+	switch (setting_index) {
+		case 0: db_LoadCSD(client);
+		case 1: db_LoadKeys(client);
+		case 2: db_LoadSync(client);
+		case 3: db_LoadCP(client);
+		case 4: db_LoadTimer(client);
+		case 5: db_LoadMapInfo(client);
+		case 6: db_LoadFinish(client);
+	}
 }

@@ -30,6 +30,7 @@ public Plugin myinfo =
 #include "mh-checkpoints.sp"
 #include "mh-timer.sp"
 #include "mh-mapinfo.sp"
+#include "mh-finish.sp"
 #include "mh-misc.sp"
 #include "mh-queries.sp"
 #include "mh-sql.sp"
@@ -47,9 +48,33 @@ public void OnPluginStart()
     CreateCMDS();
     
     CreateHooks();
+}
 
-    g_fTickrate = (1 / GetTickInterval());
+public void OnClientPutInServer(int client)
+{
+    if (!IsValidClient(client))
+        return;
     
+    GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
+    
+    if(!IsFakeClient(client))
+        LoadSettings(client, 0);
+
+    g_fLastSpeed[client] = 0.0;
+    g_iLastButton[client] = 0;
+    g_iWaitingForResponse[client] = None;
+
+    for(int i = 0; i < 6; i++)
+        g_iCurrentTick[client][i] = 0;
+
+    SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
+}
+
+public void OnMapStart()
+{   
+    //GET TICKRATE
+    g_fTickrate = (1 / GetTickInterval());
+
     //INIT MODULES
     Init_CSD();
     Init_KEYS();
@@ -57,27 +82,5 @@ public void OnPluginStart()
     Init_CP();
     Init_TIMER();
     Init_MAPINFO();
-}
-
-public void OnClientPutInServer(int client)
-{
-    if (!IsValidClient(client)) {
-        return;
-    }
-    
-    if (client != 0)
-	{
-        GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
-        
-        if(!IsFakeClient(client) && IsValidClient(client))
-            LoadSettings(client);
-
-        g_fLastSpeed[client] = 0.0;
-        g_iLastButton[client] = 0;
-        g_iWaitingForResponse[client] = None;
-        for(int i = 0; i < 6; i++)
-            g_iCurrentTick[client][i] = 0;
-
-        SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
-    }
+    Init_FINISH();
 }

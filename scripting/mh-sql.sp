@@ -40,6 +40,7 @@ public void db_createTables()
 	SQL_AddQuery(createTableTnx, sql_CreateCP);
 	SQL_AddQuery(createTableTnx, sql_CreateTimer);
 	SQL_AddQuery(createTableTnx, sql_CreateMapInfo);
+	SQL_AddQuery(createTableTnx, sql_CreateMapFinish);
 
 	SQL_ExecuteTransaction(g_hDb, createTableTnx, SQLTxn_CreateDatabaseSuccess, SQLTxn_CreateDatabaseFailed);
 

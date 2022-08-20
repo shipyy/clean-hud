@@ -76,7 +76,8 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 						switch (g_iArrayToChange[client]) {
 							case 1: g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
 							case 2: g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
-							case 3: g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
+							case 3: g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
+							case 4: g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
 						}
 					}
 					else {
@@ -111,6 +112,7 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 						case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
 						case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
 						case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
+						case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
 					}
 				}
 				else {
@@ -132,6 +134,7 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 							case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
 							case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
 							case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
+							case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
 						}
 					}
 					else {

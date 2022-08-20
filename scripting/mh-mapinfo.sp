@@ -9,7 +9,7 @@ public MapInfo_SetDefaults(int client)
     g_fMapInfo_POSY[client] = 0.5;
     
     for (int i = 0; i < 3; i++)
-        g_iMapInfo_Color[client][i] = 0;
+        g_iMapInfo_Color[client][i] = 255;
     
     g_iMapInfo_CompareMode[client] = 1;
 }
@@ -307,13 +307,13 @@ public void db_LoadMapInfo(int client)
 
 public void SQL_LoadMapInfoCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == null)
-	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadMapInfoCallback): %s", error);
-		return;
-	}
+    if (hndl == null)
+    {
+        LogError("[Minimal HUD] SQL Error (SQL_LoadMapInfoCallback): %s", error);
+        return;
+    }
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
+    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
     {
         g_bMapInfo[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
 
@@ -336,15 +336,16 @@ public void SQL_LoadMapInfoCallback(Handle owner, Handle hndl, const char[] erro
         
         g_iMapInfo_ShowMode[client] = SQL_FetchInt(hndl, 4);
         g_iMapInfo_CompareMode[client] = SQL_FetchInt(hndl, 5);
-	}
-	else {
+    }
+    else {
         char szQuery[1024];
         Format(szQuery, sizeof szQuery, "INSERT INTO mh_MAPINFO (steamid) VALUES('%s')", g_szSteamID[client]);
         SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
         MapInfo_SetDefaults(client);
-	}
-
+    }
+    
+    LoadSettings(client, 6);
 }
 
 public void db_updateMapInfo(int client)

@@ -27,6 +27,7 @@ Handle Sync_Handle = null;
 Handle CP_Handle = null;
 Handle Timer_Handle = null;
 Handle MapInfo_Handle = null;
+Handle Finish_Handle = null;
 
 /*
 MAYBE DO THIS INSTEAD
@@ -79,10 +80,18 @@ float g_fTimer_POSY[MAXPLAYERS + 1];
 int g_iTimer_Color[MAXPLAYERS + 1][2][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iTimer_UpdateRate[MAXPLAYERS + 1];
 
-//MapInfo
+//MAP INFO
 bool g_bMapInfo[MAXPLAYERS + 1];
 float g_fMapInfo_POSX[MAXPLAYERS + 1];
 float g_fMapInfo_POSY[MAXPLAYERS + 1];
 int g_iMapInfo_Color[MAXPLAYERS + 1][3]; // client | type(gain,loss,maintain) | value(R,G,B)
 int g_iMapInfo_ShowMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
 int g_iMapInfo_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+
+//FINISH
+bool g_bFinish[MAXPLAYERS + 1];
+float g_fFinish_POSX[MAXPLAYERS + 1];
+float g_fFinish_POSY[MAXPLAYERS + 1];
+int g_iFinish_Color[MAXPLAYERS + 1][3][3]; // client | type(gain,loss,maintain) | value(R,G,B)
+int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+int g_iFinish_HoldTime[MAXPLAYERS + 1];

@@ -8,7 +8,7 @@ public Sync_SetDefaults(int client){
 	g_fSync_POSY[client] = 0.5;
 
 	for (int i = 0; i < 3; i++)
-		g_iSync_Color[client][i] = 0;
+		g_iSync_Color[client][i] = 255;
 	
 	g_iSync_UpdateRate[client] = 0;
 }
@@ -263,13 +263,13 @@ public void db_LoadSync(int client)
 
 public void SQL_LoadSyncCallback(Handle owner, Handle hndl, const char[] error, any client)
 {
-	if (hndl == null)
-	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadSyncCallback): %s", error);
-		return;
-	}
+    if (hndl == null)
+    {
+        LogError("[Minimal HUD] SQL Error (SQL_LoadSyncCallback): %s", error);
+        return;
+    }
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
+    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
     {
         g_bSync[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
 
@@ -291,15 +291,16 @@ public void SQL_LoadSyncCallback(Handle owner, Handle hndl, const char[] error, 
         g_iSync_Color[client][0][2] = StringToInt(SyncColor_SPLIT[2]);
         
         g_iSync_UpdateRate[client] = SQL_FetchInt(hndl, 4);
-	}
-	else {
+    }
+    else {
         char szQuery[1024];
         Format(szQuery, sizeof szQuery, "INSERT INTO mh_SYNC (steamid) VALUES('%s')", g_szSteamID[client]);
         SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
         Sync_SetDefaults(client);
-	}
+    }
 
+    LoadSettings(client, 3);
 }
 
 public void db_updateSync(int client)

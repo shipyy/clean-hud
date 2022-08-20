@@ -8,7 +8,7 @@ public Keys_SetDefaults(int client){
 	g_fKeys_POSY[client] = 0.5;
 
 	for (int i = 0; i < 3; i++)
-		g_iKeys_Color[client][i] = 0;
+		g_iKeys_Color[client][i] = 255;
 	
 	g_iKeys_UpdateRate[client] = 0;
 }
@@ -272,6 +272,8 @@ void Keys_UpdateRate(int client, bool from_menu)
 /////
 public void db_LoadKeys(int client)
 {
+	PrintToServer("\n\n\nHERE_006\n\n\n");
+
 	char szQuery[1024];
 
 	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_KEYS WHERE steamid = '%s';", g_szSteamID[client]);
@@ -286,37 +288,40 @@ public void SQL_LoadKeysCallback(Handle owner, Handle hndl, const char[] error, 
 		return;
 	}
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
-    {
-        g_bKeys[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	PrintToServer("\n\n\nHERE_007\n\n\n");
 
-        //POSITION
-        char KeysPos[32];
-        char KeysPos_SPLIT[2][12];
-        SQL_FetchString(hndl, 2, KeysPos, sizeof KeysPos);
-        ExplodeString(KeysPos, "|", KeysPos_SPLIT, sizeof KeysPos_SPLIT, sizeof KeysPos_SPLIT[]);
-        g_fKeys_POSX[client] = StringToFloat(KeysPos_SPLIT[0]);
-        g_fKeys_POSY[client] = StringToFloat(KeysPos_SPLIT[1]);
-        
-        //GAIN COLOR
-        char KeysColor[32];
-        char KeysColor_SPLIT[3][12];
-        SQL_FetchString(hndl, 3, KeysColor, sizeof KeysColor);
-        ExplodeString(KeysColor, "|", KeysColor_SPLIT, sizeof KeysColor_SPLIT, sizeof KeysColor_SPLIT[]);
-        g_iKeys_Color[client][0][0] = StringToInt(KeysColor_SPLIT[0]);
-        g_iKeys_Color[client][0][1] = StringToInt(KeysColor_SPLIT[1]);
-        g_iKeys_Color[client][0][2] = StringToInt(KeysColor_SPLIT[2]);
-        
-        g_iKeys_UpdateRate[client] = SQL_FetchInt(hndl, 4);
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+		
+		g_bKeys[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+
+		//POSITION
+		char KeysPos[32];
+		char KeysPos_SPLIT[2][12];
+		SQL_FetchString(hndl, 2, KeysPos, sizeof KeysPos);
+		ExplodeString(KeysPos, "|", KeysPos_SPLIT, sizeof KeysPos_SPLIT, sizeof KeysPos_SPLIT[]);
+		g_fKeys_POSX[client] = StringToFloat(KeysPos_SPLIT[0]);
+		g_fKeys_POSY[client] = StringToFloat(KeysPos_SPLIT[1]);
+
+		//GAIN COLOR
+		char KeysColor[32];
+		char KeysColor_SPLIT[3][12];
+		SQL_FetchString(hndl, 3, KeysColor, sizeof KeysColor);
+		ExplodeString(KeysColor, "|", KeysColor_SPLIT, sizeof KeysColor_SPLIT, sizeof KeysColor_SPLIT[]);
+		g_iKeys_Color[client][0][0] = StringToInt(KeysColor_SPLIT[0]);
+		g_iKeys_Color[client][0][1] = StringToInt(KeysColor_SPLIT[1]);
+		g_iKeys_Color[client][0][2] = StringToInt(KeysColor_SPLIT[2]);
+
+		g_iKeys_UpdateRate[client] = SQL_FetchInt(hndl, 4);
 	}
 	else {
-        char szQuery[1024];
-        Format(szQuery, sizeof szQuery, "INSERT INTO mh_KEYS (steamid) VALUES('%s')", g_szSteamID[client]);
-        SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
-
-        Keys_SetDefaults(client);
+		char szQuery[1024];
+		Format(szQuery, sizeof szQuery, "INSERT INTO mh_KEYS (steamid) VALUES('%s')", g_szSteamID[client]);
+		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+		
+		Keys_SetDefaults(client);
 	}
 
+	LoadSettings(client, 2);
 }
 
 public void db_updateKeys(int client)

@@ -344,7 +344,6 @@ public void SQL_LoadCPCallback(Handle owner, Handle hndl, const char[] error, an
 	}
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		//CP_SetDefaults(client);
 
 		g_bCP[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
 
@@ -384,7 +383,6 @@ public void SQL_LoadCPCallback(Handle owner, Handle hndl, const char[] error, an
 		g_iCP_HoldTime[client] = SQL_FetchInt(hndl, 6);
 
 		g_iCP_CompareMode[client] = SQL_FetchInt(hndl, 7);
-
 	}
 	else {
 		char szQuery[1024];
@@ -394,6 +392,7 @@ public void SQL_LoadCPCallback(Handle owner, Handle hndl, const char[] error, an
 		CP_SetDefaults(client);
 	}
 
+	LoadSettings(client, 4);
 }
 
 public void db_updateCP(int client)

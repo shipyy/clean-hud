@@ -10,7 +10,7 @@ public CSD_SetDefaults(int client){
 
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
-			g_iCSD_Color[client][i][j] = 0;
+			g_iCSD_Color[client][i][j] = 255;
 	
 	g_iCSD_UpdateRate[client] = 0;
 }
@@ -352,6 +352,8 @@ public void CSD_Display(int client)
 /////
 public void db_LoadCSD(int client)
 {
+	PrintToServer("\n\n\nHERE_002\n\n\n");
+
 	char szQuery[1024];
 	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_CSD WHERE steamid = '%s';", g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_LoadCSDCallback, szQuery, client, DBPrio_Low);
@@ -364,6 +366,8 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 		LogError("[Minimal HUD] SQL Error (SQL_LoadCSDCallback): %s", error);
 		return;
 	}
+
+	PrintToServer("\n\n\nHERE_003\n\n\n");
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 
@@ -413,6 +417,7 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 		CSD_SetDefaults(client);
 	}
 
+	LoadSettings(client, 1);
 }
 
 public void db_updateCSD(int client)
