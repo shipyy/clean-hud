@@ -3,7 +3,7 @@ public Init_CSD(){
 }
 
 public CSD_SetDefaults(int client){
-	g_bCSD[client] = 0;
+	g_bCSD[client] = false;
 	g_iCSD_SpeedAxis[client] = 0;
 	g_fCSD_POSX[client] = 0.5;
 	g_fCSD_POSY[client] = 0.5;

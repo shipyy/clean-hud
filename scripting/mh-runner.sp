@@ -11,6 +11,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	Keys_Display(client);
 	Sync_Display(client);
 	Timer_Display(client);
+	MapInfo_Display(client);
 
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;
@@ -82,6 +83,7 @@ public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstr
 						switch (g_iColorType[client]) {
 							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value; //KEYS
 							case -2: g_iSync_Color[client][g_iColorIndex[client]] = color_value; //SYNC
+							case -3: g_iMapInfo_Color[client][g_iColorIndex[client]] = color_value; //SYNC
 						}
 					}
 				}
@@ -108,12 +110,14 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 					switch (g_iArrayToChange[client]) {
 						case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
 						case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+						case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
 					}
 				}
 				else {
 					switch (g_iColorType[client]) {
 						case -1: MHUD_KEYS(client);
 						case -2: MHUD_SYNC(client);
+						case -3: MHUD_TIMER(client);
 					}
 				}
 			}
@@ -134,6 +138,7 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 						switch (g_iColorType[client]) {
 							case -1: MHUD_KEYS(client);
 							case -2: MHUD_SYNC(client);
+							case -3: MHUD_MAPINFO(client);
 						}
 					}
 				}

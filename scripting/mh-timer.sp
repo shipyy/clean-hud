@@ -3,7 +3,7 @@ public Init_TIMER(){
 }
 
 public Timer_SetDefaults(int client){
-	g_bTimer[client] = 0;
+	g_bTimer[client] = false;
 	g_fTimer_POSX[client] = 0.5;
 	g_fTimer_POSY[client] = 0.5;
 
@@ -278,7 +278,7 @@ public void Timer_Display(int client)
             float PersonalBest;
             int MapRank;
             char country[64], countryCode[3], continentCode[3];
-            surftimer_GetPlayerData(client, PersonalBest, MapRank, country,countryCode, continentCode);
+            surftimer_GetPlayerData(target, PersonalBest, MapRank, country,countryCode, continentCode);
 
             float CurrentTime;
             CurrentTime = surftimer_GetCurrentTime(target);

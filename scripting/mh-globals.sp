@@ -26,6 +26,7 @@ Handle Keys_Handle = null;
 Handle Sync_Handle = null;
 Handle CP_Handle = null;
 Handle Timer_Handle = null;
+Handle MapInfo_Handle = null;
 
 /*
 MAYBE DO THIS INSTEAD
@@ -39,7 +40,7 @@ float g_fLastSpeed[MAXPLAYERS +1][6];
 */
 
 //CSD
-int g_bCSD[MAXPLAYERS + 1];
+bool g_bCSD[MAXPLAYERS + 1];
 int g_iCSD_SpeedAxis[MAXPLAYERS + 1];
 float g_fCSD_POSX[MAXPLAYERS + 1];
 float g_fCSD_POSY[MAXPLAYERS + 1];
@@ -48,7 +49,7 @@ int g_iCSD_UpdateRate[MAXPLAYERS + 1];
 float g_fLastSpeed[MAXPLAYERS +1];
 
 //KEYS
-int g_bKeys[MAXPLAYERS + 1];
+bool g_bKeys[MAXPLAYERS + 1];
 float g_fKeys_POSX[MAXPLAYERS + 1];
 float g_fKeys_POSY[MAXPLAYERS + 1];
 int g_iKeys_Color[MAXPLAYERS + 1][3]; // client | type(gain,loss,maintain) | value(R,G,B)
@@ -57,23 +58,31 @@ int g_iLastButton[MAXPLAYERS +1];
 int g_imouseDir[MAXPLAYERS + 1][2];
 
 //SYNC
-int g_bSync[MAXPLAYERS + 1];
+bool g_bSync[MAXPLAYERS + 1];
 float g_fSync_POSX[MAXPLAYERS + 1];
 float g_fSync_POSY[MAXPLAYERS + 1];
 int g_iSync_Color[MAXPLAYERS + 1][3]; // client | type(gain,loss,maintain) | value(R,G,B)
 int g_iSync_UpdateRate[MAXPLAYERS + 1];
 
 //CHECKPOINTS
-int g_bCP[MAXPLAYERS + 1];
+bool g_bCP[MAXPLAYERS + 1];
 float g_fCP_POSX[MAXPLAYERS + 1];
 float g_fCP_POSY[MAXPLAYERS + 1];
 int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iCP_HoldTime[MAXPLAYERS + 1];
-int g_iCompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+int g_iCP_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
 
 //CHECKPOINTS
-int g_bTimer[MAXPLAYERS + 1];
+bool g_bTimer[MAXPLAYERS + 1];
 float g_fTimer_POSX[MAXPLAYERS + 1];
 float g_fTimer_POSY[MAXPLAYERS + 1];
 int g_iTimer_Color[MAXPLAYERS + 1][2][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iTimer_UpdateRate[MAXPLAYERS + 1];
+
+//MapInfo
+bool g_bMapInfo[MAXPLAYERS + 1];
+float g_fMapInfo_POSX[MAXPLAYERS + 1];
+float g_fMapInfo_POSY[MAXPLAYERS + 1];
+int g_iMapInfo_Color[MAXPLAYERS + 1][3]; // client | type(gain,loss,maintain) | value(R,G,B)
+int g_iMapInfo_ShowMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+int g_iMapInfo_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR

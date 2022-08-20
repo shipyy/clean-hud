@@ -3,7 +3,7 @@ public Init_SYNC(){
 }
 
 public Sync_SetDefaults(int client){
-	g_bSync[client] = 0;
+	g_bSync[client] = false;
 	g_fSync_POSX[client] = 0.5;
 	g_fSync_POSY[client] = 0.5;
 

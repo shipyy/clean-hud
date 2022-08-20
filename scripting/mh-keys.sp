@@ -3,7 +3,7 @@ public Init_KEYS(){
 }
 
 public Keys_SetDefaults(int client){
-	g_bKeys[client] = 0;
+	g_bKeys[client] = false;
 	g_fKeys_POSX[client] = 0.5;
 	g_fKeys_POSY[client] = 0.5;
 

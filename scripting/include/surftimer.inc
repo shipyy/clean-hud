@@ -101,11 +101,12 @@ native void surftimer_GetPlayerNameColored(int client, char[] str);
 /**
  * Retrieves the current map's WR holder and the associated time.
  *
- * @param name				String to store the WR holder's name.
- * @param time				String to store the WR holder's time.
+ * @param szname				String to store the WR holder's name.
+ * @param sztime				String to store the WR holder's time.
+ * @param time					float to store the WR holder's time.
  * @return						The number of players who have finished the current map.
  */
-native int surftimer_GetMapData(char[] name, char[] time);
+native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
 
 /**
  * Retrieves the client's data.

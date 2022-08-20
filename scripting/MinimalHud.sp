@@ -29,6 +29,7 @@ public Plugin myinfo =
 #include "mh-sync.sp"
 #include "mh-checkpoints.sp"
 #include "mh-timer.sp"
+#include "mh-mapinfo.sp"
 #include "mh-misc.sp"
 #include "mh-queries.sp"
 #include "mh-sql.sp"
@@ -55,6 +56,7 @@ public void OnPluginStart()
     Init_SYNC();
     Init_CP();
     Init_TIMER();
+    Init_MAPINFO();
 }
 
 public void OnClientPutInServer(int client)

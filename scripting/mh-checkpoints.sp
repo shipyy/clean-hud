@@ -3,7 +3,7 @@ public Init_CP(){
 }
 
 public CP_SetDefaults(int client){
-	g_bCP[client] = 0;
+	g_bCP[client] = false;
 	g_fCP_POSX[client] = 0.5;
 	g_fCP_POSY[client] = 0.5;
 
@@ -12,7 +12,7 @@ public CP_SetDefaults(int client){
 			g_iCP_Color[client][i][j] = 255;
 
 	g_iCP_HoldTime[client] = 3;
-	g_iCompareMode[client] = 1;
+	g_iCP_CompareMode[client] = 1;
 }
 
 public void MHUD_CP(int client)
@@ -43,7 +43,7 @@ public void MHUD_CP(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Compare Mode
-	Format(szItem, sizeof szItem, "Compare | %s", g_iCompareMode[client] == 0 ? "PB" : "WR");
+	Format(szItem, sizeof szItem, "Compare | %s", g_iCP_CompareMode[client] == 0 ? "PB" : "WR");
 	AddMenuItem(menu, "", szItem);
 
 	SetMenuExitBackButton(menu, true);
@@ -258,10 +258,10 @@ void CP_HoldTime(int client)
 /////
 void CP_CompareMode(int client)
 {
-	if (g_iCompareMode[client] != 1)
-		g_iCompareMode[client]++;
+	if (g_iCP_CompareMode[client] != 1)
+		g_iCP_CompareMode[client]++;
 	else
-		g_iCompareMode[client] = 0;
+		g_iCP_CompareMode[client] = 0;
 
 	MHUD_CP(client);
 }
@@ -287,7 +287,7 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 		char szPBFormatted[32];
 		char szWRFormatted[32];
 
-		if (g_iCompareMode[client] == 0) {
+		if (g_iCP_CompareMode[client] == 0) {
 			FormatTimeFloat(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
 
 			if (pb_runtime - runtime > 0) {
@@ -383,7 +383,7 @@ public void SQL_LoadCPCallback(Handle owner, Handle hndl, const char[] error, an
 
 		g_iCP_HoldTime[client] = SQL_FetchInt(hndl, 6);
 
-		g_iCompareMode[client] = SQL_FetchInt(hndl, 7);
+		g_iCP_CompareMode[client] = SQL_FetchInt(hndl, 7);
 
 	}
 	else {
@@ -435,6 +435,6 @@ public void db_updateCP(int client)
 	IntToString(g_iCP_Color[client][2][2], szMaintain_B, sizeof szMaintain_B);
 	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
 
-	Format(szQuery, sizeof szQuery, "UPDATE mh_CP SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', holdtime = '%i', comparemode = '%i' WHERE steamid = '%s';", g_bCP ? '1' : '0', szPosition, szGain, szLoss, szMaintain, g_iCP_HoldTime[client], g_iCompareMode[client], g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE mh_CP SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', holdtime = '%i', comparemode = '%i' WHERE steamid = '%s';", g_bCP ? '1' : '0', szPosition, szGain, szLoss, szMaintain, g_iCP_HoldTime[client], g_iCP_CompareMode[client], g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 }
