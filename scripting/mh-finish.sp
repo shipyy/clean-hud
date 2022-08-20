@@ -237,6 +237,7 @@ public int Finish_Color_Change_MENU_Handler(Menu menu, MenuAction action, int pa
 
 public void Finish_Color_Change(int client, int color_type, int color_index)
 {
+	CPrintToChat(client, "%t", "Color_Input");
 	g_iArrayToChange[client] = 4;
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
@@ -272,7 +273,6 @@ void Finish_CompareMode(int client)
 /////
 //DISPLAY
 /////
-
 public void Finish_Display(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
 {
     if (g_bFinish[client] && !IsFakeClient(client)) {
@@ -291,8 +291,8 @@ public void Finish_Display(int client, float runtime, float pb_diff, float wr_di
 		char szWRDiffFormatted[32];
 
 		if (g_iFinish_CompareMode[client] == 0) {
-			FormatTimeFloat(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
-			FormatTimeFloat(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
+			Format_Time(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
+			Format_Time(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
 
 			if( zonegroup == 0) {
 				if( pb_diff >= 0)
@@ -320,8 +320,8 @@ public void Finish_Display(int client, float runtime, float pb_diff, float wr_di
 			ShowSyncHudText(client, Finish_Handle, szPBFormatted);
 		}
 		else {
-			FormatTimeFloat(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
-			FormatTimeFloat(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
+			Format_Time(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
+			Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
 			
 			if( zonegroup == 0) {
 				if (wr_diff >= 0)
@@ -351,8 +351,9 @@ public void Finish_Display(int client, float runtime, float pb_diff, float wr_di
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void Finish_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[7][16];

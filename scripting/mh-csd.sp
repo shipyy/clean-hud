@@ -260,6 +260,7 @@ public int CSD_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param
 
 public void CSD_Color_Change(int client, int color_type, int color_index)
 {
+	CPrintToChat(client, "%t", "Color_Input");
 	g_iArrayToChange[client] = 1;
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
@@ -315,7 +316,6 @@ int[] GetSpeedColourCSD(int client, float speed)
 /////
 //DISPLAY
 /////
-
 public void CSD_Display(int client)
 {
 	if (g_bCSD[client] && !IsFakeClient(client)) {
@@ -350,8 +350,9 @@ public void CSD_Display(int client)
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void CSD_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[7][16];

@@ -231,6 +231,7 @@ public int Timer_Color_Change_MENU_Handler(Menu menu, MenuAction action, int par
 
 public void Timer_Color_Change(int client, int color_type, int color_index)
 {
+	CPrintToChat(client, "%t", "Color_Input");
 	g_iArrayToChange[client] = 3;
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
@@ -255,7 +256,6 @@ void Timer_UpdateRate(int client, bool from_menu)
 /////
 //DISPLAY
 /////
-
 public void Timer_Display(int client)
 {
     if (g_bTimer[client] && !IsFakeClient(client)) {
@@ -293,17 +293,18 @@ public void Timer_Display(int client)
 
             char szFormattedCurrentTime[32];
             if(CurrentTime >= 0.0)
-                FormatTimeFloat(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+                Format_Time(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
             else
-                FormatTimeFloat(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+                Format_Time(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
 
             ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
 		}
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void Timer_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[5][16];

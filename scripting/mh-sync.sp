@@ -156,7 +156,6 @@ void Sync_PosY(int client)
 /////
 //COLOR CHANGE
 /////
-
 public void Sync_Color(int client)
 {   
     Menu menu = CreateMenu(Sync_Color_Change_Handler);
@@ -195,15 +194,15 @@ public int Sync_Color_Change_Handler(Menu menu, MenuAction action, int param1, i
 
 public void Sync_Color_Change(int client, int color_type, int color_index)
 {
-    g_iColorIndex[client] = color_index;
-    g_iColorType[client] = color_type;
-    g_iWaitingForResponse[client] = ChangeColor;
+	CPrintToChat(client, "%t", "Color_Input");
+	g_iColorIndex[client] = color_index;
+	g_iColorType[client] = color_type;
+	g_iWaitingForResponse[client] = ChangeColor;
 }
 
 /////
 //DISPAY
 /////
-
 public void Sync_Display(int client)
 {   
     if (g_bSync[client] && !IsFakeClient(client)) {
@@ -253,8 +252,9 @@ void Sync_UpdateRate(int client, bool from_menu)
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void Sync_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[4][16];

@@ -153,11 +153,9 @@ void Keys_PosY(int client)
 	Keys_Position(client);
 }
 
-
 /////
 //COLOR CHANGE
 /////
-
 public void Keys_Color(int client)
 {   
     Menu menu = CreateMenu(Keys_Color_Change_Handler);
@@ -196,6 +194,7 @@ public int Keys_Color_Change_Handler(Menu menu, MenuAction action, int param1, i
 
 public void Keys_Color_Change(int client, int color_type, int color_index)
 {
+	CPrintToChat(client, "%t", "Color_Input");
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
 	g_iWaitingForResponse[client] = ChangeColor;
@@ -204,7 +203,6 @@ public void Keys_Color_Change(int client, int color_type, int color_index)
 /////
 //DISPLAY
 /////
-
 public void Keys_Display(int client)
 {   
 	if (g_bKeys[client] && !IsFakeClient(client)) {
@@ -270,8 +268,9 @@ void Keys_UpdateRate(int client, bool from_menu)
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void Keys_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[4][16];

@@ -1,4 +1,6 @@
+/////
 //HANDLES
+/////
 Handle g_hCSD_Cookie;
 Handle g_hKeys_Cookie;
 Handle g_hSync_Cookie;
@@ -7,7 +9,6 @@ Handle g_hTimer_Cookie;
 Handle g_hMapInfo_Cookie;
 Handle g_hFinish_Cookie;
 
-//CONVERT COOKIE DATA TO STRING
 char[] ConvertDataToString(int client, int module)
 {   
     char szData[512];
@@ -24,7 +25,6 @@ char[] ConvertDataToString(int client, int module)
     return szData;
 }
 
-//CONVERT COOKIE STRING TO DATA
 public void ConvertStringToData(int client, int module, char szData[512])
 {
     switch (module) {

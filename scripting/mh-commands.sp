@@ -2,7 +2,8 @@ public void CreateCMDS()
 {
     //COMMANDS
     RegConsoleCmd("mhud", MHUD_MainMenu, "[Minimal HUD] Opens main menu");
-
+    //TODO
+    //RegConsoleCmd("mh_export", MHUD_Export, "[Minimal HUD] Export Settings");
 }
 
 public Action MHUD_MainMenu(int client, int args)

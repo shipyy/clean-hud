@@ -1,0 +1,7 @@
+"Phrases"
+{
+    "Color_Input"
+	{
+		"en"		"{red}MHUD | {default}Input value between 0-255"
+	}
+}

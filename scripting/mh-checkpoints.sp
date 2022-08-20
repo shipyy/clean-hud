@@ -237,6 +237,7 @@ public int CP_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1
 
 public void CP_Color_Change(int client, int color_type, int color_index)
 {
+	CPrintToChat(client, "%t", "Color_Input");
 	g_iArrayToChange[client] = 2;
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
@@ -272,7 +273,6 @@ void CP_CompareMode(int client)
 /////
 //DISPLAY
 /////
-
 public void CP_Display(int client, float runtime, float pb_runtime, float wr_runtime)
 {
 	if (g_bCP[client] && !IsFakeClient(client)) {
@@ -291,7 +291,7 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 		char szWRFormatted[32];
 
 		if (g_iCP_CompareMode[client] == 0) {
-			FormatTimeFloat(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
+			Format_Time(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
 
 			if (pb_runtime - runtime > 0) {
 				Format(szPBFormatted, sizeof szPBFormatted, "PB -%s", szPBFormatted);
@@ -308,7 +308,7 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 			ShowSyncHudText(client, CP_Handle, szPBFormatted);
 		}
 		else {
-			FormatTimeFloat(client, runtime - pb_runtime, szWRFormatted, sizeof szWRFormatted, true);
+			Format_Time(client, runtime - pb_runtime, szWRFormatted, sizeof szWRFormatted, true);
 
 			if (wr_runtime - runtime > 0) {
 				Format(szWRFormatted, sizeof szWRFormatted, "WR -%s", szWRFormatted);
@@ -327,8 +327,9 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 	}
 }
 
+/////
 //COOKIES
-
+/////
 public void CP_ConvertStringToData(int client, char szData[512])
 {           
 	char szModules[7][16];

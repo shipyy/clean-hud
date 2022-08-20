@@ -40,15 +40,16 @@ public void OnPluginStart()
 {
     EngineVersion eGame = GetEngineVersion();
     if (eGame != Engine_CSGO) {
-        SetFailState("[MapChallenge] This plugin is for CSGO only.");
+        SetFailState("[Minimal HUD] This plugin is for CSGO only.");
     }
-    
-    //db_setupDatabase();
 
+    //COMMANDS
     CreateCMDS();
     
+    //HOOKS
     CreateHooks();
 
+    //COOKI HANDLES
     g_hCSD_Cookie = RegClientCookie("CSD-cookie", "CSD data", CookieAccess_Public);
     g_hKeys_Cookie = RegClientCookie("Keys-cookie", "Keys data", CookieAccess_Public);
     g_hSync_Cookie = RegClientCookie("Sync-cookie", "Sync data", CookieAccess_Public);
@@ -76,12 +77,8 @@ public void OnClientPutInServer(int client)
     if(IsFakeClient(client) || !AreClientCookiesCached(client))
         return;
     
-    GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
-    
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
-    
-    //LoadSettings(client, 0);
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
@@ -90,11 +87,15 @@ public void OnClientPutInServer(int client)
     for(int i = 0; i < 6; i++)
         g_iCurrentTick[client][i] = 0;
 
+    //HOOK FOR TICK COUNTING
     SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
 public void OnMapStart()
 {
+    //TRANSLATIONS
+    LoadTranslations("minimalhud.phrases");
+
     //GET TICKRATE
     g_fTickrate = (1 / GetTickInterval());
 
@@ -106,14 +107,6 @@ public void OnMapStart()
     Init_TIMER();
     Init_MAPINFO();
     Init_FINISH();
-}
-
-public void OnMapEnd()
-{
-    for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x))
-            if (!IsFakeClient(x))
-                SaveCookies(x);
 }
 
 public void OnClientCookiesCached(int client)

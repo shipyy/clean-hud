@@ -38,7 +38,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 }
 
 /////
-// CHAT
+//CHAT
 /////
 public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstring, char[] name, char[] message, bool& processcolors, bool& removecolors)
 {

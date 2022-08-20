@@ -157,7 +157,6 @@ void MapInfo_PosY(int client)
 /////
 //COLOR CHANGE
 /////
-
 public void MapInfo_Color(int client)
 {   
     Menu menu = CreateMenu(MapInfo_Color_Change_Handler);
@@ -196,6 +195,7 @@ public int MapInfo_Color_Change_Handler(Menu menu, MenuAction action, int param1
 
 public void MapInfo_Color_Change(int client, int color_type, int color_index)
 {
+    CPrintToChat(client, "%t", "Color_Input");
     g_iColorIndex[client] = color_index;
     g_iColorType[client] = color_type;
     g_iWaitingForResponse[client] = ChangeColor;
@@ -230,7 +230,6 @@ void MapInfo_ShowMode(int client)
 /////
 //DISPAY
 /////
-
 public void MapInfo_Display(int client)
 {   
     if(g_bMapInfo[client] && !IsFakeClient(client)) {
@@ -259,7 +258,7 @@ public void MapInfo_Display(int client)
         //FORMAT SHOW MODE
         if ( g_iMapInfo_ShowMode[client] == 0) {
             char szPBFormatted[32];
-            FormatTimeFloat(client, client_runtime, szPBFormatted, sizeof szPBFormatted, true);
+            Format_Time(client, client_runtime, szPBFormatted, sizeof szPBFormatted, true);
             Format(szMapInfo, sizeof szMapInfo, "PB %s |", szPBFormatted);
 
             //FORMAT COMPARE MODE
@@ -268,25 +267,25 @@ public void MapInfo_Display(int client)
             }
             else if ( g_iMapInfo_CompareMode[client] == 1) {
                 char szWRDiffFormatted[32];
-                FormatTimeFloat(client, client_runtime - WRTime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
+                Format_Time(client, client_runtime - WRTime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
                 Format(szMapInfo, sizeof szMapInfo, "%s WR +%s", szPBFormatted, szWRDiffFormatted);
             }
 
         }
         else if ( g_iMapInfo_ShowMode[client] == 1) {
             char szWRFormatted[32];
-            FormatTimeFloat(client, WRTime, szWRFormatted, sizeof szWRFormatted, true);
+            Format_Time(client, WRTime, szWRFormatted, sizeof szWRFormatted, true);
             Format(szMapInfo, sizeof szMapInfo, "WR %s |", szWRFormatted);
 
             //FORMAT COMPARE MODE
             if ( g_iMapInfo_CompareMode[client] == 0) {
                 char szPBDiffFormatted[32];
-                FormatTimeFloat(client, client_runtime - WRTime, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
+                Format_Time(client, client_runtime - WRTime, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
                 Format(szMapInfo, sizeof szMapInfo, "%s PB -%s", szWRFormatted, szPBDiffFormatted);
             }
             else if ( g_iMapInfo_CompareMode[client] == 1) {
                 char szWRDiffFormatted[32];
-                FormatTimeFloat(client, WRTime - client_runtime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
+                Format_Time(client, WRTime - client_runtime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
                 Format(szMapInfo, sizeof szMapInfo, "%s WR +00:00.000", szWRFormatted, szWRDiffFormatted);
             }
         }
@@ -296,8 +295,9 @@ public void MapInfo_Display(int client)
     }
 }
 
+/////
 //COOKIES
-
+/////
 public void MapInfo_ConvertStringToData(int client, char szData[512])
 {           
     char szModules[5][16];

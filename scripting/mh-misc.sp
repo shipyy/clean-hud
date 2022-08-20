@@ -23,7 +23,7 @@ public float GetSpeed(int client)
 	return speed;
 }
 
-public void FormatTimeFloat(int client, float time, char[] string, int length, bool runtime)
+public void Format_Time(int client, float time, char[] string, int length, bool runtime)
 {
 	char szDays[16];
 	char szHours[16];
