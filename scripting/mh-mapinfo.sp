@@ -4,6 +4,8 @@ public Init_MAPINFO(){
 
 public MapInfo_SetDefaults(int client)
 {
+    PrintToServer("Loading MapInfo Defaults!");
+
     g_bMapInfo[client] = false;
     g_fMapInfo_POSX[client] = 0.5;
     g_fMapInfo_POSY[client] = 0.5;
@@ -294,81 +296,50 @@ public void MapInfo_Display(int client)
     }
 }
 
-/////
-//SQL
-/////
-public void db_LoadMapInfo(int client)
-{
-	char szQuery[1024];
+//COOKIES
 
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_MAPINFO WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadMapInfoCallback, szQuery, client, DBPrio_Low);
+public void MapInfo_ConvertStringToData(int client, char szData[512])
+{           
+    char szModules[5][16];
+    ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+    for(int i = 0; i < 5; i++)
+        ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+
+    g_bMapInfo[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+    char szPosition[2][8];
+    ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+    g_fMapInfo_POSX[client] = StringToFloat(szPosition[0]);
+    g_fMapInfo_POSY[client] = StringToFloat(szPosition[1]);
+
+    char szColor[3][8];
+    ExplodeString(szModules[2], ":", szColor, sizeof szColor, sizeof szColor[]);
+    g_iMapInfo_Color[client][0] = StringToInt(szColor[0]);
+    g_iMapInfo_Color[client][1] = StringToInt(szColor[1]);
+    g_iMapInfo_Color[client][2] = StringToInt(szColor[2]);
+
+    g_iMapInfo_ShowMode[client] = StringToInt(szModules[3]);
+    g_iMapInfo_CompareMode[client] = StringToInt(szModules[4]);
 }
 
-public void SQL_LoadMapInfoCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-    if (hndl == null)
-    {
-        LogError("[Minimal HUD] SQL Error (SQL_LoadMapInfoCallback): %s", error);
-        return;
-    }
+char[] MapInfo_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
-    {
-        g_bMapInfo[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bMapInfo[client]);
 
-        //POSITION
-        char MapInfoPos[32];
-        char MapInfoPos_SPLIT[2][12];
-        SQL_FetchString(hndl, 2, MapInfoPos, sizeof MapInfoPos);
-        ExplodeString(MapInfoPos, "|", MapInfoPos_SPLIT, sizeof MapInfoPos_SPLIT, sizeof MapInfoPos_SPLIT[]);
-        g_fMapInfo_POSX[client] = StringToFloat(MapInfoPos_SPLIT[0]);
-        g_fMapInfo_POSY[client] = StringToFloat(MapInfoPos_SPLIT[1]);
-        
-        //GAIN COLOR
-        char MapInfoColor[32];
-        char MapInfoColor_SPLIT[3][12];
-        SQL_FetchString(hndl, 3, MapInfoColor, sizeof MapInfoColor);
-        ExplodeString(MapInfoColor, "|", MapInfoColor_SPLIT, sizeof MapInfoColor_SPLIT, sizeof MapInfoColor_SPLIT[]);
-        g_iMapInfo_Color[client][0][0] = StringToInt(MapInfoColor_SPLIT[0]);
-        g_iMapInfo_Color[client][0][1] = StringToInt(MapInfoColor_SPLIT[1]);
-        g_iMapInfo_Color[client][0][2] = StringToInt(MapInfoColor_SPLIT[2]);
-        
-        g_iMapInfo_ShowMode[client] = SQL_FetchInt(hndl, 4);
-        g_iMapInfo_CompareMode[client] = SQL_FetchInt(hndl, 5);
-    }
-    else {
-        char szQuery[1024];
-        Format(szQuery, sizeof szQuery, "INSERT INTO mh_MAPINFO (steamid) VALUES('%s')", g_szSteamID[client]);
-        SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
 
-        MapInfo_SetDefaults(client);
-    }
-    
-    LoadSettings(client, 6);
-}
+	//COLOR
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2]);
 
-public void db_updateMapInfo(int client)
-{
-	char szQuery[1024];
+	//SHOW MODE
+	Format(szData, sizeof szData, "%s%d|", szData, g_iMapInfo_ShowMode[client]);
 
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szColor[32];
-	char szColor_R[3];
-	char szColor_G[3];
-	char szColor_B[3];
+    //COMPARE MODE
+	Format(szData, sizeof szData, "%s%d", szData, g_iMapInfo_CompareMode[client]);
 
-	FloatToString(g_fMapInfo_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fMapInfo_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iMapInfo_Color[client][0], szColor_R, sizeof szColor_R);
-	IntToString(g_iMapInfo_Color[client][1], szColor_G, sizeof szColor_G);
-	IntToString(g_iMapInfo_Color[client][2], szColor_B, sizeof szColor_B);
-	Format(szColor, sizeof szColor, "%d|%d|%d", szColor_R, szColor_G, szColor_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_MAPINFO SET enabled = '%i', pos = '%s', color = '%s', showmode = '%i', comparemode = '%i'  WHERE steamid = '%s';", g_bKeys ? '1' : '0', szPosition, szColor, g_iMapInfo_ShowMode[client], g_iMapInfo_CompareMode[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }

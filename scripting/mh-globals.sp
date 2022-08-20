@@ -29,6 +29,10 @@ Handle Timer_Handle = null;
 Handle MapInfo_Handle = null;
 Handle Finish_Handle = null;
 
+/////
+//PLAYERS DATA
+/////
+
 /*
 MAYBE DO THIS INSTEAD
 int g_bCSD[MAXPLAYERS + 1][6];
@@ -73,7 +77,7 @@ int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | v
 int g_iCP_HoldTime[MAXPLAYERS + 1];
 int g_iCP_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
 
-//CHECKPOINTS
+//TIMER
 bool g_bTimer[MAXPLAYERS + 1];
 float g_fTimer_POSX[MAXPLAYERS + 1];
 float g_fTimer_POSY[MAXPLAYERS + 1];

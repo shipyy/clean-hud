@@ -2,7 +2,10 @@ public Init_TIMER(){
 	Timer_Handle = CreateHudSynchronizer();
 }
 
-public Timer_SetDefaults(int client){
+public Timer_SetDefaults(int client)
+{
+	PrintToServer("Loading Timer Defaults!");
+
 	g_bTimer[client] = false;
 	g_fTimer_POSX[client] = 0.5;
 	g_fTimer_POSY[client] = 0.5;
@@ -76,11 +79,11 @@ public void Timer_Toggle(int client, bool from_menu)
 {
     if (g_bTimer[client]) {
 		g_bTimer[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
+		//TimerrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
 	}
 	else {
 		g_bTimer[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
+		//TimerrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
 	}
 
     if (from_menu) {
@@ -299,96 +302,55 @@ public void Timer_Display(int client)
 	}
 }
 
-/////
-//SQL
-/////
-public void db_LoadTimer(int client)
-{	
-	
-	char szQuery[1024];
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_Timer WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadTimerCallback, szQuery, client, DBPrio_Low);
+//COOKIES
+
+public void Timer_ConvertStringToData(int client, char szData[512])
+{           
+	char szModules[5][16];
+	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+	for(int i = 0; i < 5; i++)
+		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+
+	g_bTimer[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+	char szPosition[2][8];
+	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+	g_fTimer_POSX[client] = StringToFloat(szPosition[0]);
+	g_fTimer_POSY[client] = StringToFloat(szPosition[1]);
+
+	char szFaster[3][8];
+	ExplodeString(szModules[2], ":", szFaster, sizeof szFaster, sizeof szFaster[]);
+	g_iTimer_Color[client][0][0] = StringToInt(szFaster[0]);
+	g_iTimer_Color[client][0][1] = StringToInt(szFaster[1]);
+	g_iTimer_Color[client][0][2] = StringToInt(szFaster[2]);
+
+	char szSlower[3][8];
+	ExplodeString(szModules[3], ":", szSlower, sizeof szSlower, sizeof szSlower[]);
+	g_iTimer_Color[client][1][0] = StringToInt(szSlower[0]);
+	g_iTimer_Color[client][1][1] = StringToInt(szSlower[1]);
+	g_iTimer_Color[client][1][2] = StringToInt(szSlower[2]);
+
+	g_iTimer_UpdateRate[client] = StringToInt(szModules[4]);
 }
 
-public void SQL_LoadTimerCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-    if (hndl == null)
-    {
-        LogError("[Minimal HUD] SQL Error (SQL_LoadTimerCallback): %s", error);
-        return;
-    }
-    
-    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-        g_bTimer[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+char[] Timer_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-        //POSITION
-        char TimerPos[32];
-        char TimerPos_SPLIT[2][12];
-        SQL_FetchString(hndl, 2, TimerPos, sizeof TimerPos);
-        ExplodeString(TimerPos, "|", TimerPos_SPLIT, sizeof TimerPos_SPLIT, sizeof TimerPos_SPLIT[]);
-        g_fTimer_POSX[client] = StringToFloat(TimerPos_SPLIT[0]);
-        g_fTimer_POSY[client] = StringToFloat(TimerPos_SPLIT[1]);
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
 
-        char TimerColor_SPLIT[3][12];
-        //NORMAL COLOR
-        char TimerColor_Normal[32];
-        SQL_FetchString(hndl, 3, TimerColor_Normal, sizeof TimerColor_Normal);
-        ExplodeString(TimerColor_Normal, "|", TimerColor_SPLIT, sizeof TimerColor_SPLIT, sizeof TimerColor_SPLIT[]);
-        g_iTimer_Color[client][0][0] = StringToInt(TimerColor_SPLIT[0]);
-        g_iTimer_Color[client][0][1] = StringToInt(TimerColor_SPLIT[1]);
-        g_iTimer_Color[client][0][2] = StringToInt(TimerColor_SPLIT[2]);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fTimer_POSX[client], g_fTimer_POSY[client]);
 
-        //SLOWER COLOR
-        char TimerColor_Slower[32];
-        SQL_FetchString(hndl, 4, TimerColor_Slower, sizeof TimerColor_Slower);
-        ExplodeString(TimerColor_Slower, "|", TimerColor_SPLIT, sizeof TimerColor_SPLIT, sizeof TimerColor_SPLIT[]);
-        g_iTimer_Color[client][1][0] = StringToInt(TimerColor_SPLIT[0]);
-        g_iTimer_Color[client][1][1] = StringToInt(TimerColor_SPLIT[1]);
-        g_iTimer_Color[client][1][2] = StringToInt(TimerColor_SPLIT[2]);
+	//COLORS
+	//TYPE 1
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2]);
+	//TYPE 2
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2]);
 
-        g_iTimer_UpdateRate[client] = SQL_FetchInt(hndl, 5);
-    }
-    else {
-        char szQuery[1024];
-        Format(szQuery, sizeof szQuery, "INSERT INTO mh_Timer (steamid) VALUES('%s')", g_szSteamID[client]);
-        SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	//UPDATE RATE
+	Format(szData, sizeof szData, "%s%d", szData, g_iTimer_UpdateRate[client]);
 
-        Timer_SetDefaults(client);
-	}
-
-    LoadSettings(client, 5);
-}
-
-public void db_updateTimer(int client)
-{
-	char szQuery[1024];
-
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szNormal[32];
-	char szSlower[32];
-	char szNormal_R[3];
-	char szNormal_G[3];
-	char szNormal_B[3];
-	char szSlower_R[3];
-	char szSlower_G[3];
-	char szSlower_B[3];
-
-	FloatToString(g_fTimer_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fTimer_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iTimer_Color[client][0][0], szNormal_R, sizeof szNormal_R);
-	IntToString(g_iTimer_Color[client][0][1], szNormal_G, sizeof szNormal_G);
-	IntToString(g_iTimer_Color[client][0][2], szNormal_B, sizeof szNormal_B);
-	Format(szNormal, sizeof szNormal, "%d|%d|%d", szNormal_R, szNormal_G, szNormal_B);
-
-	IntToString(g_iTimer_Color[client][1][0], szSlower_R, sizeof szSlower_R);
-	IntToString(g_iTimer_Color[client][1][1], szSlower_G, sizeof szSlower_G);
-	IntToString(g_iTimer_Color[client][1][2], szSlower_B, sizeof szSlower_B);
-	Format(szSlower, sizeof szSlower, "%d|%d|%d", szSlower_R, szSlower_G, szSlower_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_Timer SET enabled = '%i', pos = '%s', normalcolor = '%s', slowercolor = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bTimer ? '1' : '0', szPosition, szNormal, szSlower, g_iTimer_UpdateRate[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }

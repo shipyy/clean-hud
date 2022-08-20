@@ -110,26 +110,14 @@ public int GetUpdateRate(int value)
 	}
 }
 
-public void SaveSettings(int client)
+public void LoadCookies(int client)
 {
-	db_updateCSD(client);
-	db_updateKeys(client);
-	db_updateSync(client);
-	db_updateCP(client);
-	db_updateTimer(client);
-	db_updateMapInfo(client);
-	db_updateFinish(client);
+	for(int i = 0; i < 7; i++)
+		GetCookie(client, i);
 }
 
-public void LoadSettings(int client, int setting_index)
+public void SaveCookies(int client)
 {
-	switch (setting_index) {
-		case 0: db_LoadCSD(client);
-		case 1: db_LoadKeys(client);
-		case 2: db_LoadSync(client);
-		case 3: db_LoadCP(client);
-		case 4: db_LoadTimer(client);
-		case 5: db_LoadMapInfo(client);
-		case 6: db_LoadFinish(client);
-	}
+	for(int i = 0; i < 7; i++)
+		SetCookie(client, i);
 }

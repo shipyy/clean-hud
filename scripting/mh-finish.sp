@@ -2,7 +2,10 @@ public Init_FINISH(){
 	Finish_Handle = CreateHudSynchronizer();
 }
 
-public Finish_SetDefaults(int client){
+public Finish_SetDefaults(int client)
+{
+	PrintToServer("Loading Finish Defaults!");
+
 	g_bFinish[client] = false;
 	g_fFinish_POSX[client] = 0.5;
 	g_fFinish_POSY[client] = 0.5;
@@ -338,118 +341,67 @@ public void Finish_Display(int client, float runtime, float pb_diff, float wr_di
 	}
 }
 
-/////
-//SQL
-/////
-public void db_LoadFinish(int client)
-{
-    char szQuery[1024];
-    Format(szQuery, sizeof szQuery, "SELECT * FROM mh_FINISH WHERE steamid = '%s';", g_szSteamID[client]);
-    PrintToServer("\n\n\n%s\n\n\n", szQuery);
-    SQL_TQuery(g_hDb, SQL_LoadFinishCallback, szQuery, client, DBPrio_Low);
+//COOKIES
+
+public void Finish_ConvertStringToData(int client, char szData[512])
+{           
+	char szModules[7][16];
+	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+	for(int i = 0; i < 7; i++)
+		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+
+	g_bFinish[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+	char szPosition[2][8];
+	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+	g_fFinish_POSX[client] = StringToFloat(szPosition[0]);
+	g_fFinish_POSY[client] = StringToFloat(szPosition[1]);
+
+	char szColorFaster[3][8];
+	ExplodeString(szModules[2], ":", szColorFaster, sizeof szColorFaster, sizeof szColorFaster[]);
+	g_iFinish_Color[client][0][0] = StringToInt(szColorFaster[0]);
+	g_iFinish_Color[client][0][1] = StringToInt(szColorFaster[1]);
+	g_iFinish_Color[client][0][2] = StringToInt(szColorFaster[2]);
+
+	char szColorSlower[3][8];
+	ExplodeString(szModules[3], ":", szColorSlower, sizeof szColorSlower, sizeof szColorSlower[]);
+	g_iFinish_Color[client][1][0] = StringToInt(szColorSlower[0]);
+	g_iFinish_Color[client][1][1] = StringToInt(szColorSlower[1]);
+	g_iFinish_Color[client][1][2] = StringToInt(szColorSlower[2]);
+
+	char szColorEqual[3][8];
+	ExplodeString(szModules[4], ":", szColorEqual, sizeof szColorEqual, sizeof szColorEqual[]);
+	g_iFinish_Color[client][2][0] = StringToInt(szColorEqual[0]);
+	g_iFinish_Color[client][2][1] = StringToInt(szColorEqual[1]);
+	g_iFinish_Color[client][2][2] = StringToInt(szColorEqual[2]);
+
+	g_iFinish_CompareMode[client] = StringToInt(szModules[5]);
+	g_iFinish_HoldTime[client] = StringToInt(szModules[6]);
 }
 
-public void SQL_LoadFinishCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-    if (hndl == null) 
-    {
-        LogError("[Minimal HUD] SQL Error (SQL_LoadFinishCallback): %s", error);
-        return;
-    }
+char[] Finish_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-        g_bFinish[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
 
-        //POSITION
-        char FinishPos[32];
-        char FinishPos_SPLIT[2][12];
-        SQL_FetchString(hndl, 2, FinishPos, sizeof FinishPos);
-        ExplodeString(FinishPos, "|", FinishPos_SPLIT, sizeof FinishPos_SPLIT, sizeof FinishPos_SPLIT[]);
-        g_fFinish_POSX[client] = StringToFloat(FinishPos_SPLIT[0]);
-        g_fFinish_POSY[client] = StringToFloat(FinishPos_SPLIT[1]);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fFinish_POSX[client], g_fFinish_POSY[client]);
 
-        char FinishColor_SPLIT[3][12];
-        //GAIN COLOR
-        char FinishColor_Gain[32];
-        SQL_FetchString(hndl, 3, FinishColor_Gain, sizeof FinishColor_Gain);
-        ExplodeString(FinishColor_Gain, "|", FinishColor_SPLIT, sizeof FinishColor_SPLIT, sizeof FinishColor_SPLIT[]);
-        g_iFinish_Color[client][0][0] = StringToInt(FinishColor_SPLIT[0]);
-        g_iFinish_Color[client][0][1] = StringToInt(FinishColor_SPLIT[1]);
-        g_iFinish_Color[client][0][2] = StringToInt(FinishColor_SPLIT[2]);
+	//COLORS
+	//TYPE 1
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2]);
+	//TYPE 2
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2]);
+	//TYPE 3
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2]);
 
-        //LOSS COLOR
-        char FinishColor_Loss[32];
-        SQL_FetchString(hndl, 4, FinishColor_Loss, sizeof FinishColor_Loss);
-        ExplodeString(FinishColor_Loss, "|", FinishColor_SPLIT, sizeof FinishColor_SPLIT, sizeof FinishColor_SPLIT[]);
-        g_iFinish_Color[client][1][0] = StringToInt(FinishColor_SPLIT[0]);
-        g_iFinish_Color[client][1][1] = StringToInt(FinishColor_SPLIT[1]);
-        g_iFinish_Color[client][1][2] = StringToInt(FinishColor_SPLIT[2]);
+	//COMPARE MODE
+	Format(szData, sizeof szData, "%s%d|", szData, g_iFinish_CompareMode[client]);
 
-        //MAINTAIN COLOR
-        char FinishColor_Maintain[32];
-        SQL_FetchString(hndl, 5, FinishColor_Maintain, sizeof FinishColor_Maintain);
-        ExplodeString(FinishColor_Maintain, "|", FinishColor_SPLIT, sizeof FinishColor_SPLIT, sizeof FinishColor_SPLIT[]);
-        g_iFinish_Color[client][2][0] = StringToInt(FinishColor_SPLIT[0]);
-        g_iFinish_Color[client][2][1] = StringToInt(FinishColor_SPLIT[1]);
-        g_iFinish_Color[client][2][2] = StringToInt(FinishColor_SPLIT[2]);
+	//HOLD TIME
+	Format(szData, sizeof szData, "%s%d", szData, g_iFinish_HoldTime[client]);
 
-        g_iFinish_HoldTime[client] = SQL_FetchInt(hndl, 6);
-        
-        g_iFinish_CompareMode[client] = SQL_FetchInt(hndl, 7);
-
-        char szClientName[MAX_NAME_LENGTH];
-        GetClientName(client, szClientName, sizeof szClientName);
-        PrintToServer("\n\n\n%s\n\n\n", "Finished Loading Settings for %s", szClientName);
-    }
-	else {
-		char szQuery[1024];
-		Format(szQuery, sizeof szQuery, "INSERT INTO mh_FINISH (steamid) VALUES('%s')", g_szSteamID[client]);
-		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
-
-		Finish_SetDefaults(client);
-	}
-
-}
-
-public void db_updateFinish(int client)
-{
-	char szQuery[1024];
-
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szFaster[32];
-	char szSlower[32];
-	char szSame[32];
-	char szFaster_R[3];
-	char szFaster_G[3];
-	char szFaster_B[3];
-	char szSlower_R[3];
-	char szSlower_G[3];
-	char szSlower_B[3];
-	char szSame_R[3];
-	char szSame_G[3];
-	char szSame_B[3];
-
-	FloatToString(g_fFinish_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fFinish_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iFinish_Color[client][0][0], szFaster_R, sizeof szFaster_R);
-	IntToString(g_iFinish_Color[client][0][1], szFaster_G, sizeof szFaster_G);
-	IntToString(g_iFinish_Color[client][0][2], szFaster_B, sizeof szFaster_B);
-	Format(szFaster, sizeof szFaster, "%d|%d|%d", szFaster_R, szFaster_G, szFaster_B);
-
-	IntToString(g_iFinish_Color[client][1][0], szSlower_R, sizeof szSlower_R);
-	IntToString(g_iFinish_Color[client][1][1], szSlower_G, sizeof szSlower_G);
-	IntToString(g_iFinish_Color[client][1][2], szSlower_B, sizeof szSlower_B);
-	Format(szSlower, sizeof szSlower, "%d|%d|%d", szSlower_R, szSlower_G, szSlower_B);
-
-	IntToString(g_iFinish_Color[client][2][0], szSame_R, sizeof szSame_R);
-	IntToString(g_iFinish_Color[client][2][1], szSame_G, sizeof szSame_G);
-	IntToString(g_iFinish_Color[client][2][2], szSame_B, sizeof szSame_B);
-	Format(szSame, sizeof szSame, "%d|%d|%d", szSame_R, szSame_G, szSame_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_FINISH SET enabled = '%i', pos = '%s', fastercolor = '%s', slowercolor = '%s', samecolor = '%s', holdtime = '%i', comparemode = '%i' WHERE steamid = '%s';", g_bFinish ? '1' : '0', szPosition, szFaster, szSlower, szSame, g_iFinish_HoldTime[client], g_iFinish_CompareMode[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }

@@ -2,7 +2,10 @@ public Init_CP(){
 	CP_Handle = CreateHudSynchronizer();
 }
 
-public CP_SetDefaults(int client){
+public CP_SetDefaults(int client)
+{
+	PrintToServer("Loading CP Defaults!");
+
 	g_bCP[client] = false;
 	g_fCP_POSX[client] = 0.5;
 	g_fCP_POSY[client] = 0.5;
@@ -324,116 +327,67 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 	}
 }
 
-/////
-//SQL
-/////
-public void db_LoadCP(int client)
-{	
-	
-	char szQuery[1024];
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_CP WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadCPCallback, szQuery, client, DBPrio_Low);
+//COOKIES
+
+public void CP_ConvertStringToData(int client, char szData[512])
+{           
+	char szModules[7][16];
+	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+	for(int i = 0; i < 7; i++)
+		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+
+	g_bCP[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+	char szPosition[2][8];
+	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+	g_fCP_POSX[client] = StringToFloat(szPosition[0]);
+	g_fCP_POSY[client] = StringToFloat(szPosition[1]);
+
+	char szColorGain[3][8];
+	ExplodeString(szModules[2], ":", szColorGain, sizeof szColorGain, sizeof szColorGain[]);
+	g_iCP_Color[client][0][0] = StringToInt(szColorGain[0]);
+	g_iCP_Color[client][0][1] = StringToInt(szColorGain[1]);
+	g_iCP_Color[client][0][2] = StringToInt(szColorGain[2]);
+
+	char szColorLoss[3][8];
+	ExplodeString(szModules[3], ":", szColorLoss, sizeof szColorLoss, sizeof szColorLoss[]);
+	g_iCP_Color[client][1][0] = StringToInt(szColorLoss[0]);
+	g_iCP_Color[client][1][1] = StringToInt(szColorLoss[1]);
+	g_iCP_Color[client][1][2] = StringToInt(szColorLoss[2]);
+
+	char szColorMaintain[3][8];
+	ExplodeString(szModules[4], ":", szColorMaintain, sizeof szColorMaintain, sizeof szColorMaintain[]);
+	g_iCP_Color[client][2][0] = StringToInt(szColorMaintain[0]);
+	g_iCP_Color[client][2][1] = StringToInt(szColorMaintain[1]);
+	g_iCP_Color[client][2][2] = StringToInt(szColorMaintain[2]);
+
+	g_iCP_HoldTime[client] = StringToInt(szModules[5]);
+	g_iCP_CompareMode[client] = StringToInt(szModules[6]);
 }
 
-public void SQL_LoadCPCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-	if (hndl == null)
-	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadCPCallback): %s", error);
-		return;
-	}
+char[] CP_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
 
-		g_bCP[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fCP_POSX[client], g_fCP_POSY[client]);
 
-		//POSITION
-		char CPPos[32];
-		char CPPos_SPLIT[2][12];
-		SQL_FetchString(hndl, 2, CPPos, sizeof CPPos);
-		ExplodeString(CPPos, "|", CPPos_SPLIT, sizeof CPPos_SPLIT, sizeof CPPos_SPLIT[]);
-		g_fCP_POSX[client] = StringToFloat(CPPos_SPLIT[0]);
-		g_fCP_POSY[client] = StringToFloat(CPPos_SPLIT[1]);
+	//COLORS
+	//TYPE 1
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2]);
+	//TYPE 2
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2]);
+	//TYPE 3
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2]);
 
-		char CPColor_SPLIT[3][12];
-		//GAIN COLOR
-		char CPColor_Gain[32];
-		SQL_FetchString(hndl, 3, CPColor_Gain, sizeof CPColor_Gain);
-		ExplodeString(CPColor_Gain, "|", CPColor_SPLIT, sizeof CPColor_SPLIT, sizeof CPColor_SPLIT[]);
-		g_iCP_Color[client][0][0] = StringToInt(CPColor_SPLIT[0]);
-		g_iCP_Color[client][0][1] = StringToInt(CPColor_SPLIT[1]);
-		g_iCP_Color[client][0][2] = StringToInt(CPColor_SPLIT[2]);
+	//HOLD TIME
+	Format(szData, sizeof szData, "%s%d|", szData, g_iCP_HoldTime[client]);
 
-		//LOSS COLOR
-		char CPColor_Loss[32];
-		SQL_FetchString(hndl, 4, CPColor_Loss, sizeof CPColor_Loss);
-		ExplodeString(CPColor_Loss, "|", CPColor_SPLIT, sizeof CPColor_SPLIT, sizeof CPColor_SPLIT[]);
-		g_iCP_Color[client][1][0] = StringToInt(CPColor_SPLIT[0]);
-		g_iCP_Color[client][1][1] = StringToInt(CPColor_SPLIT[1]);
-		g_iCP_Color[client][1][2] = StringToInt(CPColor_SPLIT[2]);
-		
-		//MAINTAIN COLOR
-		char CPColor_Maintain[32];
-		SQL_FetchString(hndl, 5, CPColor_Maintain, sizeof CPColor_Maintain);
-		ExplodeString(CPColor_Maintain, "|", CPColor_SPLIT, sizeof CPColor_SPLIT, sizeof CPColor_SPLIT[]);
-		g_iCP_Color[client][2][0] = StringToInt(CPColor_SPLIT[0]);
-		g_iCP_Color[client][2][1] = StringToInt(CPColor_SPLIT[1]);
-		g_iCP_Color[client][2][2] = StringToInt(CPColor_SPLIT[2]);
+	//COMPARE MODE
+	Format(szData, sizeof szData, "%s%d", szData, g_iCP_CompareMode[client]);
 
-		g_iCP_HoldTime[client] = SQL_FetchInt(hndl, 6);
-
-		g_iCP_CompareMode[client] = SQL_FetchInt(hndl, 7);
-	}
-	else {
-		char szQuery[1024];
-		Format(szQuery, sizeof szQuery, "INSERT INTO mh_CP (steamid) VALUES('%s')", g_szSteamID[client]);
-		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
-
-		CP_SetDefaults(client);
-	}
-
-	LoadSettings(client, 4);
-}
-
-public void db_updateCP(int client)
-{
-	char szQuery[1024];
-
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szGain[32];
-	char szLoss[32];
-	char szMaintain[32];
-	char szGain_R[3];
-	char szGain_G[3];
-	char szGain_B[3];
-	char szLoss_R[3];
-	char szLoss_G[3];
-	char szLoss_B[3];
-	char szMaintain_R[3];
-	char szMaintain_G[3];
-	char szMaintain_B[3];
-
-	FloatToString(g_fCP_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fCP_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iCP_Color[client][0][0], szGain_R, sizeof szGain_R);
-	IntToString(g_iCP_Color[client][0][1], szGain_G, sizeof szGain_G);
-	IntToString(g_iCP_Color[client][0][2], szGain_B, sizeof szGain_B);
-	Format(szGain, sizeof szGain, "%d|%d|%d", szGain_R, szGain_G, szGain_B);
-
-	IntToString(g_iCP_Color[client][1][0], szLoss_R, sizeof szLoss_R);
-	IntToString(g_iCP_Color[client][1][1], szLoss_G, sizeof szLoss_G);
-	IntToString(g_iCP_Color[client][1][2], szLoss_B, sizeof szLoss_B);
-	Format(szLoss, sizeof szLoss, "%d|%d|%d", szLoss_R, szLoss_G, szLoss_B);
-
-	IntToString(g_iCP_Color[client][2][0], szMaintain_R, sizeof szMaintain_R);
-	IntToString(g_iCP_Color[client][2][1], szMaintain_G, sizeof szMaintain_G);
-	IntToString(g_iCP_Color[client][2][2], szMaintain_B, sizeof szMaintain_B);
-	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_CP SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', holdtime = '%i', comparemode = '%i' WHERE steamid = '%s';", g_bCP ? '1' : '0', szPosition, szGain, szLoss, szMaintain, g_iCP_HoldTime[client], g_iCP_CompareMode[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }

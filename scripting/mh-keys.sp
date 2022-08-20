@@ -2,7 +2,10 @@ public Init_KEYS(){
 	Keys_Handle = CreateHudSynchronizer();
 }
 
-public Keys_SetDefaults(int client){
+public Keys_SetDefaults(int client)
+{
+	PrintToServer("Loading Keys Defaults!");
+
 	g_bKeys[client] = false;
 	g_fKeys_POSX[client] = 0.5;
 	g_fKeys_POSY[client] = 0.5;
@@ -244,7 +247,7 @@ public void Keys_Display(int client)
 			//FINAL STRING
 			char szKeys[32];
 			
-			Format(szKeys, sizeof szKeys, "%s  %s  %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
+			Format(szKeys, sizeof szKeys, "%s %s %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
 			
 			SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], GetUpdateRate(g_iKeys_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 			ShowSyncHudText(client, Keys_Handle, szKeys);
@@ -267,84 +270,46 @@ void Keys_UpdateRate(int client, bool from_menu)
 	}
 }
 
-/////
-//SQL
-/////
-public void db_LoadKeys(int client)
-{
-	PrintToServer("\n\n\nHERE_006\n\n\n");
+//COOKIES
 
-	char szQuery[1024];
+public void Keys_ConvertStringToData(int client, char szData[512])
+{           
+	char szModules[4][16];
+	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+	for(int i = 0; i < 4; i++)
+		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
 
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_KEYS WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadKeysCallback, szQuery, client, DBPrio_Low);
+	g_bKeys[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+	char szPosition[2][8];
+	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+	g_fKeys_POSX[client] = StringToFloat(szPosition[0]);
+	g_fKeys_POSY[client] = StringToFloat(szPosition[1]);
+
+	char szColor[3][8];
+	ExplodeString(szModules[2], ":", szColor, sizeof szColor, sizeof szColor[]);
+	g_iKeys_Color[client][0] = StringToInt(szColor[0]);
+	g_iKeys_Color[client][1] = StringToInt(szColor[1]);
+	g_iKeys_Color[client][2] = StringToInt(szColor[2]);
+
+	g_iKeys_UpdateRate[client] = StringToInt(szModules[3]);
 }
 
-public void SQL_LoadKeysCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-	if (hndl == null)
-	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadKeysCallback): %s", error);
-		return;
-	}
+char[] Keys_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-	PrintToServer("\n\n\nHERE_007\n\n\n");
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
 
-	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
-		
-		g_bKeys[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fKeys_POSX[client], g_fKeys_POSY[client]);
 
-		//POSITION
-		char KeysPos[32];
-		char KeysPos_SPLIT[2][12];
-		SQL_FetchString(hndl, 2, KeysPos, sizeof KeysPos);
-		ExplodeString(KeysPos, "|", KeysPos_SPLIT, sizeof KeysPos_SPLIT, sizeof KeysPos_SPLIT[]);
-		g_fKeys_POSX[client] = StringToFloat(KeysPos_SPLIT[0]);
-		g_fKeys_POSY[client] = StringToFloat(KeysPos_SPLIT[1]);
+	//COLOR
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);
 
-		//GAIN COLOR
-		char KeysColor[32];
-		char KeysColor_SPLIT[3][12];
-		SQL_FetchString(hndl, 3, KeysColor, sizeof KeysColor);
-		ExplodeString(KeysColor, "|", KeysColor_SPLIT, sizeof KeysColor_SPLIT, sizeof KeysColor_SPLIT[]);
-		g_iKeys_Color[client][0][0] = StringToInt(KeysColor_SPLIT[0]);
-		g_iKeys_Color[client][0][1] = StringToInt(KeysColor_SPLIT[1]);
-		g_iKeys_Color[client][0][2] = StringToInt(KeysColor_SPLIT[2]);
+	//UPDATE RATE
+	Format(szData, sizeof szData, "%s%d", szData, g_iKeys_UpdateRate[client]);
 
-		g_iKeys_UpdateRate[client] = SQL_FetchInt(hndl, 4);
-	}
-	else {
-		char szQuery[1024];
-		Format(szQuery, sizeof szQuery, "INSERT INTO mh_KEYS (steamid) VALUES('%s')", g_szSteamID[client]);
-		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
-		
-		Keys_SetDefaults(client);
-	}
-
-	LoadSettings(client, 2);
-}
-
-public void db_updateKeys(int client)
-{
-	char szQuery[1024];
-
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szColor[32];
-	char szColor_R[3];
-	char szColor_G[3];
-	char szColor_B[3];
-
-	FloatToString(g_fKeys_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fKeys_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iKeys_Color[client][0], szColor_R, sizeof szColor_R);
-	IntToString(g_iKeys_Color[client][1], szColor_G, sizeof szColor_G);
-	IntToString(g_iKeys_Color[client][2], szColor_B, sizeof szColor_B);
-	Format(szColor, sizeof szColor, "%d|%d|%d", szColor_R, szColor_G, szColor_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_KEYS SET enabled = '%i', pos = '%s', color = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bKeys ? '1' : '0', szPosition, szColor, g_iKeys_UpdateRate[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }

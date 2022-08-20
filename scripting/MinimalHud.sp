@@ -20,6 +20,7 @@ public Plugin myinfo =
 #include <sourcemod>
 #include <surftimer>
 #include <sdkhooks>
+#include <clientprefs>
 #include <chat-processor>
 #include "mh-globals.sp"
 #include "mh-commands.sp"
@@ -35,6 +36,7 @@ public Plugin myinfo =
 #include "mh-queries.sp"
 #include "mh-sql.sp"
 #include "mh-runner.sp"
+#include "mh-clientprefs.sp"
 
 public void OnPluginStart()
 {
@@ -43,22 +45,45 @@ public void OnPluginStart()
         SetFailState("[MapChallenge] This plugin is for CSGO only.");
     }
     
-    db_setupDatabase();
+    //db_setupDatabase();
 
     CreateCMDS();
     
     CreateHooks();
+
+    g_hCSD_Cookie = RegClientCookie("CSD-cookie", "CSD data", CookieAccess_Public);
+    g_hKeys_Cookie = RegClientCookie("Keys-cookie", "Keys data", CookieAccess_Public);
+    g_hSync_Cookie = RegClientCookie("Sync-cookie", "Sync data", CookieAccess_Public);
+    g_hCP_Cookie = RegClientCookie("CP-cookie", "CP data", CookieAccess_Public);
+    g_hTimer_Cookie = RegClientCookie("Timer-cookie", "Timer data", CookieAccess_Public);
+    g_hMapInfo_Cookie = RegClientCookie("MapInfo-cookie", "MapInfo data", CookieAccess_Public);
+    g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
+}
+
+public void OnPluginEnd()
+{
+    for (int x = 1; x <= MaxClients; x++)
+        if (IsValidClient(x)) {
+            if (!IsFakeClient(x))
+                SaveCookies(x);
+            SDKUnhook(x, SDKHook_PostThinkPost, Hook_PostThinkPost);
+        }
 }
 
 public void OnClientPutInServer(int client)
 {
     if (!IsValidClient(client))
         return;
+
+    if(IsFakeClient(client) || !AreClientCookiesCached(client))
+        return;
     
     GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
     
-    if(!IsFakeClient(client))
-        LoadSettings(client, 0);
+    if(AreClientCookiesCached(client))
+        OnClientCookiesCached(client);
+    
+    //LoadSettings(client, 0);
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
@@ -71,7 +96,7 @@ public void OnClientPutInServer(int client)
 }
 
 public void OnMapStart()
-{   
+{
     //GET TICKRATE
     g_fTickrate = (1 / GetTickInterval());
 
@@ -83,4 +108,21 @@ public void OnMapStart()
     Init_TIMER();
     Init_MAPINFO();
     Init_FINISH();
+}
+
+public void OnMapEnd()
+{
+    for (int x = 1; x <= MaxClients; x++)
+        if (IsValidClient(x))
+            if (!IsFakeClient(x))
+                SaveCookies(x);
+}
+
+public void OnClientCookiesCached(int client)
+{
+    if(!IsClientInGame(client) || IsFakeClient(client))
+        return;
+
+    PrintToServer("\n=====LOADING COOKIES=====\n");
+    LoadCookies(client);
 }

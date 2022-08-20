@@ -3,8 +3,6 @@ void CreateHooks()
 	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
 }
 
-
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	CSD_Display(client);
@@ -30,9 +28,13 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 {
 	int clientid = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(clientid);
+	
+	PrintToServer("client id : %d", client);
 
-	if (IsValidClient(client) && !IsFakeClient(client))
-		SaveSettings(client);
+	if (!IsValidClient(client) || IsFakeClient(client))
+		return Plugin_Handled;
+
+	SaveCookies(client);
 
 	return Plugin_Handled;
 }

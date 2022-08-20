@@ -2,15 +2,18 @@ public Init_SYNC(){
 	Sync_Handle = CreateHudSynchronizer();
 }
 
-public Sync_SetDefaults(int client){
-	g_bSync[client] = false;
-	g_fSync_POSX[client] = 0.5;
-	g_fSync_POSY[client] = 0.5;
+public Sync_SetDefaults(int client)
+{
+    PrintToServer("Loading Sync Defaults!");
 
-	for (int i = 0; i < 3; i++)
-		g_iSync_Color[client][i] = 255;
-	
-	g_iSync_UpdateRate[client] = 0;
+    g_bSync[client] = false;
+    g_fSync_POSX[client] = 0.5;
+    g_fSync_POSY[client] = 0.5;
+
+    for (int i = 0; i < 3; i++)
+        g_iSync_Color[client][i] = 255;
+
+    g_iSync_UpdateRate[client] = 0;
 }
 
 public void MHUD_SYNC(int client)
@@ -250,80 +253,46 @@ void Sync_UpdateRate(int client, bool from_menu)
 	}
 }
 
-/////
-//SQL
-/////
-public void db_LoadSync(int client)
-{
-	char szQuery[1024];
+//COOKIES
 
-	Format(szQuery, sizeof szQuery, "SELECT * FROM mh_SYNC WHERE steamid = '%s';", g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_LoadSyncCallback, szQuery, client, DBPrio_Low);
+public void Sync_ConvertStringToData(int client, char szData[512])
+{           
+	char szModules[4][16];
+	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
+	for(int i = 0; i < 4; i++)
+		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+
+	g_bSync[client] = StringToInt(szModules[0]) == 1 ? true : false;
+
+	char szPosition[2][8];
+	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
+	g_fSync_POSX[client] = StringToFloat(szPosition[0]);
+	g_fSync_POSY[client] = StringToFloat(szPosition[1]);
+
+	char szColor[3][8];
+	ExplodeString(szModules[2], ":", szColor, sizeof szColor, sizeof szColor[]);
+	g_iSync_Color[client][0] = StringToInt(szColor[0]);
+	g_iSync_Color[client][1] = StringToInt(szColor[1]);
+	g_iSync_Color[client][2] = StringToInt(szColor[2]);
+
+	g_iSync_UpdateRate[client] = StringToInt(szModules[3]);
 }
 
-public void SQL_LoadSyncCallback(Handle owner, Handle hndl, const char[] error, any client)
-{
-    if (hndl == null)
-    {
-        LogError("[Minimal HUD] SQL Error (SQL_LoadSyncCallback): %s", error);
-        return;
-    }
+char[] Sync_ConvertDataToString(int client)
+{           
+	char szData[512];
 
-    if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) 
-    {
-        g_bSync[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	//ENABLED
+	Format(szData, sizeof szData, "%d|", g_bSync[client]);
 
-        //POSITION
-        char SyncPos[32];
-        char SyncPos_SPLIT[2][12];
-        SQL_FetchString(hndl, 2, SyncPos, sizeof SyncPos);
-        ExplodeString(SyncPos, "|", SyncPos_SPLIT, sizeof SyncPos_SPLIT, sizeof SyncPos_SPLIT[]);
-        g_fSync_POSX[client] = StringToFloat(SyncPos_SPLIT[0]);
-        g_fSync_POSY[client] = StringToFloat(SyncPos_SPLIT[1]);
-        
-        //GAIN COLOR
-        char SyncColor[32];
-        char SyncColor_SPLIT[3][12];
-        SQL_FetchString(hndl, 3, SyncColor, sizeof SyncColor);
-        ExplodeString(SyncColor, "|", SyncColor_SPLIT, sizeof SyncColor_SPLIT, sizeof SyncColor_SPLIT[]);
-        g_iSync_Color[client][0][0] = StringToInt(SyncColor_SPLIT[0]);
-        g_iSync_Color[client][0][1] = StringToInt(SyncColor_SPLIT[1]);
-        g_iSync_Color[client][0][2] = StringToInt(SyncColor_SPLIT[2]);
-        
-        g_iSync_UpdateRate[client] = SQL_FetchInt(hndl, 4);
-    }
-    else {
-        char szQuery[1024];
-        Format(szQuery, sizeof szQuery, "INSERT INTO mh_SYNC (steamid) VALUES('%s')", g_szSteamID[client]);
-        SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	//POSITION
+	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fSync_POSX[client], g_fSync_POSY[client]);
 
-        Sync_SetDefaults(client);
-    }
+	//COLOR
+	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
 
-    LoadSettings(client, 3);
-}
+	//UPDATE RATE
+	Format(szData, sizeof szData, "%s%d", szData, g_iSync_UpdateRate[client]);
 
-public void db_updateSync(int client)
-{
-	char szQuery[1024];
-
-	char szPosition[32];
-	char szPosX[4];
-	char szPosY[4];
-	char szColor[32];
-	char szColor_R[3];
-	char szColor_G[3];
-	char szColor_B[3];
-
-	FloatToString(g_fSync_POSX[client], szPosX, sizeof szPosX);
-	FloatToString(g_fSync_POSY[client], szPosY, sizeof szPosY);
-	Format(szPosition, sizeof szPosition, "%.1f|%.1f", szPosX, szPosY);
-
-	IntToString(g_iSync_Color[client][0], szColor_R, sizeof szColor_R);
-	IntToString(g_iSync_Color[client][1], szColor_G, sizeof szColor_G);
-	IntToString(g_iSync_Color[client][2], szColor_B, sizeof szColor_B);
-	Format(szColor, sizeof szColor, "%d|%d|%d", szColor_R, szColor_G, szColor_B);
-
-	Format(szQuery, sizeof szQuery, "UPDATE mh_SYNC SET enabled = '%i', pos = '%s', color = '%s', updaterate = '%i' WHERE steamid = '%s';", g_bKeys ? '1' : '0', szPosition, szColor, g_iSync_UpdateRate[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	return szData;
 }
