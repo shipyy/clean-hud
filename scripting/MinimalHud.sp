@@ -116,4 +116,5 @@ public void OnClientCookiesCached(int client)
 
     PrintToServer("\n=====LOADING COOKIES=====\n");
     LoadCookies(client);
+    PrintToServer("\n=====COOKIES LOADED=====\n");
 }
