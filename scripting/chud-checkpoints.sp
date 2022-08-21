@@ -46,8 +46,11 @@ public void CHUD_CP(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Compare Mode
-	Format(szItem, sizeof szItem, "Compare | %s", g_iCP_CompareMode[client] == 0 ? "PB" : "WR");
+	Format(szItem, sizeof szItem, "Compare | %s", g_iCP_CompareMode[client] == 0 ? "PB\n \n" : "WR\n \n");
 	AddMenuItem(menu, "", szItem);
+
+	// EXPORT
+	AddMenuItem(menu, "", "Export Settings");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -64,6 +67,7 @@ public int CHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
 			case 2: CP_Color(param1);
 			case 3: CP_HoldTime(param1);
 			case 4: CP_CompareMode(param1);
+			case 5: Export(param1, 3, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)

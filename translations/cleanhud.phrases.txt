@@ -10,11 +10,21 @@
 	}
 	"Settings_Imported"
 	{
+		"#format"	"{1:s},{2:s}"
+		"en"		"{red}CHUD | {default}Imported {blue}{1}{default} Settings from {red}{2}"
+	}
+	"Settings_Imported_All"
+	{
 		"#format"	"{1:s}"
-		"en"		"{red}CHUD | {default}Imported Settings from {red}{1}"
+		"en"		"{red}CHUD | {default}Imported All the Settings from {red}{1}"
 	}
 	"Settings_Exported"
 	{
-		"en"		"{red}CHUD | {default}Exported Settings. Open {red}console{default} to get the code!"
+		"#format"	"{1:s}"
+		"en"		"{red}CHUD | {default}Exported {blue}{1}{default} Settings. Open {red}console{default} to get the code!"
+	}
+	"Settings_Exported_All"
+	{
+		"en"		"{red}CHUD | {default}Exported All the Settings. Open {red}console{default} to get the code!"
 	}
 }

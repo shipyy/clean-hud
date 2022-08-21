@@ -20,7 +20,7 @@ public void CHUD_MAPINFO(int client)
 {
     if (!IsValidClient(client))
         return;
-    
+
     Menu menu = CreateMenu(CHUD_MapInfo_Handler);
     char szItem[128];
 
@@ -39,14 +39,17 @@ public void CHUD_MAPINFO(int client)
     // Color
     Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2]);
     AddMenuItem(menu, "", szItem);
-    
+
     // Show Mode
     Format(szItem, sizeof szItem, "Show      | %s", g_iMapInfo_ShowMode[client] == 0 ? "PB" : "WR");
     AddMenuItem(menu, "", szItem);
 
     // Compare Mode
-    Format(szItem, sizeof szItem, "Compare | %s", g_iMapInfo_CompareMode[client] == 0 ? "PB" : "WR");
+    Format(szItem, sizeof szItem, "Compare | %s", g_iMapInfo_CompareMode[client] == 0 ? "PB\n \n" : "WR\n \n");
     AddMenuItem(menu, "", szItem);
+
+    // EXPORT
+    AddMenuItem(menu, "", "Export Settings");
 
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -63,6 +66,7 @@ public int CHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int pa
 			case 2: MapInfo_Color(param1);
             case 3: MapInfo_ShowMode(param1);
             case 4: MapInfo_CompareMode(param1);
+            case 5: Export(param1, 5, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)

@@ -1,7 +1,7 @@
 public void CreateCMDS()
 {
     //COMMANDS
-    RegConsoleCmd("chudud", CHUD_MainMenu, "[Clean HUD] Opens main menu");
+    RegConsoleCmd("sm_chud", CHUD_MainMenu, "[Clean HUD] Opens main menu");
     //TODO
     RegConsoleCmd("sm_chud_export", Client_Export, "[Clean HUD] Export Settings");
     RegConsoleCmd("sm_chud_import", Client_Import, "[Clean HUD] Import Settings");
@@ -63,7 +63,7 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
             case 4: CHUD_TIMER(param1);
             case 5: CHUD_MAPINFO(param1);
             case 6: CHUD_FINISH(param1);
-            case 7: Export(param1);
+            case 7: Export(param1, -1, true, true);
         }
     }
     else if (action == MenuAction_End) {
@@ -75,13 +75,21 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
 
 public Action Client_Import(int client, int args)
 {
-    if(!IsValidClient(client))
-        return Plugin_Handled;
+    //if(!IsValidClient(client))
+    //    return Plugin_Handled;
 
     char szImportSettings[1024];
-    GetCmdArg(1, szImportSettings, sizeof szImportSettings);
-
-    Import(client, szImportSettings);
+    char szPlayerName[MAX_NAME_LENGTH];
+    if (args == 3) {
+        GetCmdArg(2, szImportSettings, sizeof szImportSettings);
+        GetCmdArg(3, szPlayerName, sizeof szPlayerName);
+        Import(client, GetCmdArgInt(1), szImportSettings, szPlayerName);
+    }
+    else {
+        GetCmdArg(1, szImportSettings, sizeof szImportSettings);
+        GetCmdArg(2, szPlayerName, sizeof szPlayerName);
+        Import(client, -1, szImportSettings, szPlayerName);
+    }
     
     return Plugin_Handled;
 }
@@ -91,7 +99,10 @@ public Action Client_Export(int client, int args)
     if(!IsValidClient(client))
         return Plugin_Handled;
 
-    Export(client);
+    if (args == 3)
+        Export(client, GetCmdArgInt(1), true, false);
+    else
+        Export(client, -1, false, false);
     
     return Plugin_Handled;
 }

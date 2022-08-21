@@ -46,8 +46,11 @@ public void CHUD_FINISH(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Compare Mode
-	Format(szItem, sizeof szItem, "Compare  | %s", g_iFinish_CompareMode[client] == 0 ? "PB" : "WR");
+	Format(szItem, sizeof szItem, "Compare  | %s", g_iFinish_CompareMode[client] == 0 ? "PB\n \n" : "WR\n \n");
 	AddMenuItem(menu, "", szItem);
+
+	// EXPORT
+	AddMenuItem(menu, "", "Export Settings");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -64,6 +67,7 @@ public int CHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int par
 			case 2: Finish_Color(param1);
 			case 3: Finish_HoldTime(param1);
 			case 4: Finish_CompareMode(param1);
+			case 5: Export(param1, 6, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)

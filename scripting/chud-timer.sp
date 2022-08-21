@@ -42,11 +42,14 @@ public void CHUD_TIMER(int client)
 
 	// Refresh
 	if (g_iTimer_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW");
+		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
 	else if (g_iTimer_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM");
+		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
 	else
-		AddMenuItem(menu, "", "Refresh  | FAST ");
+		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
+
+	// EXPORT
+	AddMenuItem(menu, "", "Export Settings");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -62,6 +65,7 @@ public int CHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int para
 			case 1: Timer_Position(param1);
 			case 2: Timer_Color(param1);
 			case 3: Timer_UpdateRate(param1, true);
+			case 4: Export(param1, 4, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)

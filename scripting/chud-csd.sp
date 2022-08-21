@@ -51,11 +51,14 @@ public void CHUD_CSD(int client)
 
 	// Refresh
 	if (g_iCSD_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW");
+		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
 	else if (g_iCSD_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM");
+		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
 	else
-		AddMenuItem(menu, "", "Refresh  | FAST ");
+		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
+
+	// EXPORT
+	AddMenuItem(menu, "", "Export Settings");
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -67,11 +70,12 @@ public int CHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 	{
 		switch (param2)
 		{
-			case 0: CSD_Toggle(param1, true);
-			case 1: CSD_Axis(param1, true);
+			case 0: CSD_Toggle(param1);
+			case 1: CSD_Axis(param1);
 			case 2: CSD_Position(param1);
 			case 3: CSD_Color(param1);
-			case 4: CSD_UpdateRate(param1, true);
+			case 4: CSD_UpdateRate(param1);
+			case 5: Export(param1, 0, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -85,35 +89,27 @@ public int CHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 /////
 //TOGGLE
 /////
-public void CSD_Toggle(int client, bool from_menu)
+public void CSD_Toggle(int client)
 {
-    if (g_bCSD[client]) {
+    if (g_bCSD[client])
 		g_bCSD[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
-	}
-	else {
+	else
 		g_bCSD[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
-	}
 
-    if (from_menu) {
-        CHUD_CSD(client);
-    }
+    CHUD_CSD(client);
 }
 
 /////
 //AXIS
 /////
-void CSD_Axis(int client, bool from_menu)
+void CSD_Axis(int client)
 {
 	if (g_iCSD_SpeedAxis[client] != 2)
 		g_iCSD_SpeedAxis[client]++;
 	else
 		g_iCSD_SpeedAxis[client] = 0;
 
-	if (from_menu) {
-		CHUD_CSD(client);
-	}
+	CHUD_CSD(client);
 }
 
 /////
@@ -132,7 +128,6 @@ public void CSD_Position(int client)
 
 	Format(Display_String, 256, "Position Y : %.2f", g_fCSD_POSY[client]);
 	AddMenuItem(menu, "", Display_String);
-
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -158,9 +153,8 @@ public int CHUD_CSD_Position_Handler(Menu menu, MenuAction action, int param1, i
 
 void CSD_PosX(int client)
 {
-	if (g_fCSD_POSX[client] < 1.0){
+	if (g_fCSD_POSX[client] < 1.0)
 		g_fCSD_POSX[client] += 0.1;
-	}
 	else
 		g_fCSD_POSX[client] = 0.0;
 
@@ -169,7 +163,6 @@ void CSD_PosX(int client)
 
 void CSD_PosY(int client)
 {
-	
 	if (g_fCSD_POSY[client] < 1.0)
 		g_fCSD_POSY[client] += 0.1;
 	else
@@ -270,16 +263,14 @@ public void CSD_Color_Change(int client, int color_type, int color_index)
 /////
 //UPDATE RATE
 /////
-void CSD_UpdateRate(int client, bool from_menu)
+void CSD_UpdateRate(int client)
 {
 	if (g_iCSD_UpdateRate[client] != 2)
 		g_iCSD_UpdateRate[client]++;
 	else
 		g_iCSD_UpdateRate[client] = 0;
 
-	if (from_menu) {
-		CHUD_CSD(client);
-	}
+	CHUD_CSD(client);
 }
 
 /////

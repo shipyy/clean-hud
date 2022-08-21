@@ -18,38 +18,41 @@ public Sync_SetDefaults(int client)
 
 public void CHUD_SYNC(int client)
 {
-    if (!IsValidClient(client))
-        return;
-    
-    Menu menu = CreateMenu(CHUD_Sync_Handler);
-    char szItem[128];
+	if (!IsValidClient(client))
+		return;
 
-    SetMenuTitle(menu, "Sync Options Menu\n \n");
+	Menu menu = CreateMenu(CHUD_Sync_Handler);
+	char szItem[128];
 
-    // Toggle
-    if (g_bSync[client])
-        AddMenuItem(menu, "", "Toggle   | On");
-    else
-        AddMenuItem(menu, "", "Toggle   | Off");
-        
-    // Position
-    Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fSync_POSX[client], g_fSync_POSY[client]);
-    AddMenuItem(menu, "", szItem);
+	SetMenuTitle(menu, "Sync Options Menu\n \n");
 
-    // Color
-    Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
-    AddMenuItem(menu, "", szItem);
-    
-    // Refresh
-    if (g_iSync_UpdateRate[client] == 0)
-        AddMenuItem(menu, "", "Refresh  | SLOW");
-    else if (g_iSync_UpdateRate[client] == 1)
-        AddMenuItem(menu, "", "Refresh  | MEDIUM");
-    else
-        AddMenuItem(menu, "", "Refresh  | FAST ");
-    
-    SetMenuExitBackButton(menu, true);
-    DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	// Toggle
+	if (g_bSync[client])
+		AddMenuItem(menu, "", "Toggle   | On");
+	else
+		AddMenuItem(menu, "", "Toggle   | Off");
+		
+	// Position
+	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fSync_POSX[client], g_fSync_POSY[client]);
+	AddMenuItem(menu, "", szItem);
+
+	// Color
+	Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
+	AddMenuItem(menu, "", szItem);
+
+	// Refresh
+	if (g_iSync_UpdateRate[client] == 0)
+		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
+	else if (g_iSync_UpdateRate[client] == 1)
+		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
+	else
+		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
+
+	// EXPORT
+	AddMenuItem(menu, "", "Export Settings");
+
+	SetMenuExitBackButton(menu, true);
+	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
 public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param2)
@@ -62,6 +65,7 @@ public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param
 			case 1: Sync_Position(param1);
 			case 2: Sync_Color(param1);
 			case 3: Sync_UpdateRate(param1, true);
+			case 4: Export(param1, 2, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
