@@ -1,0 +1,6 @@
+.vscode/
+plugins
+scripting/include/surftimer.inc
+scripting/include/chat-processor.inc
+scripting/include/colorlib.inc
+scripting/include/colorlib_map.inc
