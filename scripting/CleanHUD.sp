@@ -86,8 +86,7 @@ public void OnClientPutInServer(int client)
 
     for(int i = 0; i < 6; i++)
         g_iCurrentTick[client][i] = 0;
-
-    //HOOK FOR TICK COUNTING
+    
     SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
