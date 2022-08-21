@@ -185,7 +185,7 @@ forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], int rank, int total, int bonusid, int style);
+forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPbCp, float fSRDiff, int rank, int total, int bonusid, int style);
 
 /**
  * Called when a client finishes a map in practice mode
