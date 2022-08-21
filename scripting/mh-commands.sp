@@ -3,7 +3,8 @@ public void CreateCMDS()
     //COMMANDS
     RegConsoleCmd("mhud", MHUD_MainMenu, "[Minimal HUD] Opens main menu");
     //TODO
-    //RegConsoleCmd("mh_export", MHUD_Export, "[Minimal HUD] Export Settings");
+    RegConsoleCmd("sm_mh_export", Client_Export, "[Minimal HUD] Export Settings");
+    RegConsoleCmd("sm_mh_import", Client_Import, "[Minimal HUD] Import Settings");
 }
 
 public Action MHUD_MainMenu(int client, int args)
@@ -40,8 +41,13 @@ public void MHUD_MainMenu_Display(int client)
     AddMenuItem(menu, "", "Map Info");
 
     //MAP FINISH
-    AddMenuItem(menu, "", "Map Finish");
+    AddMenuItem(menu, "", "Map Finish\n \n");
+
+
+    //EXPORT
+    AddMenuItem(menu, "", "Export Settings");
     
+    SetMenuPagination(menu, 5);
     SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -57,6 +63,7 @@ public int MHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
             case 4: MHUD_TIMER(param1);
             case 5: MHUD_MAPINFO(param1);
             case 6: MHUD_FINISH(param1);
+            case 7: Export(param1);
         }
     }
     else if (action == MenuAction_End) {
@@ -64,4 +71,27 @@ public int MHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
     }
 
     return 0;
+}
+
+public Action Client_Import(int client, int args)
+{
+    if(!IsValidClient(client))
+        return Plugin_Handled;
+
+    char szImportSettings[1024];
+    GetCmdArg(1, szImportSettings, sizeof szImportSettings);
+
+    Import(client, szImportSettings);
+    
+    return Plugin_Handled;
+}
+
+public Action Client_Export(int client, int args)
+{
+    if(!IsValidClient(client))
+        return Plugin_Handled;
+
+    Export(client);
+    
+    return Plugin_Handled;
 }

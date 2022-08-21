@@ -84,5 +84,5 @@ bool g_bFinish[MAXPLAYERS + 1];
 float g_fFinish_POSX[MAXPLAYERS + 1];
 float g_fFinish_POSY[MAXPLAYERS + 1];
 int g_iFinish_Color[MAXPLAYERS + 1][3][3]; // client | type(gain,loss,maintain) | value(R,G,B)
-int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
 int g_iFinish_HoldTime[MAXPLAYERS + 1];
+int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR

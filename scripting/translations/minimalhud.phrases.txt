@@ -4,4 +4,17 @@
 	{
 		"en"		"{red}MHUD | {default}Input value between 0-255"
 	}
+    "Import_Error"
+	{
+		"en"		"{red}MHUD | {default}Wrong Import Code"
+	}
+	"Settings_Imported"
+	{
+		"#format"	"{1:s}"
+		"en"		"{red}MHUD | {default}Imported Settings from {red}{1}"
+	}
+	"Settings_Exported"
+	{
+		"en"		"{red}MHUD | {default}Exported Settings. Open {red}console{default} to get the code!"
+	}
 }
