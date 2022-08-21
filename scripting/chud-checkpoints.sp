@@ -18,12 +18,12 @@ public CP_SetDefaults(int client)
 	g_iCP_CompareMode[client] = 1;
 }
 
-public void MHUD_CP(int client)
+public void CHUD_CP(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(MHUD_CP_Handler);
+	Menu menu = CreateMenu(CHUD_CP_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Checkpoints Options Menu\n \n");
@@ -53,7 +53,7 @@ public void MHUD_CP(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -67,7 +67,7 @@ public int MHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -89,7 +89,7 @@ public void CP_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_CP(client);
+        CHUD_CP(client);
     }
 }
 
@@ -99,7 +99,7 @@ public void CP_Toggle(int client, bool from_menu)
 public void CP_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_CP_Position_Handler);
+	Menu menu = CreateMenu(CHUD_CP_Position_Handler);
 	SetMenuTitle(menu, "Checkpoints | Position\n \n");
 
 	char Display_String[256];
@@ -115,7 +115,7 @@ public void CP_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CP_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CP_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -126,7 +126,7 @@ public int MHUD_CP_Position_Handler(Menu menu, MenuAction action, int param1, in
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_CP(param1);
+		CHUD_CP(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -160,7 +160,7 @@ void CP_PosY(int client)
 /////
 public void CP_Color(int client)
 {
-	Menu menu = CreateMenu(MHUD_CP_Color_Handler);
+	Menu menu = CreateMenu(CHUD_CP_Color_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Checkpoints | Color\n \n");
@@ -178,12 +178,12 @@ public void CP_Color(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CP_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CP_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 		CP_Color_Change_MENU(param1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_CP(param1);
+		CHUD_CP(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -254,7 +254,7 @@ void CP_HoldTime(int client)
 	else
 		g_iCP_HoldTime[client] = 0;
 
-	MHUD_CP(client);
+	CHUD_CP(client);
 }
 
 /////
@@ -267,7 +267,7 @@ void CP_CompareMode(int client)
 	else
 		g_iCP_CompareMode[client] = 0;
 
-	MHUD_CP(client);
+	CHUD_CP(client);
 }
 
 /////

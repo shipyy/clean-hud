@@ -18,12 +18,12 @@ public Finish_SetDefaults(int client)
 	g_iFinish_CompareMode[client] = 1;
 }
 
-public void MHUD_FINISH(int client)
+public void CHUD_FINISH(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(MHUD_Finish_Handler);
+	Menu menu = CreateMenu(CHUD_Finish_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Finish Menu\n \n");
@@ -53,7 +53,7 @@ public void MHUD_FINISH(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -67,7 +67,7 @@ public int MHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int par
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -89,7 +89,7 @@ public void Finish_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_FINISH(client);
+        CHUD_FINISH(client);
     }
 }
 
@@ -99,7 +99,7 @@ public void Finish_Toggle(int client, bool from_menu)
 public void Finish_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_Finish_Position_Handler);
+	Menu menu = CreateMenu(CHUD_Finish_Position_Handler);
 	SetMenuTitle(menu, "Finish | Position\n \n");
 
 	char Display_String[256];
@@ -115,7 +115,7 @@ public void Finish_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Finish_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Finish_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -126,7 +126,7 @@ public int MHUD_Finish_Position_Handler(Menu menu, MenuAction action, int param1
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_FINISH(param1);
+		CHUD_FINISH(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -160,7 +160,7 @@ void Finish_PosY(int client)
 /////
 public void Finish_Color(int client)
 {
-	Menu menu = CreateMenu(MHUD_Finish_Color_Handler);
+	Menu menu = CreateMenu(CHUD_Finish_Color_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Finish | Color\n \n");
@@ -178,12 +178,12 @@ public void Finish_Color(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Finish_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Finish_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 		Finish_Color_Change_MENU(param1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_FINISH(param1);
+		CHUD_FINISH(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -254,7 +254,7 @@ void Finish_HoldTime(int client)
 	else
 		g_iFinish_HoldTime[client] = 0;
 
-	MHUD_FINISH(client);
+	CHUD_FINISH(client);
 }
 
 /////
@@ -267,7 +267,7 @@ void Finish_CompareMode(int client)
 	else
 		g_iFinish_CompareMode[client] = 0;
 
-	MHUD_FINISH(client);
+	CHUD_FINISH(client);
 }
 
 /////

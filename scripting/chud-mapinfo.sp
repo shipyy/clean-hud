@@ -16,12 +16,12 @@ public MapInfo_SetDefaults(int client)
     g_iMapInfo_CompareMode[client] = 1;
 }
 
-public void MHUD_MAPINFO(int client)
+public void CHUD_MAPINFO(int client)
 {
     if (!IsValidClient(client))
         return;
     
-    Menu menu = CreateMenu(MHUD_MapInfo_Handler);
+    Menu menu = CreateMenu(CHUD_MapInfo_Handler);
     char szItem[128];
 
     SetMenuTitle(menu, "MapInfo Options Menu\n \n");
@@ -52,7 +52,7 @@ public void MHUD_MAPINFO(int client)
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -66,7 +66,7 @@ public int MHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int pa
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -88,7 +88,7 @@ public void MapInfo_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_MAPINFO(client);
+        CHUD_MAPINFO(client);
     }
 }
 
@@ -98,7 +98,7 @@ public void MapInfo_Toggle(int client, bool from_menu)
 public void MapInfo_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_MapInfo_Position_Handler);
+	Menu menu = CreateMenu(CHUD_MapInfo_Position_Handler);
 	SetMenuTitle(menu, "MapInfo | Position\n \n");
 
 	char Display_String[256];
@@ -113,7 +113,7 @@ public void MapInfo_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_MapInfo_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_MapInfo_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -124,7 +124,7 @@ public int MHUD_MapInfo_Position_Handler(Menu menu, MenuAction action, int param
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MAPINFO(param1);
+		CHUD_MAPINFO(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -186,7 +186,7 @@ public int MapInfo_Color_Change_Handler(Menu menu, MenuAction action, int param1
 	if (action == MenuAction_Select)
 		MapInfo_Color_Change(param1, -3, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_MAPINFO(param1);
+		CHUD_MAPINFO(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -211,7 +211,7 @@ void MapInfo_CompareMode(int client)
 	else
 		g_iMapInfo_CompareMode[client] = 0;
 
-	MHUD_MAPINFO(client);
+	CHUD_MAPINFO(client);
 }
 
 /////
@@ -224,7 +224,7 @@ void MapInfo_ShowMode(int client)
 	else
 		g_iMapInfo_ShowMode[client] = 0;
 
-	MHUD_MAPINFO(client);
+	CHUD_MAPINFO(client);
 }
 
 /////

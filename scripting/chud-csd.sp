@@ -18,12 +18,12 @@ public CSD_SetDefaults(int client)
 	g_iCSD_UpdateRate[client] = 0;
 }
 
-public void MHUD_CSD(int client)
+public void CHUD_CSD(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(MHUD_CSD_Handler);
+	Menu menu = CreateMenu(CHUD_CSD_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Center Speed Options Menu\n \n");
@@ -61,7 +61,7 @@ public void MHUD_CSD(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -75,7 +75,7 @@ public int MHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -97,7 +97,7 @@ public void CSD_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_CSD(client);
+        CHUD_CSD(client);
     }
 }
 
@@ -112,7 +112,7 @@ void CSD_Axis(int client, bool from_menu)
 		g_iCSD_SpeedAxis[client] = 0;
 
 	if (from_menu) {
-		MHUD_CSD(client);
+		CHUD_CSD(client);
 	}
 }
 
@@ -122,7 +122,7 @@ void CSD_Axis(int client, bool from_menu)
 public void CSD_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_CSD_Position_Handler);
+	Menu menu = CreateMenu(CHUD_CSD_Position_Handler);
 	SetMenuTitle(menu, "Center Speed | Position\n \n");
 
 	char Display_String[256];
@@ -138,7 +138,7 @@ public void CSD_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CSD_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CSD_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -149,7 +149,7 @@ public int MHUD_CSD_Position_Handler(Menu menu, MenuAction action, int param1, i
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_CSD(param1);
+		CHUD_CSD(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -183,7 +183,7 @@ void CSD_PosY(int client)
 /////
 public void CSD_Color(int client)
 {
-	Menu menu = CreateMenu(MHUD_CSD_Color_Handler);
+	Menu menu = CreateMenu(CHUD_CSD_Color_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Center Speed | Color\n \n");
@@ -201,12 +201,12 @@ public void CSD_Color(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_CSD_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_CSD_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 		CSD_Color_Change_MENU(param1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_CSD(param1);
+		CHUD_CSD(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -278,7 +278,7 @@ void CSD_UpdateRate(int client, bool from_menu)
 		g_iCSD_UpdateRate[client] = 0;
 
 	if (from_menu) {
-		MHUD_CSD(client);
+		CHUD_CSD(client);
 	}
 }
 

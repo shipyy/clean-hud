@@ -16,12 +16,12 @@ public Sync_SetDefaults(int client)
     g_iSync_UpdateRate[client] = 0;
 }
 
-public void MHUD_SYNC(int client)
+public void CHUD_SYNC(int client)
 {
     if (!IsValidClient(client))
         return;
     
-    Menu menu = CreateMenu(MHUD_Sync_Handler);
+    Menu menu = CreateMenu(CHUD_Sync_Handler);
     char szItem[128];
 
     SetMenuTitle(menu, "Sync Options Menu\n \n");
@@ -52,7 +52,7 @@ public void MHUD_SYNC(int client)
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -65,7 +65,7 @@ public int MHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -87,7 +87,7 @@ public void Sync_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_SYNC(client);
+        CHUD_SYNC(client);
     }
 }
 
@@ -97,7 +97,7 @@ public void Sync_Toggle(int client, bool from_menu)
 public void Sync_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_Sync_Position_Handler);
+	Menu menu = CreateMenu(CHUD_Sync_Position_Handler);
 	SetMenuTitle(menu, "Sync | Position\n \n");
 
 	char Display_String[256];
@@ -112,7 +112,7 @@ public void Sync_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Sync_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Sync_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -123,7 +123,7 @@ public int MHUD_Sync_Position_Handler(Menu menu, MenuAction action, int param1, 
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_SYNC(param1);
+		CHUD_SYNC(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -185,7 +185,7 @@ public int Sync_Color_Change_Handler(Menu menu, MenuAction action, int param1, i
 	if (action == MenuAction_Select)
 		Sync_Color_Change(param1, -2, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_SYNC(param1);
+		CHUD_SYNC(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -248,7 +248,7 @@ void Sync_UpdateRate(int client, bool from_menu)
 		g_iSync_UpdateRate[client] = 0;
 
 	if (from_menu) {
-		MHUD_SYNC(client);
+		CHUD_SYNC(client);
 	}
 }
 

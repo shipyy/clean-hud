@@ -3,11 +3,11 @@
 /////
 public Plugin myinfo =
 {
-	name        = "Minimal HUD",
+	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
 	version     = "0.0.0",
-	url         = "https://github.com/shipyy/minimal-hud"
+	url         = "https://github.com/shipyy/clean-hud"
 };
 
 #pragma semicolon 1
@@ -22,25 +22,25 @@ public Plugin myinfo =
 #include <sdkhooks>
 #include <clientprefs>
 #include <chat-processor>
-#include "mh-globals.sp"
-#include "mh-commands.sp"
-#include "mh-forwards.sp"
-#include "mh-csd.sp"
-#include "mh-keys.sp"
-#include "mh-sync.sp"
-#include "mh-checkpoints.sp"
-#include "mh-timer.sp"
-#include "mh-mapinfo.sp"
-#include "mh-finish.sp"
-#include "mh-misc.sp"
-#include "mh-runner.sp"
-#include "mh-clientprefs.sp"
+#include "chud-globals.sp"
+#include "chud-commands.sp"
+#include "chud-forwards.sp"
+#include "chud-csd.sp"
+#include "chud-keys.sp"
+#include "chud-sync.sp"
+#include "chud-checkpoints.sp"
+#include "chud-timer.sp"
+#include "chud-mapinfo.sp"
+#include "chud-finish.sp"
+#include "chud-misc.sp"
+#include "chud-runner.sp"
+#include "chud-clientprefs.sp"
 
 public void OnPluginStart()
 {
     EngineVersion eGame = GetEngineVersion();
     if (eGame != Engine_CSGO) {
-        SetFailState("[Minimal HUD] This plugin is for CSGO only.");
+        SetFailState("[Clean HUD] This plugin is for CSGO only.");
     }
 
     //COMMANDS
@@ -94,7 +94,7 @@ public void OnClientPutInServer(int client)
 public void OnMapStart()
 {
     //TRANSLATIONS
-    LoadTranslations("minimalhud.phrases");
+    LoadTranslations("cleanhud.phrases");
 
     //GET TICKRATE
     g_fTickrate = (1 / GetTickInterval());

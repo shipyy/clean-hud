@@ -16,12 +16,12 @@ public Keys_SetDefaults(int client)
 	g_iKeys_UpdateRate[client] = 0;
 }
 
-public void MHUD_KEYS(int client)
+public void CHUD_KEYS(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(MHUD_Keys_Handler);
+	Menu menu = CreateMenu(CHUD_Keys_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Key Options Menu\n \n");
@@ -53,7 +53,7 @@ public void MHUD_KEYS(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Keys_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Keys_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -66,7 +66,7 @@ public int MHUD_Keys_Handler(Menu menu, MenuAction action, int param1, int param
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -88,7 +88,7 @@ public void Keys_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_KEYS(client);
+        CHUD_KEYS(client);
     }
 }
 
@@ -98,7 +98,7 @@ public void Keys_Toggle(int client, bool from_menu)
 public void Keys_Position(int client)
 {
 
-	Menu menu = CreateMenu(MHUD_Keys_Position_Handler);
+	Menu menu = CreateMenu(CHUD_Keys_Position_Handler);
 	SetMenuTitle(menu, "Keys | Position\n \n");
 
 	char Display_String[256];
@@ -113,7 +113,7 @@ public void Keys_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_Keys_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_Keys_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -124,7 +124,7 @@ public int MHUD_Keys_Position_Handler(Menu menu, MenuAction action, int param1, 
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_KEYS(param1);
+		CHUD_KEYS(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -185,7 +185,7 @@ public int Keys_Color_Change_Handler(Menu menu, MenuAction action, int param1, i
 	if (action == MenuAction_Select)
 		Keys_Color_Change(param1, -1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_KEYS(param1);
+		CHUD_KEYS(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -264,7 +264,7 @@ void Keys_UpdateRate(int client, bool from_menu)
 		g_iKeys_UpdateRate[client] = 0;
 
 	if (from_menu) {
-		MHUD_KEYS(client);
+		CHUD_KEYS(client);
 	}
 }
 

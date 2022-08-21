@@ -17,12 +17,12 @@ public Timer_SetDefaults(int client)
 	g_iTimer_UpdateRate[client] = 0;
 }
 
-public void MHUD_TIMER(int client)
+public void CHUD_TIMER(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(MHUD_TIMER_Handler);
+	Menu menu = CreateMenu(CHUD_TIMER_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Timer Options Menu\n \n");
@@ -52,7 +52,7 @@ public void MHUD_TIMER(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -65,7 +65,7 @@ public int MHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int para
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_MainMenu_Display(param1);
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -87,7 +87,7 @@ public void Timer_Toggle(int client, bool from_menu)
 	}
 
     if (from_menu) {
-        MHUD_TIMER(client);
+        CHUD_TIMER(client);
     }
 }
 
@@ -96,7 +96,7 @@ public void Timer_Toggle(int client, bool from_menu)
 /////
 public void Timer_Position(int client)
 {
-	Menu menu = CreateMenu(MHUD_TIMER_Position_Handler);
+	Menu menu = CreateMenu(CHUD_TIMER_Position_Handler);
 	SetMenuTitle(menu, "Timer | Position\n \n");
 
 	// Timer POSITIONS
@@ -113,7 +113,7 @@ public void Timer_Position(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_TIMER_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_TIMER_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
@@ -124,7 +124,7 @@ public int MHUD_TIMER_Position_Handler(Menu menu, MenuAction action, int param1,
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		MHUD_TIMER(param1);
+		CHUD_TIMER(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -158,7 +158,7 @@ void Timer_PosY(int client)
 /////
 public void Timer_Color(int client)
 {
-	Menu menu = CreateMenu(MHUD_TIMER_Color_Handler);
+	Menu menu = CreateMenu(CHUD_TIMER_Color_Handler);
 	char szItem[128];
 
 	SetMenuTitle(menu, "Timer | Color\n \n");
@@ -173,12 +173,12 @@ public void Timer_Color(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_TIMER_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_TIMER_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 		Timer_Color_Change_MENU(param1, param2);
 	else if (action == MenuAction_Cancel)
-		MHUD_TIMER(param1);
+		CHUD_TIMER(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -249,7 +249,7 @@ void Timer_UpdateRate(int client, bool from_menu)
 		g_iTimer_UpdateRate[client] = 0;
 
 	if (from_menu) {
-		MHUD_TIMER(client);
+		CHUD_TIMER(client);
 	}
 }
 

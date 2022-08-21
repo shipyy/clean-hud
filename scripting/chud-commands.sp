@@ -1,26 +1,26 @@
 public void CreateCMDS()
 {
     //COMMANDS
-    RegConsoleCmd("mhud", MHUD_MainMenu, "[Minimal HUD] Opens main menu");
+    RegConsoleCmd("chudud", CHUD_MainMenu, "[Clean HUD] Opens main menu");
     //TODO
-    RegConsoleCmd("sm_mh_export", Client_Export, "[Minimal HUD] Export Settings");
-    RegConsoleCmd("sm_mh_import", Client_Import, "[Minimal HUD] Import Settings");
+    RegConsoleCmd("sm_chud_export", Client_Export, "[Clean HUD] Export Settings");
+    RegConsoleCmd("sm_chud_import", Client_Import, "[Clean HUD] Import Settings");
 }
 
-public Action MHUD_MainMenu(int client, int args)
+public Action CHUD_MainMenu(int client, int args)
 {
     if(!IsValidClient(client))
         return Plugin_Handled;
 
-    MHUD_MainMenu_Display(client);
+    CHUD_MainMenu_Display(client);
 
     return Plugin_Handled;
 }
 
-public void MHUD_MainMenu_Display(int client)
+public void CHUD_MainMenu_Display(int client)
 {
-    Menu menu = new Menu(MHUD_MainMenu_Handler);
-    SetMenuTitle(menu, "Minimal HUD\n \n");
+    Menu menu = new Menu(CHUD_MainMenu_Handler);
+    SetMenuTitle(menu, "Clean HUD\n \n");
 
     //CSD
     AddMenuItem(menu, "", "Center Speed Display");
@@ -52,17 +52,17 @@ public void MHUD_MainMenu_Display(int client)
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int MHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int param2)
 {   
     if (action == MenuAction_Select) {
         switch(param2){
-            case 0: MHUD_CSD(param1);
-            case 1: MHUD_KEYS(param1);
-            case 2: MHUD_SYNC(param1);
-            case 3: MHUD_CP(param1);
-            case 4: MHUD_TIMER(param1);
-            case 5: MHUD_MAPINFO(param1);
-            case 6: MHUD_FINISH(param1);
+            case 0: CHUD_CSD(param1);
+            case 1: CHUD_KEYS(param1);
+            case 2: CHUD_SYNC(param1);
+            case 3: CHUD_CP(param1);
+            case 4: CHUD_TIMER(param1);
+            case 5: CHUD_MAPINFO(param1);
+            case 6: CHUD_FINISH(param1);
             case 7: Export(param1);
         }
     }

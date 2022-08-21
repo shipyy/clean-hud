@@ -1,0 +1,20 @@
+"Phrases"
+{
+    "Color_Input"
+	{
+		"en"		"{red}CHUD | {default}Input value between 0-255"
+	}
+    "Import_Error"
+	{
+		"en"		"{red}CHUD | {default}Wrong Import Code"
+	}
+	"Settings_Imported"
+	{
+		"#format"	"{1:s}"
+		"en"		"{red}CHUD | {default}Imported Settings from {red}{1}"
+	}
+	"Settings_Exported"
+	{
+		"en"		"{red}CHUD | {default}Exported Settings. Open {red}console{default} to get the code!"
+	}
+}

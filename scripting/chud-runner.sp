@@ -117,9 +117,9 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 				}
 				else {
 					switch (g_iColorType[client]) {
-						case -1: MHUD_KEYS(client);
-						case -2: MHUD_SYNC(client);
-						case -3: MHUD_TIMER(client);
+						case -1: CHUD_KEYS(client);
+						case -2: CHUD_SYNC(client);
+						case -3: CHUD_TIMER(client);
 					}
 				}
 			}
@@ -139,9 +139,9 @@ public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] 
 					}
 					else {
 						switch (g_iColorType[client]) {
-							case -1: MHUD_KEYS(client);
-							case -2: MHUD_SYNC(client);
-							case -3: MHUD_MAPINFO(client);
+							case -1: CHUD_KEYS(client);
+							case -2: CHUD_SYNC(client);
+							case -3: CHUD_MAPINFO(client);
 						}
 					}
 				}

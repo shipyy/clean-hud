@@ -206,7 +206,7 @@ public void Export(int client)
 	Format(szSettingsFinal, sizeof szSettingsFinal, "%s|%s|%s|%s|%s|%s|%s|%s", szSettingsCSD, szSettingsKeys,szSettingsSync, szSettingsCP, szSettingsTimer, szSettingsMapInfo, szSettingsFinish, szName);
 
 	CPrintToChat(client, "%t", "Settings_Exported");
-	PrintToConsole(client, "To import settings use\nsm_mh_import %s", szSettingsFinal);
+	PrintToConsole(client, "To import settings use\nsm_chud_import %s", szSettingsFinal);
 }
 
 public void Import(int client, char szImportSettings[1024])
