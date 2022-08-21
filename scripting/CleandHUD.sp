@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "0.0.0",
+	version     = "0.0.1",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
