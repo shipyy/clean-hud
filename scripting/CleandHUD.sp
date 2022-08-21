@@ -13,7 +13,6 @@ public Plugin myinfo =
 #pragma semicolon 1
 #pragma newdecls required
 
-
 /////
 // INCLUDES
 /////
