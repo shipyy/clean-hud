@@ -75,8 +75,8 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
 
 public Action Client_Import(int client, int args)
 {
-    //if(!IsValidClient(client))
-    //    return Plugin_Handled;
+    if(!IsValidClient(client))
+        return Plugin_Handled;
 
     char szImportSettings[1024];
     char szPlayerName[MAX_NAME_LENGTH];
