@@ -57,6 +57,15 @@ public void OnPluginStart()
     g_hTimer_Cookie = RegClientCookie("Timer-cookie", "Timer data", CookieAccess_Public);
     g_hMapInfo_Cookie = RegClientCookie("MapInfo-cookie", "MapInfo data", CookieAccess_Public);
     g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
+
+    //INIT MODULES
+    Init_CSD();
+    Init_KEYS();
+    Init_SYNC();
+    Init_CP();
+    Init_TIMER();
+    Init_MAPINFO();
+    Init_FINISH();
 }
 
 public void OnPluginEnd()
@@ -97,15 +106,6 @@ public void OnMapStart()
 
     //GET TICKRATE
     g_fTickrate = (1 / GetTickInterval());
-
-    //INIT MODULES
-    Init_CSD();
-    Init_KEYS();
-    Init_SYNC();
-    Init_CP();
-    Init_TIMER();
-    Init_MAPINFO();
-    Init_FINISH();
 }
 
 public void OnClientCookiesCached(int client)
