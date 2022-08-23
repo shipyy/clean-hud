@@ -256,8 +256,8 @@ public void MapInfo_Display(int client)
 
         float client_runtime;
         int client_rank;
-        char szClientCountry[100], szClientCountryCode[3], szClientContinentCode[3];
-        surftimer_GetPlayerData(target, client_runtime, client_rank, szClientCountry, szClientCountryCode, szClientContinentCode);
+        char szClientCountry[100];
+        surftimer_GetPlayerData(target, client_runtime, client_rank, szClientCountry);
 
         //FORMAT SHOW MODE
         if ( g_iMapInfo_ShowMode[client] == 0) {

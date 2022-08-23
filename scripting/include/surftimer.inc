@@ -115,10 +115,8 @@ native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
  * @param time				String to store the client's map time.
  * @param rank				int to store the client's map rank.
  * @param country			String to store the client's country.
- * @param countryCode			String to store the client's countryCode.
- * @param continentCode			String to store the client's continentCode.
  */
-native void surftimer_GetPlayerData(int& client, float& time, int& rank, char[] country, char countryCode[3], char continentCode[3]);
+native void surftimer_GetPlayerData(int& client, float& time, int& rank, char[] country);
 
 /**
  * Retrieves the client's current info.
@@ -176,7 +174,10 @@ forward Action surftimer_OnMapFinished(int client, float fRunTime, char sRunTime
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the client from searching.
  */
-forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16]);
+//default
+forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16], ArrayList CustomCheckpoints);
+//cp speeds
+//forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16], float fspeed, char sspeed[128], float fPbCpSpeed, char sCpSpeedDiff[128], float fSRCPSpeed, char sSRCpSpeedDiff[128]);
 
 
 /**
@@ -185,7 +186,7 @@ forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPbCp, float fSRDiff, int rank, int total, int bonusid, int style);
+forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPBDiff, float fSRDiff, int rank, int total, int bonusid, int style);
 
 /**
  * Called when a client finishes a map in practice mode
@@ -213,10 +214,9 @@ forward void surftimer_OnNewRecord(int client, int style, char[] time, char[] ti
  * @param style				Style index.
  * @param time				Time set by the player.
  * @param timeDif			Time difference with the former record.
- * @param stage			  	The id of the stage of the WRCP.
- * @param fRunTime			Run time for the WRCP in float.
+ * @param stage			  The id of the stage of the WRCP.
  */
-forward void surftimer_OnNewWRCP(int client, int style, char[] time, char[] timeDif, int stage, float fRunTime);
+forward void surftimer_OnNewWRCP(int client, int style, char[] time, char[] timeDif, int stage);
 
 public SharedPlugin:__pl_surftimer =
 {

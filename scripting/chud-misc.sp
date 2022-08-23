@@ -31,6 +31,9 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 	char szSeconds[16];
 	char szMS[16];
 
+	if (time < 0.0)
+		time *= -1.0;
+
 	int time_rounded = RoundToZero(time);
 
 	int days = time_rounded / 86400;

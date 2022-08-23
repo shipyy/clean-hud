@@ -62,7 +62,7 @@ float g_fCP_POSX[MAXPLAYERS + 1];
 float g_fCP_POSY[MAXPLAYERS + 1];
 int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iCP_HoldTime[MAXPLAYERS + 1];
-int g_iCP_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+int g_iCP_CompareMode[MAXPLAYERS + 1]; // 1 WR | 2 WPB | 2 TOP10 | 4 G1 | 5 G2 | 6 G3 | 7 G4 | 8 G5
 
 //TIMER
 bool g_bTimer[MAXPLAYERS + 1];

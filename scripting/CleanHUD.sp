@@ -22,6 +22,7 @@ public Plugin myinfo =
 #include <sdkhooks>
 #include <clientprefs>
 #include <chat-processor>
+#include "chud-clientprefs.sp"
 #include "chud-globals.sp"
 #include "chud-commands.sp"
 #include "chud-forwards.sp"
@@ -34,7 +35,6 @@ public Plugin myinfo =
 #include "chud-finish.sp"
 #include "chud-misc.sp"
 #include "chud-runner.sp"
-#include "chud-clientprefs.sp"
 
 public void OnPluginStart()
 {

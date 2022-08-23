@@ -284,8 +284,8 @@ public void Timer_Display(int client)
                 
             float PersonalBest;
             int MapRank;
-            char country[64], countryCode[3], continentCode[3];
-            surftimer_GetPlayerData(target, PersonalBest, MapRank, country,countryCode, continentCode);
+            char country[64];
+            surftimer_GetPlayerData(target, PersonalBest, MapRank, country);
 
             float CurrentTime;
             CurrentTime = surftimer_GetCurrentTime(target);

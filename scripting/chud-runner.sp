@@ -5,11 +5,13 @@ void CreateHooks()
 
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
-	CSD_Display(client);
-	Keys_Display(client);
-	Sync_Display(client);
-	Timer_Display(client);
-	MapInfo_Display(client);
+	if (IsValidClient(client) && !IsFakeClient(client)) {
+		CSD_Display(client);
+		Keys_Display(client);
+		Sync_Display(client);
+		Timer_Display(client);
+		MapInfo_Display(client);
+	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;

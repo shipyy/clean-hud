@@ -1,6 +1,6 @@
-public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16])
+public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16], ArrayList CustomCheckpoints)
 {
-    CP_Display(client, fRunTime, fPbCp, fSrCp);
+    CP_Display(client, fRunTime, fPbCp, fSrCp, CustomCheckpoints);
 
     return Plugin_Handled;
 }
