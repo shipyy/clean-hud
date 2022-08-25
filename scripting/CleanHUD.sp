@@ -83,7 +83,8 @@ public void OnClientPutInServer(int client)
     if (!IsValidClient(client))
         return;
 
-    OnClientCookiesCached(client);
+    if(AreClientCookiesCached(client))
+        OnClientCookiesCached(client);
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
