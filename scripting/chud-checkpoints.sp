@@ -375,7 +375,7 @@ char[] CP_ConvertDataToString(int client)
 	char szData[512];
 
 	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
+	Format(szData, sizeof szData, "%d|", g_bCP[client]);
 
 	//POSITION
 	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fCP_POSX[client], g_fCP_POSY[client]);

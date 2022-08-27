@@ -399,7 +399,7 @@ char[] Finish_ConvertDataToString(int client)
 	char szData[512];
 
 	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
+	Format(szData, sizeof szData, "%d|", g_bFinish[client]);
 
 	//POSITION
 	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fFinish_POSX[client], g_fFinish_POSY[client]);
