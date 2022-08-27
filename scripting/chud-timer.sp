@@ -343,7 +343,7 @@ char[] Timer_ConvertDataToString(int client)
 	char szData[512];
 
 	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
+	Format(szData, sizeof szData, "%d|", g_bTimer[client]);
 
 	//POSITION
 	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fTimer_POSX[client], g_fTimer_POSY[client]);

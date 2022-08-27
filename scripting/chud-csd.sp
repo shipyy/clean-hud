@@ -386,7 +386,7 @@ char[] CSD_ConvertDataToString(int client)
 	char szData[512];
 
 	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
+	Format(szData, sizeof szData, "%d|", g_bCSD[client]);
 
 	//AXIS
 	Format(szData, sizeof szData, "%s%d|", szData, g_iCSD_SpeedAxis[client]);

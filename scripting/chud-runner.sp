@@ -33,8 +33,10 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;
-
+	
+	PrintToServer("=====SAVING COOKIES=====");
 	SaveCookies(client);
+	PrintToServer("=====COOKIES SAVED=====");
 
 	return Plugin_Handled;
 }

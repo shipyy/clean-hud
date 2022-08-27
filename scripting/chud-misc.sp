@@ -233,7 +233,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				case 2 : Format(szModule, sizeof szModule, "%s", "Sync");
 				case 3 : Format(szModule, sizeof szModule, "%s", "Checkpoints");
 				case 4 : Format(szModule, sizeof szModule, "%s", "Timer");
-				case 5 : Format(szModule, sizeof szModule, "%s", "Map Infoap");
+				case 5 : Format(szModule, sizeof szModule, "%s", "Map Info");
 				case 6 : Format(szModule, sizeof szModule, "%s", "Finish");
 			}
 

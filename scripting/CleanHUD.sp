@@ -82,9 +82,6 @@ public void OnClientPutInServer(int client)
 {
     if (!IsValidClient(client))
         return;
-
-    if(IsFakeClient(client) || !AreClientCookiesCached(client))
-        return;
     
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
@@ -112,7 +109,7 @@ public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))
         return;
-
+    
     PrintToServer("\n=====LOADING COOKIES=====\n");
     LoadCookies(client);
     PrintToServer("\n=====COOKIES LOADED=====\n");
