@@ -201,7 +201,7 @@ public void Sync_Color_Change(int client, int color_type, int color_index)
 	CPrintToChat(client, "%t", "Color_Input");
 	g_iColorIndex[client] = color_index;
 	g_iColorType[client] = color_type;
-	g_iWaitingForResponse[client] = ChangeColor;
+	WaitingForResponse[client] = ChangeColor;
 }
 
 /////

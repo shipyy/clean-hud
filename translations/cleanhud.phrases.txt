@@ -4,6 +4,10 @@
 	{
 		"en"		"{red}CHUD | {default}Input value between 0-255"
 	}
+	"Cancel_Input"
+	{
+		"en"		"{red}CHUD | Cancelled"
+	}
     "Import_Error"
 	{
 		"en"		"{red}CHUD | {default}Wrong Import Code"

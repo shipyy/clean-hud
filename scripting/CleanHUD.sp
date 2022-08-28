@@ -21,7 +21,6 @@ public Plugin myinfo =
 #include <surftimer>
 #include <sdkhooks>
 #include <clientprefs>
-#include <chat-processor>
 #include "chud-clientprefs.sp"
 #include "chud-globals.sp"
 #include "chud-commands.sp"
@@ -88,7 +87,7 @@ public void OnClientPutInServer(int client)
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
-    g_iWaitingForResponse[client] = None;
+    WaitingForResponse[client] = None;
 
     for(int i = 0; i < 6; i++)
         g_iCurrentTick[client][i] = 0;

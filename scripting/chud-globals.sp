@@ -3,12 +3,14 @@
 /////
 
 //CHAT RESPONSE
-ResponseType g_iWaitingForResponse[MAXPLAYERS + 1];
-enum ResponseType
+enum Response
 {
   None,
   ChangeColor,
 }
+
+Response WaitingForResponse[MAXPLAYERS + 1];
+
 int g_iColorIndex[MAXPLAYERS + 1];
 int g_iColorType[MAXPLAYERS + 1];
 int g_iArrayToChange[MAXPLAYERS + 1];
