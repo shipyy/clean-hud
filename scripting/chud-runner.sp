@@ -39,117 +39,92 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	return Plugin_Handled;
 }
 
-/////
-//CHAT
-/////
-public Action CP_OnChatMessage(int& author, ArrayList recipients, char[] flagstring, char[] name, char[] message, bool& processcolors, bool& removecolors)
+public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
-	int client = view_as<int>(author);
+	if (g_iWaitingForResponse[client] == None)
+		return Plugin_Continue;
 
-	if (IsValidClient(client))
+	char Input[MAX_MESSAGE_LENGTH];
+	strcopy(Input, sizeof(Input), sArgs);
+
+	TrimString(Input);
+
+	PrintToConsole(0, "===Input %s===", Input);
+
+	if (StrEqual(Input, "cancel", false))
 	{
-		// Functions that require the client to input something via the chat box
-		if (g_iWaitingForResponse[client] > None)
-		{
-			// Check if client is cancelling
-			if (StrEqual(message, "cancel"))
-			{
-				LogError("Cancelled!");
-				recipients.Clear();
-				recipients.Push(GetClientUserId(client));
-				return Plugin_Changed;
+		if( g_iColorType[client] >= 0) {
+			switch (g_iArrayToChange[client]) {
+				case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
+				case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+				case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
+				case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
 			}
-
-			// Check which function we're waiting for
-			switch (g_iWaitingForResponse[client])
-			{
-				case ChangeColor:
-				{
-					// COLOR VALUE FOR CENTER SPEED
-					int color_value = StringToInt(message);
-
-					// KEEP VALUES BETWEEN 0-255
-					if (color_value > 255)
-						color_value = 255;
-					else if (color_value < 0)
-						color_value = 0;
-
-					if( g_iColorType[client] >= 0) {
-						switch (g_iArrayToChange[client]) {
-							case 1: g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
-							case 2: g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
-							case 3: g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
-							case 4: g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
-						}
-					}
-					else {
-						switch (g_iColorType[client]) {
-							case -1: g_iKeys_Color[client][g_iColorIndex[client]] = color_value; //KEYS
-							case -2: g_iSync_Color[client][g_iColorIndex[client]] = color_value; //SYNC
-							case -3: g_iMapInfo_Color[client][g_iColorIndex[client]] = color_value; //SYNC
-						}
-					}
-				}
-			}
-			return Plugin_Changed;
 		}
+		else {
+			switch (g_iColorType[client]) {
+				case -1: CHUD_KEYS(client);
+				case -2: CHUD_SYNC(client);
+				case -3: CHUD_MAPINFO(client);
+			}
+		}
+		CPrintToChat(client, "%t", "Cancel_Input");
+		g_iWaitingForResponse[client] = None;
 	}
-	return Plugin_Changed;
-}
-
-public void CP_OnChatMessagePost(int author, ArrayList recipients, const char[] flagstring, const char[] formatstring, const char[] name, const char[] message, bool processcolors, bool removecolors)
-{
-	int client = view_as<int>(author);
-
-	if (IsValidClient(client))
+	else
 	{
-		// Functions that require the client to input something via the chat box
-		if (g_iWaitingForResponse[client] > None)
+		switch (g_iWaitingForResponse[client])
 		{
-			// Check if client is cancelling
-			if (StrEqual(message, "cancel"))
+			case ChangeColor:
 			{
+				int color_value = StringToInt(Input);
+
+				// KEEP VALUES BETWEEN 0-255
+				if (color_value > 255)
+					color_value = 255;
+				else if (color_value < 0)
+					color_value = 0;
+
 				if( g_iColorType[client] >= 0) {
 					switch (g_iArrayToChange[client]) {
-						case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
-						case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
-						case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
-						case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
+						case 1: {
+							g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
+							CSD_Color_Change_MENU(client, g_iColorType[client]);
+						}
+						case 2: {
+							g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
+							CP_Color_Change_MENU(client, g_iColorType[client]);
+						}
+						case 3: {
+							g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
+							Timer_Color_Change_MENU(client, g_iColorType[client]);
+						}
+						case 4: {
+							g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
+							Finish_Color_Change_MENU(client, g_iColorType[client]);
+						}
 					}
 				}
 				else {
 					switch (g_iColorType[client]) {
-						case -1: CHUD_KEYS(client);
-						case -2: CHUD_SYNC(client);
-						case -3: CHUD_TIMER(client);
-					}
-				}
-			}
-
-			// Check which function we're waiting for
-			switch (g_iWaitingForResponse[client])
-			{
-				case ChangeColor:
-				{
-					if( g_iColorType[client] >= 0) {
-						switch (g_iArrayToChange[client]) {
-							case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
-							case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
-							case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
-							case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
+						case -1: {
+							g_iKeys_Color[client][g_iColorIndex[client]] = color_value; //KEYS
+							CHUD_KEYS(client);
 						}
-					}
-					else {
-						switch (g_iColorType[client]) {
-							case -1: CHUD_KEYS(client);
-							case -2: CHUD_SYNC(client);
-							case -3: CHUD_MAPINFO(client);
+						case -2: {
+							g_iSync_Color[client][g_iColorIndex[client]] = color_value; //SYNC
+							CHUD_SYNC(client);
+						}
+						case -3: {
+							g_iMapInfo_Color[client][g_iColorIndex[client]] = color_value; //MAPINFO
+							CHUD_MAPINFO(client);
 						}
 					}
 				}
 			}
-
-			g_iWaitingForResponse[client] = None;
 		}
+		g_iWaitingForResponse[client] = None;
 	}
+
+	return Plugin_Handled;
 }
