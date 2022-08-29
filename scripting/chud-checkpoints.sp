@@ -300,94 +300,55 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 		if(target == -1)
 			return;
 
-		char szPBFormatted[32];
-		char szWRFormatted[32];
-
 		//CUSTOM CPS
 		char szCustomFormatted[32];
-		char szCustomType[32];
+		char szCustomType[8];
 		float CustomRuntime_Difference;
 
-		char szCompareMode[16];
+		char wrname[MAX_NAME_LENGTH];
+		char wrnametimeformatted[32];
+		float wr_time;
+		surftimer_GetMapData(wrname, wrnametimeformatted, wr_time);
+
+		float pb_time;
+		int MapRank;
+		char country[64];
+		surftimer_GetPlayerData(target, 0, pb_time, MapRank, country);
+
 		switch (g_iCP_CompareMode[client]){
-			case 0: Format(szCompareMode, sizeof szCompareMode, "WR");
-			case 1: Format(szCompareMode, sizeof szCompareMode, "PB");
-			case 2: Format(szCompareMode, sizeof szCompareMode, "TOP10");
-			case 3: Format(szCompareMode, sizeof szCompareMode, "G1");
-			case 4: Format(szCompareMode, sizeof szCompareMode, "G2");
-			case 5: Format(szCompareMode, sizeof szCompareMode, "G3");
-			case 6: Format(szCompareMode, sizeof szCompareMode, "G4");
-			case 7: Format(szCompareMode, sizeof szCompareMode, "G5");
+			case 1: Format(szCustomType, sizeof szCustomType, "WR");
+			case 2: Format(szCustomType, sizeof szCustomType, "PB");
+			case 3: Format(szCustomType, sizeof szCustomType, "R10");
+			case 4: Format(szCustomType, sizeof szCustomType, "G1");
+			case 5: Format(szCustomType, sizeof szCustomType, "G2");
+			case 6: Format(szCustomType, sizeof szCustomType, "G3");
+			case 7: Format(szCustomType, sizeof szCustomType, "G4");
+			case 8: Format(szCustomType, sizeof szCustomType, "G5");
 		}
 
-		if (g_iCP_CompareMode[client] == 2) {
-			Format_Time(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
-
-			if (pb_runtime - runtime > 0) {
-				Format(szPBFormatted, sizeof szPBFormatted, "PB -%s", szPBFormatted);
+		CustomRuntime_Difference = customCheckpoints.Get(g_iCP_CompareMode[client]-1);
+		
+		if (CustomRuntime_Difference != 666666.0){
+			Format_Time(client, CustomRuntime_Difference, szCustomFormatted, sizeof szCustomFormatted, true);
+			
+			if (CustomRuntime_Difference > 0) {
+				Format(szCustomFormatted, sizeof szCustomFormatted, "%s -%s", szCustomType, szCustomFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 			}
-			else if (pb_runtime - runtime < 0) {
-				Format(szPBFormatted, sizeof szPBFormatted, "PB +%s", szPBFormatted);
+			else if (CustomRuntime_Difference < 0) {
+				Format(szCustomFormatted, sizeof szCustomFormatted, "%s +%s", szCustomType, szCustomFormatted);
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else {
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 
-			ShowSyncHudText(client, CP_Handle, szPBFormatted);
-		}
-		else if (g_iCP_CompareMode[client] == 1){
-			Format_Time(client, runtime - wr_runtime, szWRFormatted, sizeof szWRFormatted, true);
-
-			if (wr_runtime - runtime > 0) {
-				Format(szWRFormatted, sizeof szWRFormatted, "WR -%s", szWRFormatted);
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else if (wr_runtime - runtime < 0) {
-				Format(szWRFormatted, sizeof szWRFormatted, "WR +%s", szWRFormatted);
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else {
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-
-			ShowSyncHudText(client, CP_Handle, szWRFormatted);
+			ShowSyncHudText(client, CP_Handle, szCustomFormatted);
 		}
 		else {
-			switch (g_iCP_CompareMode[client]){
-				case 3: Format(szCustomType, sizeof szCustomType, "R10");
-				case 4: Format(szCustomType, sizeof szCustomType, "G1");
-				case 5: Format(szCustomType, sizeof szCustomType, "G2");
-				case 6: Format(szCustomType, sizeof szCustomType, "G3");
-				case 7: Format(szCustomType, sizeof szCustomType, "G4");
-				case 8: Format(szCustomType, sizeof szCustomType, "G5");
-			}
-
-			CustomRuntime_Difference = customCheckpoints.Get(g_iCP_CompareMode[client]-3);
-			if (CustomRuntime_Difference != 666666.0){
-				Format_Time(client, CustomRuntime_Difference, szCustomFormatted, sizeof szCustomFormatted, true);
-				
-				if (CustomRuntime_Difference  > 0) {
-					Format(szCustomFormatted, sizeof szCustomFormatted, "%s -%s", szCustomType, szCustomFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else if (CustomRuntime_Difference < 0) {
-					Format(szCustomFormatted, sizeof szCustomFormatted, "%s +%s", szCustomType, szCustomFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else {
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-
-				ShowSyncHudText(client, CP_Handle, szCustomFormatted);
-			}
-			else {
-				Format(szCustomFormatted, sizeof szCustomFormatted, "%s N/A", szCustomType);
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-				ShowSyncHudText(client, CP_Handle, szCustomFormatted);
-			}
-		
+			Format(szCustomFormatted, sizeof szCustomFormatted, "%s N/A", szCustomType);
+			SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			ShowSyncHudText(client, CP_Handle, szCustomFormatted);
 		}
 	}
 }
