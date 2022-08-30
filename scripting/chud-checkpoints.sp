@@ -52,6 +52,8 @@ public void CHUD_CP(int client)
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
 
+	g_bEditing[client][3] = true;
+
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -70,10 +72,13 @@ public int CHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
 			case 5: Export(param1, 3, false, true);
 		}
 	}
-	else if (action == MenuAction_Cancel)
+	else if (action == MenuAction_Cancel) {
+		g_bEditing[param1][3] = false;
 		CHUD_MainMenu_Display(param1);
-	else if (action == MenuAction_End)
+	}
+	else if (action == MenuAction_End) {
 		delete menu;
+	}
 
 	return 0;
 }
@@ -102,7 +107,6 @@ public void CP_Toggle(int client, bool from_menu)
 /////
 public void CP_Position(int client)
 {
-
 	Menu menu = CreateMenu(CHUD_CP_Position_Handler);
 	SetMenuTitle(menu, "Checkpoints | Position\n \n");
 
@@ -113,7 +117,6 @@ public void CP_Position(int client)
 
 	Format(Display_String, 256, "Position Y : %.2f", g_fCP_POSY[client]);
 	AddMenuItem(menu, "", Display_String);
-
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -184,8 +187,10 @@ public void CP_Color(int client)
 
 public int CHUD_CP_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	if (action == MenuAction_Select)
+	if (action == MenuAction_Select) {
+		g_bEditingColor[param1][param2] = true;
 		CP_Color_Change_MENU(param1, param2);
+	}
 	else if (action == MenuAction_Cancel)
 		CHUD_CP(param1);
 	else if (action == MenuAction_End)
@@ -224,15 +229,17 @@ public void CP_Color_Change_MENU(int client, int type)
 
 public int CP_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	if (action == MenuAction_Select){
+	char szBuffer[32];
 
-		char szBuffer[32];
+	if (action == MenuAction_Select) {
 		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-
 		CP_Color_Change(param1, StringToInt(szBuffer), param2);
 	}
-	else if (action == MenuAction_Cancel)
+	else if (action == MenuAction_Cancel) {
+		GetMenuItem(menu, 1, szBuffer, sizeof(szBuffer));
+		g_bEditingColor[param1][StringToInt(szBuffer)] = false;
 		CP_Color(param1);
+	}
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -279,9 +286,7 @@ void CP_CompareMode(int client)
 /////
 public void CP_Display(int client, float runtime, float pb_runtime, float wr_runtime)
 {
-	//if (!IsFakeClient(client) && (g_bCP[client] || g_bEditing[client])) {
-	if (!IsFakeClient(client) && g_bCP[client]) {
-
+	if (!IsFakeClient(client) && (g_bCP[client] || g_bEditing[client])) {
 		int target;
 
 		if (IsPlayerAlive(client))
@@ -291,6 +296,24 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 
 		if(target == -1)
 			return;
+
+		if (g_bEditing[client][3]) {
+			if (g_bEditingColor[client][0]) {
+				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][1]) {
+				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][2]) {
+				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else {
+				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
+			}
+
+			ShowSyncHudText(client, CP_Handle, "%s", "CP +00:00.000");
+			return;
+		}
 
 		char szPBFormatted[32];
 		char szWRFormatted[32];

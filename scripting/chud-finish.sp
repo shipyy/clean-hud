@@ -52,6 +52,8 @@ public void CHUD_FINISH(int client)
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
 
+	g_bEditing[client][6] = true;
+
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
@@ -70,8 +72,10 @@ public int CHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int par
 			case 5: Export(param1, 6, false, true);
 		}
 	}
-	else if (action == MenuAction_Cancel)
+	else if (action == MenuAction_Cancel) {
+		g_bEditing[param1][6] = false;
 		CHUD_MainMenu_Display(param1);
+	}
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -83,18 +87,13 @@ public int CHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int par
 /////
 public void Finish_Toggle(int client, bool from_menu)
 {
-    if (g_bFinish[client]) {
+	if (g_bFinish[client])
 		g_bFinish[client] = false;
-		//FinishrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
-	}
-	else {
+	else
 		g_bFinish[client] = true;
-		//FinishrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
-	}
 
-    if (from_menu) {
-        CHUD_FINISH(client);
-    }
+	if (from_menu)
+		CHUD_FINISH(client);
 }
 
 /////
@@ -184,8 +183,10 @@ public void Finish_Color(int client)
 
 public int CHUD_Finish_Color_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
-	if (action == MenuAction_Select)
+	if (action == MenuAction_Select) {
+		g_bEditingColor[param1][param2] = true;
 		Finish_Color_Change_MENU(param1, param2);
+	}
 	else if (action == MenuAction_Cancel)
 		CHUD_FINISH(param1);
 	else if (action == MenuAction_End)
@@ -223,16 +224,18 @@ public void Finish_Color_Change_MENU(int client, int type)
 }
 
 public int Finish_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
+{	
+	char szBuffer[32];
+
 	if (action == MenuAction_Select){
-
-		char szBuffer[32];
 		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-
 		Finish_Color_Change(param1, StringToInt(szBuffer), param2);
 	}
-	else if (action == MenuAction_Cancel)
+	else if (action == MenuAction_Cancel) {
+		GetMenuItem(menu, 1, szBuffer, sizeof(szBuffer));
+		g_bEditingColor[param1][StringToInt(szBuffer)] = false;
 		Finish_Color(param1);
+	}
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -279,7 +282,7 @@ void Finish_CompareMode(int client)
 /////
 public void Finish_Display(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
 {
-    if (g_bFinish[client] && !IsFakeClient(client)) {
+    if (!IsFakeClient(client) && (g_bFinish[client] || g_bEditing[client])) {
 		int target;
 
 		if (IsPlayerAlive(client))
@@ -289,6 +292,25 @@ public void Finish_Display(int client, float runtime, float pb_diff, float wr_di
 		
 		if(target == -1)
 			return;
+
+		if (g_bEditing[client][6]) {
+
+			if (g_bEditingColor[client][0]) {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 1.0, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][1]) {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 1.0, g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][2]) {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 1.0, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 1.0, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
+			}
+
+			ShowSyncHudText(client, Finish_Handle, "%s", "Map Finished in 69:69.420 | WR +69:69.20");
+			return;
+        }
 
 		char szPBFormatted[64];
 		char szPBDiffFormatted[64];

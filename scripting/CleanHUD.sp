@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "0.0.3",
+	version     = "0.0.4",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
@@ -85,13 +85,20 @@ public void OnClientPutInServer(int client)
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
 
+    if (!IsFakeClient(client)) {
+        for(int i = 0; i < 7; i++)
+            g_bEditing[client][i] = false;
+        for(int i = 0; i < 3; i++)
+            g_bEditingColor[client][i] = false;
+    }
+
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
     g_iWaitingForResponse[client] = None;
 
     for(int i = 0; i < 6; i++)
         g_iCurrentTick[client][i] = 0;
-    
+
     SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 

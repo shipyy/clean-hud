@@ -11,6 +11,13 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		Sync_Display(client);
 		Timer_Display(client);
 		MapInfo_Display(client);
+
+		if(g_bEditing[client][3])
+			CP_Display(client, -1.0, -1.0, -1.0);
+		
+		if(g_bEditing[client][6])
+			Finish_Display(client, -1.0, -1.0, -1.0, -1);
+
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -48,8 +55,6 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	strcopy(Input, sizeof(Input), sArgs);
 
 	TrimString(Input);
-
-	PrintToConsole(0, "===Input %s===", Input);
 
 	if (StrEqual(Input, "cancel", false))
 	{

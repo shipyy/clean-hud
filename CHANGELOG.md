@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.4]
+
+### Added
+
+- Now when editing HUD that is not persistent (Checkpoints and Finish messages), there will be a temporary display to make customizing much easier
+- Updated `surftimer.inc`
+
+### Fixed
+
+- Wrong/Weird numbers displayed on the `Finish` module whenever a Map would not have a record
+- Wrong/Weird numbers displayed on the `Checkpoints` module whenever a Map would not have a record
+
+**Full Changelog**: https://github.com/shipyy/Clean-hud/compare/v0.0.3...v0.0.4
+
 ## [0.0.3]
 
 ### Added

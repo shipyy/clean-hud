@@ -14,6 +14,7 @@ public MapInfo_SetDefaults(int client)
         g_iMapInfo_Color[client][i] = 255;
     
     g_iMapInfo_CompareMode[client] = 1;
+    g_iMapInfo_ShowMode[client] = 2;
 }
 
 public void CHUD_MAPINFO(int client)
@@ -45,7 +46,7 @@ public void CHUD_MAPINFO(int client)
     AddMenuItem(menu, "", szItem);
 
     // Compare Mode
-    Format(szItem, sizeof szItem, "Compare | %s", g_iMapInfo_CompareMode[client] == 0 ? "PB\n \n" : "WR\n \n");
+    Format(szItem, sizeof szItem, "Compare | %s", g_iMapInfo_CompareMode[client] == 1 ? "WR\n \n" : "PB\n \n");
     AddMenuItem(menu, "", szItem);
 
     // EXPORT
@@ -210,10 +211,10 @@ public void MapInfo_Color_Change(int client, int color_type, int color_index)
 /////
 void MapInfo_CompareMode(int client)
 {
-	if (g_iMapInfo_CompareMode[client] != 1)
+	if (g_iMapInfo_CompareMode[client] != 2)
 		g_iMapInfo_CompareMode[client]++;
 	else
-		g_iMapInfo_CompareMode[client] = 0;
+		g_iMapInfo_CompareMode[client] = 1;
 
 	CHUD_MAPINFO(client);
 }
@@ -223,10 +224,10 @@ void MapInfo_CompareMode(int client)
 /////
 void MapInfo_ShowMode(int client)
 {
-	if (g_iMapInfo_ShowMode[client] != 1)
+	if (g_iMapInfo_ShowMode[client] != 2)
 		g_iMapInfo_ShowMode[client]++;
 	else
-		g_iMapInfo_ShowMode[client] = 0;
+		g_iMapInfo_ShowMode[client] = 1;
 
 	CHUD_MAPINFO(client);
 }
@@ -250,47 +251,104 @@ public void MapInfo_Display(int client)
         if(target == -1)
             return;
 
+        int wrcptimer;
+        int pracmode;
+        int stage;
+        int bonus;
+        surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
+        
         char szWRName[MAX_NAME_LENGTH], szWRTime[32];
         float WRTime;
-        surftimer_GetMapData(szWRName, szWRTime, WRTime);
-
-        float client_runtime;
+        float PBTime;
         int client_rank;
         char szClientCountry[16], szClientCountryCode[3], szClientContinentCode[3];
-        surftimer_GetPlayerData(target, client_runtime, client_rank, szClientCountry, szClientCountryCode, szClientContinentCode);
+
+        if (bonus != 0) {
+            surftimer_GetBonusData(client, szWRName, WRTime, PBTime);
+        }
+        else {
+            surftimer_GetMapData(szWRName, szWRTime, WRTime);
+            surftimer_GetPlayerData(target, PBTime, client_rank, szClientCountry, szClientCountryCode, szClientContinentCode);
+        }
+
+        char szShowModeFormatted[64];
+        char szCompareModeFormatted[64];
 
         //FORMAT SHOW MODE
-        if ( g_iMapInfo_ShowMode[client] == 0) {
-            char szPBFormatted[32];
-            Format_Time(client, client_runtime, szPBFormatted, sizeof szPBFormatted, true);
-            Format(szMapInfo, sizeof szMapInfo, "PB %s |", szPBFormatted);
+        //PB
+        if ( g_iMapInfo_ShowMode[client] == 2) {
 
-            //FORMAT COMPARE MODE
-            if ( g_iMapInfo_CompareMode[client] == 0) {
-                Format(szMapInfo, sizeof szMapInfo, "%s PB +00:00.000", szPBFormatted);
+            if (PBTime != -1.0) {
+                Format_Time(client, PBTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
+                Format(szShowModeFormatted, sizeof szShowModeFormatted, "PB %s |", szShowModeFormatted);
+
+                //FORMAT COMPARE MODE
+                if ( g_iMapInfo_CompareMode[client] == 2) {
+                    Format(szMapInfo, sizeof szMapInfo, "%s PB +00:00.000", szShowModeFormatted);
+                }
+                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                    if(WRTime != 9999999.0) {
+                        Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                        Format(szMapInfo, sizeof szMapInfo, "%s WR +%s", szShowModeFormatted, szCompareModeFormatted);
+                    }
+                    else {
+                        Format(szMapInfo, sizeof szMapInfo, "%s WR N/A", szShowModeFormatted, szCompareModeFormatted);
+                    }
+                }
             }
-            else if ( g_iMapInfo_CompareMode[client] == 1) {
-                char szWRDiffFormatted[32];
-                Format_Time(client, client_runtime - WRTime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
-                Format(szMapInfo, sizeof szMapInfo, "%s WR +%s", szPBFormatted, szWRDiffFormatted);
+            else {
+                //FORMAT COMPARE MODE
+                if ( g_iMapInfo_CompareMode[client] == 2) {
+                    Format(szMapInfo, sizeof szMapInfo, "PB N/A | PB N/A", szShowModeFormatted);
+                }
+                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                    if(WRTime != 9999999.0) {
+                        Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                        Format(szMapInfo, sizeof szMapInfo, "PB N/A | WR +%s", szCompareModeFormatted);
+                    }
+                    else {
+                        Format(szMapInfo, sizeof szMapInfo, "PB N/A | WR N/A");
+                    }
+                }
             }
 
         }
+        //WR
         else if ( g_iMapInfo_ShowMode[client] == 1) {
-            char szWRFormatted[32];
-            Format_Time(client, WRTime, szWRFormatted, sizeof szWRFormatted, true);
-            Format(szMapInfo, sizeof szMapInfo, "WR %s |", szWRFormatted);
+            if (WRTime != 9999999.0) {
+                Format_Time(client, WRTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
+                Format(szShowModeFormatted, sizeof szShowModeFormatted, "WR %s |", szShowModeFormatted);
 
-            //FORMAT COMPARE MODE
-            if ( g_iMapInfo_CompareMode[client] == 0) {
-                char szPBDiffFormatted[32];
-                Format_Time(client, client_runtime - WRTime, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
-                Format(szMapInfo, sizeof szMapInfo, "%s PB -%s", szWRFormatted, szPBDiffFormatted);
+                //FORMAT COMPARE MODE
+                if ( g_iMapInfo_CompareMode[client] == 2) {
+                    if (PBTime != -1.0) {
+                        Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                        Format(szMapInfo, sizeof szMapInfo, "%s PB -%s", szShowModeFormatted, szCompareModeFormatted);
+                    }
+                    else {
+                        Format(szMapInfo, sizeof szMapInfo, "%s PB N/A", szShowModeFormatted, szCompareModeFormatted);
+                    }
+                }
+                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                    Format_Time(client, WRTime - PBTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                    Format(szMapInfo, sizeof szMapInfo, "%s WR +00:00.000", szShowModeFormatted, szCompareModeFormatted);
+                }
             }
-            else if ( g_iMapInfo_CompareMode[client] == 1) {
-                char szWRDiffFormatted[32];
-                Format_Time(client, WRTime - client_runtime, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
-                Format(szMapInfo, sizeof szMapInfo, "%s WR +00:00.000", szWRFormatted, szWRDiffFormatted);
+            else {
+                //FORMAT COMPARE MODE
+                if ( g_iMapInfo_CompareMode[client] == 2) {
+                    if (PBTime != -1.0) {
+                        Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                        Format(szMapInfo, sizeof szMapInfo, "WR N/A | PB -%s", szCompareModeFormatted);
+                    }
+                    else {
+                        Format(szMapInfo, sizeof szMapInfo, "WR N/A | PB N/A");
+                    }
+                }
+                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                    Format_Time(client, WRTime - PBTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
+                    Format(szMapInfo, sizeof szMapInfo, "WR N/A | WR N/A");
+                }
             }
         }
 
