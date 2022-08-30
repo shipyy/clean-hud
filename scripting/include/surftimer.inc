@@ -109,6 +109,17 @@ native void surftimer_GetPlayerNameColored(int client, char[] str);
 native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
 
 /**
+ * Retrieves the wr/pb info regarding the current bonus a players is on
+ *
+ * @param client				The client's ID.
+ * @param szWRname				String to store the Bonus WR holder's name.
+ * @param WRtime				float to store the Bonus WR holder's time.
+ * @param pbtime				float to store the Bonus PB holder's time.
+ * @return						The number of players who have finished the current bonus.
+ */
+native int surftimer_GetBonusData(int client, char[] szWRname, float& WRtime, float& PBtime);
+
+/**
  * Retrieves the client's data.
  *
  * @param client			The client's ID.
@@ -119,6 +130,7 @@ native int surftimer_GetMapData(char[] szname, char[] sztime, float& time);
  * @param continentCode			String to store the client's continentCode.
  */
 native void surftimer_GetPlayerData(int& client, float& time, int& rank, char[] country, char countryCode[3], char continentCode[3]);
+
 /**
  * Retrieves the client's current info.
  *
@@ -184,7 +196,7 @@ forward Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPbCp, float fSRDiff, int rank, int total, int bonusid, int style);
+forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTime[54], float fPBDiff, float fSRDiff, int rank, int total, int bonusid, int style);
 
 /**
  * Called when a client finishes a map in practice mode
