@@ -133,7 +133,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
 					g_bCSD[client] ? 1 : 0, 
 					g_iCSD_SpeedAxis[client], 
-					g_fCSD_POSX[client], g_fCSD_POSX[client],
+					g_fCSD_POSX[client], g_fCSD_POSY[client],
 					g_iCSD_Color[client][0][0], g_iCSD_Color[client][0][1], g_iCSD_Color[client][0][2],
 					g_iCSD_Color[client][1][0], g_iCSD_Color[client][1][1], g_iCSD_Color[client][1][2],
 					g_iCSD_Color[client][2][0], g_iCSD_Color[client][2][1], g_iCSD_Color[client][2][2],
@@ -163,7 +163,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				Format(szSettings, sizeof szSettings, 
 					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
 					g_bCP[client] ? 1 : 0, 
-					g_fCP_POSX[client], g_fCP_POSX[client],
+					g_fCP_POSX[client], g_fCP_POSY[client],
 					g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2],
 					g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2],
 					g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2],
@@ -195,7 +195,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				Format(szSettings, sizeof szSettings, 
 					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
 					g_bFinish[client] ? 1 : 0, 
-					g_fFinish_POSX[client], g_fFinish_POSX[client],
+					g_fFinish_POSX[client], g_fFinish_POSY[client],
 					g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2],
 					g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2],
 					g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2],
