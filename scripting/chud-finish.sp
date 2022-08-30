@@ -282,7 +282,7 @@ void Finish_CompareMode(int client)
 /////
 public void Finish_Display(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
 {
-    if (!IsFakeClient(client) && (g_bFinish[client] || g_bEditing[client])) {
+    if (!IsFakeClient(client) && (g_bFinish[client] || g_bEditing[client][6])) {
 		int target;
 
 		if (IsPlayerAlive(client))

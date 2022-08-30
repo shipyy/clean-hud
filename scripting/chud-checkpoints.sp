@@ -286,7 +286,7 @@ void CP_CompareMode(int client)
 /////
 public void CP_Display(int client, float runtime, float pb_runtime, float wr_runtime)
 {
-	if (!IsFakeClient(client) && (g_bCP[client] || g_bEditing[client])) {
+	if (!IsFakeClient(client) && (g_bCP[client] || g_bEditing[client][3])) {
 		int target;
 
 		if (IsPlayerAlive(client))
