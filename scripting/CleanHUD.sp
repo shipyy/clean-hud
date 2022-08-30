@@ -104,6 +104,13 @@ public void OnMapStart()
     g_fTickrate = (1 / GetTickInterval());
 }
 
+public void OnMapEnd()
+{
+    for (int x = 1; x <= MaxClients; x++)
+        if (IsValidClient(x) && !IsFakeClient(x))
+            SaveCookies(x);
+}
+
 public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))
