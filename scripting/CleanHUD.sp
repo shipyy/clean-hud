@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "0.0.4",
+	version     = "0.0.2",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
@@ -21,6 +21,7 @@ public Plugin myinfo =
 #include <surftimer>
 #include <sdkhooks>
 #include <clientprefs>
+#include "chud-clientprefs.sp"
 #include "chud-globals.sp"
 #include "chud-commands.sp"
 #include "chud-forwards.sp"
@@ -33,7 +34,6 @@ public Plugin myinfo =
 #include "chud-finish.sp"
 #include "chud-misc.sp"
 #include "chud-runner.sp"
-#include "chud-clientprefs.sp"
 
 public void OnPluginStart()
 {
@@ -57,7 +57,6 @@ public void OnPluginStart()
     g_hMapInfo_Cookie = RegClientCookie("MapInfo-cookie", "MapInfo data", CookieAccess_Public);
     g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
 
-    //INIT MODULES
     Init_CSD();
     Init_KEYS();
     Init_SYNC();
@@ -81,16 +80,9 @@ public void OnClientPutInServer(int client)
 {
     if (!IsValidClient(client))
         return;
-
+    
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
-
-    if (!IsFakeClient(client)) {
-        for(int i = 0; i < 7; i++)
-            g_bEditing[client][i] = false;
-        for(int i = 0; i < 3; i++)
-            g_bEditingColor[client][i] = false;
-    }
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
@@ -98,7 +90,7 @@ public void OnClientPutInServer(int client)
 
     for(int i = 0; i < 6; i++)
         g_iCurrentTick[client][i] = 0;
-
+    
     SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
@@ -111,18 +103,11 @@ public void OnMapStart()
     g_fTickrate = (1 / GetTickInterval());
 }
 
-public void OnMapEnd()
-{
-    for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x) && !IsFakeClient(x))
-            SaveCookies(x);
-}
-
 public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))
         return;
-
+    
     PrintToServer("\n=====LOADING COOKIES=====\n");
     LoadCookies(client);
     PrintToServer("\n=====COOKIES LOADED=====\n");

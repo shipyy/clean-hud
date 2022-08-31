@@ -282,11 +282,65 @@ void CP_CompareMode(int client)
 }
 
 /////
+//FORMAT
+/////
+public void CP_Format(int client, float runtime, float pb_runtime, float wr_runtime)
+{
+	char szPBFormatted[32];
+	char szWRFormatted[32];
+
+	if (g_iCP_CompareMode[client] == 0) {
+
+		if (pb_runtime != -1.0) {
+
+			Format_Time(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
+
+			if (pb_runtime - runtime > 0) {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "PB -%s", szPBFormatted);
+			}
+			else if (pb_runtime - runtime < 0) {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "PB +%s", szPBFormatted);
+			}
+			else {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "PB %s", szPBFormatted);
+			}
+		}
+		else {
+			Format(szCPFormatted[client], sizeof szCPFormatted, "PB N/A");
+		}
+
+	}
+	else {
+		if (wr_runtime != 0.0) {
+
+			Format_Time(client, runtime - wr_runtime, szWRFormatted, sizeof szWRFormatted, true);
+
+			if (wr_runtime - runtime > 0) {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "WR -%s", szWRFormatted);
+			}
+			else if (wr_runtime - runtime < 0) {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "WR +%s", szWRFormatted);
+			}
+			else {
+				Format(szCPFormatted[client], sizeof szCPFormatted, "WR %s", szWRFormatted);
+			}
+
+		}
+		else {
+			Format(szCPFormatted[client], sizeof szCPFormatted, "WR N/A");
+		}
+	}
+
+	g_fLastDifferenceTime[client] = GetGameTime();
+}
+
+/////
 //DISPLAY
 /////
-public void CP_Display(int client, float runtime, float pb_runtime, float wr_runtime)
+public void CP_Display(int client)
 {
 	if (!IsFakeClient(client) && (g_bCP[client] || g_bEditing[client][3])) {
+
 		int target;
 
 		if (IsPlayerAlive(client))
@@ -315,59 +369,9 @@ public void CP_Display(int client, float runtime, float pb_runtime, float wr_run
 			return;
 		}
 
-		char szPBFormatted[32];
-		char szWRFormatted[32];
+		if (GetGameTime() - g_fLastDifferenceTime[target] < g_iCP_HoldTime[client]) {
 
-		if (g_iCP_CompareMode[client] == 0) {
-
-			if (pb_runtime != -1.0) {
-
-				Format_Time(client, runtime - pb_runtime, szPBFormatted, sizeof szPBFormatted, true);
-
-				if (pb_runtime - runtime > 0) {
-					Format(szPBFormatted, sizeof szPBFormatted, "PB -%s", szPBFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else if (pb_runtime - runtime < 0) {
-					Format(szPBFormatted, sizeof szPBFormatted, "PB +%s", szPBFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else {
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-			}
-			else {
-				Format(szPBFormatted, sizeof szPBFormatted, "PB N/A");
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-
-			ShowSyncHudText(client, CP_Handle, szPBFormatted);
-		}
-		else {
-			if (wr_runtime != 0.0) {
-
-				Format_Time(client, runtime - wr_runtime, szWRFormatted, sizeof szWRFormatted, true);
-
-				if (wr_runtime - runtime > 0) {
-					Format(szWRFormatted, sizeof szWRFormatted, "WR -%s", szWRFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else if (wr_runtime - runtime < 0) {
-					Format(szWRFormatted, sizeof szWRFormatted, "WR +%s", szWRFormatted);
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][1][0], g_iCP_Color[client][1][1], g_iCP_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-				else {
-					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-				}
-
-				ShowSyncHudText(client, CP_Handle, szWRFormatted);
-			}
-			else {
-				Format(szWRFormatted, sizeof szWRFormatted, "WR N/A");
-				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], g_iCP_HoldTime[client] * 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-
-			ShowSyncHudText(client, CP_Handle, szWRFormatted);
+			ShowSyncHudText(client, CP_Handle, szCPFormatted[target]);
 		}
 	}
 }

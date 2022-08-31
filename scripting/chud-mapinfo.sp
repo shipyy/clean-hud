@@ -233,7 +233,7 @@ void MapInfo_ShowMode(int client)
 }
 
 /////
-//DISPAY
+//DISPLAY
 /////
 public void MapInfo_Display(int client)
 {   

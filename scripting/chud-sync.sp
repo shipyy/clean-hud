@@ -205,7 +205,7 @@ public void Sync_Color_Change(int client, int color_type, int color_index)
 }
 
 /////
-//DISPAY
+//DISPlAY
 /////
 public void Sync_Display(int client)
 {   

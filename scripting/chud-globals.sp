@@ -76,6 +76,8 @@ float g_fCP_POSY[MAXPLAYERS + 1];
 int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
 int g_iCP_HoldTime[MAXPLAYERS + 1];
 int g_iCP_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+float g_fLastDifferenceTime[MAXPLAYERS + 1];
+char szCPFormatted[MAXPLAYERS + 1][32];
 
 //TIMER
 bool g_bTimer[MAXPLAYERS + 1];
@@ -99,3 +101,5 @@ float g_fFinish_POSY[MAXPLAYERS + 1];
 int g_iFinish_Color[MAXPLAYERS + 1][3][3]; // client | type(gain,loss,maintain) | value(R,G,B)
 int g_iFinish_HoldTime[MAXPLAYERS + 1];
 int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+char szFinishFormatted[MAXPLAYERS + 1][64];
+float g_fLastDifferenceFinishTime[MAXPLAYERS + 1];
