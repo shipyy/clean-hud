@@ -103,18 +103,7 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 
 }
 
-public void LoadCookies(int client)
-{
-	for(int i = 0; i < 7; i++)
-		GetCookie(client, i);
-}
-
-public void SaveCookies(int client)
-{
-	for(int i = 0; i < 7; i++)
-		SetCookie(client, i);
-}
-
+/*
 char[] Export(int client, int module, bool just_string, bool from_menu)
 {
 	char szSettings[128];
@@ -525,3 +514,4 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 		}
 	}
 }
+*/

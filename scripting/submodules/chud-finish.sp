@@ -1,7 +1,3 @@
-public Init_FINISH(){
-	Finish_Handle = CreateHudSynchronizer();
-}
-
 public Finish_SetDefaults(int client)
 {
 	PrintToServer("Loading Finish Defaults!");
@@ -69,7 +65,7 @@ public int CHUD_Finish_Handler(Menu menu, MenuAction action, int param1, int par
 			case 2: Finish_Color(param1);
 			case 3: Finish_HoldTime(param1);
 			case 4: Finish_CompareMode(param1);
-			case 5: Export(param1, 6, false, true);
+			//case 5: Export(param1, 6, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel) {
@@ -355,7 +351,7 @@ public void Finish_Display(int client)
 				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 1.0, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
 			}
 
-			ShowSyncHudText(client, Finish_Handle, "%s", "Map Finished in 69:69.420 | WR +69:69.20");
+			//ShowSyncHudText(client, Finish_Handle, "%s", "Map Finished in 69:69.420 | WR +69:69.20");
 			return;
 		}
 
@@ -371,7 +367,7 @@ public void Finish_Display(int client)
 				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 0.1, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			
-			ShowSyncHudText(client, Finish_Handle, szFinishFormatted[target]);
+			//ShowSyncHudText(client, Finish_Handle, szFinishFormatted[target]);
 		}
 	}
 }

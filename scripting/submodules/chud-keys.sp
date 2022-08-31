@@ -1,7 +1,3 @@
-public Init_KEYS(){
-	Keys_Handle = CreateHudSynchronizer();
-}
-
 public Keys_SetDefaults(int client)
 {
 	PrintToServer("Loading Keys Defaults!");
@@ -55,7 +51,7 @@ public int CHUD_Keys_Handler(Menu menu, MenuAction action, int param1, int param
 			case 0: Keys_Toggle(param1, true);
 			case 1: Keys_Position(param1);
 			case 2: Keys_Color(param1);
-			case 3: Export(param1, 1, false, true);
+			//case 3: Export(param1, 1, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -238,7 +234,7 @@ public void Keys_Display(int client)
 		Format(szKeys, sizeof szKeys, "%s %s %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
 		
 		SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-		ShowSyncHudText(client, Keys_Handle, szKeys);
+		//ShowSyncHudText(client, Keys_Handle, szKeys);
 	}
 }
 

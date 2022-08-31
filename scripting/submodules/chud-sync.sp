@@ -1,7 +1,3 @@
-public Init_SYNC(){
-	Sync_Handle = CreateHudSynchronizer();
-}
-
 public Sync_SetDefaults(int client)
 {
     PrintToServer("Loading Sync Defaults!");
@@ -54,7 +50,7 @@ public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param
 			case 0: Sync_Toggle(param1, true);
 			case 1: Sync_Position(param1);
 			case 2: Sync_Color(param1);
-			case 3: Export(param1, 2, false, true);
+			//case 3: Export(param1, 2, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -222,7 +218,7 @@ public void Sync_Display(int client)
 		displayColor[2] = g_iSync_Color[client][2];
 		
 		SetHudTextParams(g_fSync_POSX[client] == 0.5 ? -1.0 : g_fSync_POSX[client], g_fSync_POSY[client] == 0.5 ? -1.0 : g_fSync_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-		ShowSyncHudText(client, Sync_Handle, szSync);
+		//ShowSyncHudText(client, Sync_Handle, szSync);
     }
 }
 

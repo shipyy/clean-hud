@@ -1,7 +1,3 @@
-public Init_MAPINFO(){
-	MapInfo_Handle = CreateHudSynchronizer();
-}
-
 public MapInfo_SetDefaults(int client)
 {
     PrintToServer("Loading MapInfo Defaults!");
@@ -67,7 +63,7 @@ public int CHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int pa
 			case 2: MapInfo_Color(param1);
             case 3: MapInfo_ShowMode(param1);
             case 4: MapInfo_CompareMode(param1);
-            case 5: Export(param1, 5, false, true);
+            //case 5: Export(param1, 5, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -353,7 +349,7 @@ public void MapInfo_Display(int client)
         }
 
         SetHudTextParams(g_fMapInfo_POSX[client] == 0.5 ? -1.0 : g_fMapInfo_POSX[client], g_fMapInfo_POSY[client] == 0.5 ? -1.0 : g_fMapInfo_POSY[client], 1.0, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2], 255, 0, 0.0, 0.0, 0.0);
-        ShowSyncHudText(client, MapInfo_Handle, szMapInfo);
+        //ShowSyncHudText(client, MapInfo_Handle, szMapInfo);
     }
 }
 

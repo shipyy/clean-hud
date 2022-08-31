@@ -6,13 +6,7 @@ void CreateHooks()
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsValidClient(client) && !IsFakeClient(client)) {
-		CSD_Display(client);
-		Keys_Display(client);
-		Sync_Display(client);
-		Timer_Display(client);
-		MapInfo_Display(client);
-		CP_Display(client);
-		Finish_Display(client);
+		SPEED_DISPLAY(client);
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -30,7 +24,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;
 
-	SaveCookies(client);
+	//SAVEOPTOINS(CLIENT);
 
 	return Plugin_Handled;
 }
@@ -47,20 +41,11 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 	if (StrEqual(Input, "cancel", false))
 	{
-		if( g_iColorType[client] >= 0) {
-			switch (g_iArrayToChange[client]) {
-				case 1: CSD_Color_Change_MENU(client, g_iColorType[client]);
-				case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
-				case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
-				case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
-			}
-		}
-		else {
-			switch (g_iColorType[client]) {
-				case -1: CHUD_KEYS(client);
-				case -2: CHUD_SYNC(client);
-				case -3: CHUD_MAPINFO(client);
-			}
+		switch (g_iArrayToChange[client]) {
+			case 1: SPEED_Color_Change_MENU(client, g_iColorType[client]);
+			////case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
+			case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
+			//case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
 		}
 		CPrintToChat(client, "%t", "Cancel_Input");
 		g_iWaitingForResponse[client] = None;
@@ -79,40 +64,22 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 				else if (color_value < 0)
 					color_value = 0;
 
-				if( g_iColorType[client] >= 0) {
-					switch (g_iArrayToChange[client]) {
-						case 1: {
-							g_iCSD_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
-							CSD_Color_Change_MENU(client, g_iColorType[client]);
-						}
-						case 2: {
-							g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
-							CP_Color_Change_MENU(client, g_iColorType[client]);
-						}
-						case 3: {
-							g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
-							Timer_Color_Change_MENU(client, g_iColorType[client]);
-						}
-						case 4: {
-							g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
-							Finish_Color_Change_MENU(client, g_iColorType[client]);
-						}
+				switch (g_iArrayToChange[client]) {
+					case 1: {
+						g_iSPEED_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
+						SPEED_Color_Change_MENU(client, g_iColorType[client]);
 					}
-				}
-				else {
-					switch (g_iColorType[client]) {
-						case -1: {
-							g_iKeys_Color[client][g_iColorIndex[client]] = color_value; //KEYS
-							CHUD_KEYS(client);
-						}
-						case -2: {
-							g_iSync_Color[client][g_iColorIndex[client]] = color_value; //SYNC
-							CHUD_SYNC(client);
-						}
-						case -3: {
-							g_iMapInfo_Color[client][g_iColorIndex[client]] = color_value; //MAPINFO
-							CHUD_MAPINFO(client);
-						}
+					case 2: {
+						//g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
+						//CP_Color_Change_MENU(client, g_iColorType[client]);
+					}
+					case 3: {
+						//g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
+						//Timer_Color_Change_MENU(client, g_iColorType[client]);
+					}
+					case 4: {
+						//g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
+						//Finish_Color_Change_MENU(client, g_iColorType[client]);
 					}
 				}
 			}

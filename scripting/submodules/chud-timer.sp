@@ -1,7 +1,3 @@
-public Init_TIMER(){
-	Timer_Handle = CreateHudSynchronizer();
-}
-
 public Timer_SetDefaults(int client)
 {
 	PrintToServer("Loading Timer Defaults!");
@@ -54,7 +50,7 @@ public int CHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int para
 			case 0: Timer_Toggle(param1, true);
 			case 1: Timer_Position(param1);
 			case 2: Timer_Color(param1);
-			case 3: Export(param1, 4, false, true);
+			//case 3: Export(param1, 4, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -273,7 +269,7 @@ public void Timer_Display(int client)
 		else
 			Format_Time(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
 
-		ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
+		//ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
 	}
 }
 

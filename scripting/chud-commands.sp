@@ -20,32 +20,20 @@ public Action CHUD_MainMenu(int client, int args)
 public void CHUD_MainMenu_Display(int client)
 {
     Menu menu = new Menu(CHUD_MainMenu_Handler);
-    SetMenuTitle(menu, "Clean HUD\n \n");
+    SetMenuTitle(menu, "Clean HUD | MODULES\n \n");
 
     //CSD
-    AddMenuItem(menu, "", "Center Speed Display");
+    AddMenuItem(menu, "", "SPEED");
 
     //KEYS
-    AddMenuItem(menu, "", "Keys");
-    
-    //SYNC
-    AddMenuItem(menu, "", "Sync");
-
-    //CHECKPOINTS
-    AddMenuItem(menu, "", "Checkpoints");
+    AddMenuItem(menu, "", "INPUT");
 
     //Timer
-    AddMenuItem(menu, "", "Timer");
+    AddMenuItem(menu, "", "TIMER");
 
     //MAP INFO
-    AddMenuItem(menu, "", "Map Info");
+    AddMenuItem(menu, "", "INFO");
 
-    //MAP FINISH
-    AddMenuItem(menu, "", "Map Finish\n \n");
-
-
-    //EXPORT
-    AddMenuItem(menu, "", "Export Settings");
     
     SetMenuPagination(menu, 5);
     SetMenuExitButton(menu, true);
@@ -56,14 +44,7 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
 {   
     if (action == MenuAction_Select) {
         switch(param2){
-            case 0: CHUD_CSD(param1);
-            case 1: CHUD_KEYS(param1);
-            case 2: CHUD_SYNC(param1);
-            case 3: CHUD_CP(param1);
-            case 4: CHUD_TIMER(param1);
-            case 5: CHUD_MAPINFO(param1);
-            case 6: CHUD_FINISH(param1);
-            case 7: Export(param1, -1, true, true);
+            case 0: SPEED_MENU(param1);
         }
     }
     else if (action == MenuAction_End) {
@@ -83,12 +64,12 @@ public Action Client_Import(int client, int args)
     if (args == 3) {
         GetCmdArg(2, szImportSettings, sizeof szImportSettings);
         GetCmdArg(3, szPlayerName, sizeof szPlayerName);
-        Import(client, GetCmdArgInt(1), szImportSettings, szPlayerName);
+        //Import(client, GetCmdArgInt(1), szImportSettings, szPlayerName);
     }
     else {
         GetCmdArg(1, szImportSettings, sizeof szImportSettings);
         GetCmdArg(2, szPlayerName, sizeof szPlayerName);
-        Import(client, -1, szImportSettings, szPlayerName);
+        //Import(client, -1, szImportSettings, szPlayerName);
     }
     
     return Plugin_Handled;
@@ -99,10 +80,12 @@ public Action Client_Export(int client, int args)
     if(!IsValidClient(client))
         return Plugin_Handled;
 
+    /*
     if (args == 3)
         Export(client, GetCmdArgInt(1), true, false);
     else
         Export(client, -1, false, false);
+    */
     
     return Plugin_Handled;
 }

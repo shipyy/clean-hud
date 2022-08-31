@@ -20,18 +20,17 @@ public Plugin myinfo =
 #include <sourcemod>
 #include <surftimer>
 #include <sdkhooks>
-#include <clientprefs>
-#include "chud-clientprefs.sp"
 #include "chud-globals.sp"
 #include "chud-commands.sp"
 #include "chud-forwards.sp"
-#include "chud-csd.sp"
-#include "chud-keys.sp"
-#include "chud-sync.sp"
-#include "chud-checkpoints.sp"
-#include "chud-timer.sp"
-#include "chud-mapinfo.sp"
-#include "chud-finish.sp"
+#include "modules/chud-SPEED.sp"
+#include "submodules/chud-csd.sp"
+#include "submodules/chud-keys.sp"
+#include "submodules/chud-sync.sp"
+#include "submodules/chud-checkpoints.sp"
+#include "submodules/chud-timer.sp"
+#include "submodules/chud-mapinfo.sp"
+#include "submodules/chud-finish.sp"
 #include "chud-misc.sp"
 #include "chud-runner.sp"
 
@@ -48,29 +47,17 @@ public void OnPluginStart()
     //HOOKS
     CreateHooks();
 
-    //COOKI HANDLES
-    g_hCSD_Cookie = RegClientCookie("CSD-cookie", "CSD data", CookieAccess_Public);
-    g_hKeys_Cookie = RegClientCookie("Keys-cookie", "Keys data", CookieAccess_Public);
-    g_hSync_Cookie = RegClientCookie("Sync-cookie", "Sync data", CookieAccess_Public);
-    g_hCP_Cookie = RegClientCookie("CP-cookie", "CP data", CookieAccess_Public);
-    g_hTimer_Cookie = RegClientCookie("Timer-cookie", "Timer data", CookieAccess_Public);
-    g_hMapInfo_Cookie = RegClientCookie("MapInfo-cookie", "MapInfo data", CookieAccess_Public);
-    g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
-
-    Init_CSD();
-    Init_KEYS();
-    Init_SYNC();
-    Init_CP();
-    Init_TIMER();
-    Init_MAPINFO();
-    Init_FINISH();
+    Init_SPEED_MODULE();
+    //Init_TIMER_MODULE();
+    //Init_INPUT_MODULE();
+    //Init_INFO_MODULE();
 }
 
 public void OnPluginEnd()
 {
-    for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x) && !IsFakeClient(x))
-            SaveCookies(x);
+    //for (int x = 1; x <= MaxClients; x++)
+        //if (IsValidClient(x) && !IsFakeClient(x))
+            //SAVEOPTIONS(X);
 }
 
 public void OnClientPutInServer(int client)
@@ -78,8 +65,8 @@ public void OnClientPutInServer(int client)
     if (!IsValidClient(client))
         return;
     
-    if(AreClientCookiesCached(client))
-        OnClientCookiesCached(client);
+    //if (!IsFakeClient(x))
+        //LOADOPTIONS(X);
 
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
@@ -90,14 +77,4 @@ public void OnMapStart()
 {
     //TRANSLATIONS
     LoadTranslations("cleanhud.phrases");
-}
-
-public void OnClientCookiesCached(int client)
-{
-    if(!IsClientInGame(client) || IsFakeClient(client))
-        return;
-    
-    PrintToServer("\n=====LOADING COOKIES=====\n");
-    LoadCookies(client);
-    PrintToServer("\n=====COOKIES LOADED=====\n");
 }

@@ -1,7 +1,3 @@
-public Init_CP(){
-	CP_Handle = CreateHudSynchronizer();
-}
-
 public CP_SetDefaults(int client)
 {
 	PrintToServer("Loading CP Defaults!");
@@ -69,7 +65,7 @@ public int CHUD_CP_Handler(Menu menu, MenuAction action, int param1, int param2)
 			case 2: CP_Color(param1);
 			case 3: CP_HoldTime(param1);
 			case 4: CP_CompareMode(param1);
-			case 5: Export(param1, 3, false, true);
+			//case 5: Export(param1, 3, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel) {
@@ -365,7 +361,7 @@ public void CP_Display(int client)
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
 			}
 
-			ShowSyncHudText(client, CP_Handle, "%s", "CP +00:00.000");
+			//ShowSyncHudText(client, CP_Handle, "%s", "CP +00:00.000");
 			return;
 		}
 
@@ -381,7 +377,7 @@ public void CP_Display(int client)
 				SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 1.0, g_iCP_Color[client][2][0], g_iCP_Color[client][2][1], g_iCP_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 
-			ShowSyncHudText(client, CP_Handle, szCPFormatted[target]);
+			//ShowSyncHudText(client, CP_Handle, szCPFormatted[target]);
 		}
 	}
 }
