@@ -264,7 +264,7 @@ public void MapInfo_Display(int client)
         char szClientCountry[100];
 
         if (bonus != 0) {
-            surftimer_GetBonusData(client, szWRName, WRTime, PBTime);
+            surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
             surftimer_GetPlayerData(target, bonus, PBTime, client_rank, szClientCountry);
         }
         else {
