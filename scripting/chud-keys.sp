@@ -12,8 +12,6 @@ public Keys_SetDefaults(int client)
 
 	for (int i = 0; i < 3; i++)
 		g_iKeys_Color[client][i] = 255;
-	
-	g_iKeys_UpdateRate[client] = 0;
 }
 
 public void CHUD_KEYS(int client)
@@ -38,16 +36,8 @@ public void CHUD_KEYS(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Color
-	Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);
+	Format(szItem, sizeof szItem, "Color      | %d %d %d\n \n", g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);
 	AddMenuItem(menu, "", szItem);
-
-	// Update Rate
-	if (g_iKeys_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
-	else if (g_iKeys_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
-	else
-		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
 
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
@@ -65,8 +55,7 @@ public int CHUD_Keys_Handler(Menu menu, MenuAction action, int param1, int param
 			case 0: Keys_Toggle(param1, true);
 			case 1: Keys_Position(param1);
 			case 2: Keys_Color(param1);
-			case 3: Keys_UpdateRate(param1, true);
-			case 4: Export(param1, 1, false, true);
+			case 3: Export(param1, 1, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -210,65 +199,46 @@ public void Keys_Color_Change(int client, int color_type, int color_index)
 public void Keys_Display(int client)
 {   
 	if (g_bKeys[client] && !IsFakeClient(client)) {
-		if(g_iClientTick[client][1] - g_iCurrentTick[client][1] >= GetUpdateRate(g_iKeys_UpdateRate[client])) 
-		{
-			g_iCurrentTick[client][1] += GetUpdateRate(g_iKeys_UpdateRate[client]);
 
-			int target;
+		int target;
 
-			if (IsPlayerAlive(client))
-				target = client;
-			else
-				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-			
-			if(target == -1)
-				return;
+		if (IsPlayerAlive(client))
+			target = client;
+		else
+			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+		
+		if(target == -1)
+			return;
 
-			//COLOR
-			int displayColor[3];
-			displayColor[0] = g_iKeys_Color[client][0];
-			displayColor[1] = g_iKeys_Color[client][1];
-			displayColor[2] = g_iKeys_Color[client][2];
-			
-			//KEYS
-			int Buttons;
-			Buttons = g_iLastButton[target];
-			char Keys[10][5];
-			
-			Keys[0] = (Buttons & IN_FORWARD == IN_FORWARD) ? "W" : "_";
-			Keys[1] = (Buttons & IN_MOVELEFT == IN_MOVELEFT) ? "A" : "_";
-			Keys[2] = (Buttons & IN_BACK == IN_BACK) ? "S" : "_";
-			Keys[3] = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT) ? "D" : "_";
-			Keys[4] = (Buttons & IN_DUCK == IN_DUCK) ? "C" : "_";
-			Keys[5] = (Buttons & IN_JUMP == IN_JUMP) ? "J" : "_";
-			Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "🠔" : "_";
-			Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "🠖" : "_";
-			Keys[8] = (g_imouseDir[target][0] < 0)  ? "<" : "_";
-			Keys[9] = (g_imouseDir[target][0] > 0)  ? ">" : "_";
+		//COLOR
+		int displayColor[3];
+		displayColor[0] = g_iKeys_Color[client][0];
+		displayColor[1] = g_iKeys_Color[client][1];
+		displayColor[2] = g_iKeys_Color[client][2];
+		
+		//KEYS
+		int Buttons;
+		Buttons = g_iLastButton[target];
+		char Keys[10][5];
+		
+		Keys[0] = (Buttons & IN_FORWARD == IN_FORWARD) ? "W" : "_";
+		Keys[1] = (Buttons & IN_MOVELEFT == IN_MOVELEFT) ? "A" : "_";
+		Keys[2] = (Buttons & IN_BACK == IN_BACK) ? "S" : "_";
+		Keys[3] = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT) ? "D" : "_";
+		Keys[4] = (Buttons & IN_DUCK == IN_DUCK) ? "C" : "_";
+		Keys[5] = (Buttons & IN_JUMP == IN_JUMP) ? "J" : "_";
+		Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "🠔" : "_";
+		Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "🠖" : "_";
+		Keys[8] = (g_imouseDir[target][0] < 0)  ? "<" : "_";
+		Keys[9] = (g_imouseDir[target][0] > 0)  ? ">" : "_";
 
-			//FINAL STRING
-			char szKeys[32];
-			
-			Format(szKeys, sizeof szKeys, "%s %s %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
-			
-			SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], GetUpdateRate(g_iKeys_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-			ShowSyncHudText(client, Keys_Handle, szKeys);
-		}
-	}
-}
-
-/////
-//UPDATE RATE
-/////
-void Keys_UpdateRate(int client, bool from_menu)
-{
-	if (g_iKeys_UpdateRate[client] != 2)
-		g_iKeys_UpdateRate[client]++;
-	else
-		g_iKeys_UpdateRate[client] = 0;
-
-	if (from_menu) {
-		CHUD_KEYS(client);
+		//FINAL STRING
+		char szKeys[32];
+		
+		Format(szKeys, sizeof szKeys, "%s %s %s\n%s %s %s\n%s    %s\n%s    %s", Keys[8], Keys[0], Keys[9], Keys[1], Keys[2], Keys[3], Keys[4], Keys[5], Keys[6], Keys[7]);
+		
+		SetHudTextParams(g_fKeys_POSX[client] == 0.5 ? -1.0 : g_fKeys_POSX[client], g_fKeys_POSY[client] == 0.5 ? -1.0 : g_fKeys_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, Keys_Handle, szKeys);
 	}
 }
 
@@ -294,8 +264,6 @@ public void Keys_ConvertStringToData(int client, char szData[512])
 	g_iKeys_Color[client][0] = StringToInt(szColor[0]);
 	g_iKeys_Color[client][1] = StringToInt(szColor[1]);
 	g_iKeys_Color[client][2] = StringToInt(szColor[2]);
-
-	g_iKeys_UpdateRate[client] = StringToInt(szModules[3]);
 }
 
 char[] Keys_ConvertDataToString(int client)
@@ -310,9 +278,6 @@ char[] Keys_ConvertDataToString(int client)
 
 	//COLOR
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);
-
-	//UPDATE RATE
-	Format(szData, sizeof szData, "%s%d", szData, g_iKeys_UpdateRate[client]);
 
 	return szData;
 }

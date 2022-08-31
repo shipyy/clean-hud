@@ -11,6 +11,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		Sync_Display(client);
 		Timer_Display(client);
 		MapInfo_Display(client);
+		CP_Display(client);
+		Finish_Display(client);
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -18,12 +20,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	g_imouseDir[client] = mouse;
 	
 	return Plugin_Continue;
-}
-
-public void Hook_PostThinkPost(int entity)
-{
-	for(int i = 0; i < 6; i++)
-		++g_iClientTick[entity][i];
 }
 
 public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)

@@ -275,82 +275,81 @@ void Finish_CompareMode(int client)
 }
 
 /////
-//DISPLAY
+//FORMAT
 /////
-public void Finish_Display(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
+public void Finish_Format(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
 {
-    if (g_bFinish[client] && !IsFakeClient(client)) {
-		int target;
+	char szCurrentRunFormatted[64];
+	char szPBDiffFormatted[64];
+	char szWRDiffFormatted[64];
 
-		if (IsPlayerAlive(client))
-			target = client;
-		else
-			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-		
-		if(target == -1)
-			return;
+	if (g_iFinish_CompareMode[client] == 0) {
+		Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);
+		Format_Time(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
 
-		char szPBFormatted[64];
-		char szPBDiffFormatted[64];
-		char szWRDiffFormatted[32];
-
-		if (g_iFinish_CompareMode[client] == 0) {
-			Format_Time(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
-			Format_Time(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
-
-			if( zonegroup == 0) {
-				if( pb_diff >= 0)
-					Format(szPBFormatted, sizeof szPBFormatted, "Map Finished in %s | PB +%s", szPBFormatted, szPBDiffFormatted);
-				else
-					Format(szPBFormatted, sizeof szPBFormatted, "Map Finished in %s | PB -%s", szPBFormatted, szPBDiffFormatted);
-			}
-			else {
-				if( pb_diff >= 0)
-					Format(szPBFormatted, sizeof szPBFormatted, "Bonus %d Finished in %s | PB +%s", zonegroup, szPBFormatted, szPBDiffFormatted);
-				else
-					Format(szPBFormatted, sizeof szPBFormatted, "Bonus %d Finished in %s | PB -%s", zonegroup, szPBFormatted, szPBDiffFormatted);
-			}
-
-			if (pb_diff > 0) {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else if (pb_diff < 0) {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-
-			ShowSyncHudText(client, Finish_Handle, szPBFormatted);
+		if( zonegroup == 0) {
+			if( pb_diff >= 0)
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB +%s", szCurrentRunFormatted, szPBDiffFormatted);
+			else
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB -%s", szCurrentRunFormatted, szPBDiffFormatted);
 		}
 		else {
-			Format_Time(client, runtime, szPBFormatted, sizeof szPBFormatted, true);
-			Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
-			
-			if( zonegroup == 0) {
-				if (wr_diff >= 0)
-					Format(szPBFormatted, sizeof szPBFormatted, "Map Finished in %s | WR +%s", szPBFormatted, szWRDiffFormatted);
-				else
-					Format(szPBFormatted, sizeof szPBFormatted, "Map Finished in %s | WR -%s", szPBFormatted, szWRDiffFormatted);
-			}
-			else {
-				if (wr_diff >= 0)
-					Format(szPBFormatted, sizeof szPBFormatted, "Bonus %d Finished in %s | WR +%s", zonegroup, szPBFormatted, szWRDiffFormatted);
-				else
-					Format(szPBFormatted, sizeof szPBFormatted, "Bonus %d Finished in %s | WR -%s", zonegroup, szPBFormatted, szWRDiffFormatted);
-			}
-			
-			if (wr_diff > 0) {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else if (wr_diff < 0) {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-			}
-			else {
-				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], g_iFinish_HoldTime[client] * 1.0, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-			}
+			if( pb_diff >= 0)
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | PB +%s", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
+			else
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | PB -%s", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
+		}
+	}
+	else {
+		Format_Time(client, runtime, szFinishFormatted[client], sizeof szFinishFormatted, true);
+		Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
+		
+		if( zonegroup == 0) {
+			if (wr_diff >= 0)
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR +%s", szCurrentRunFormatted, szWRDiffFormatted);
+			else
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR -%s", szCurrentRunFormatted, szWRDiffFormatted);
+		}
+		else {
+			if (wr_diff >= 0)
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | WR +%s", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
+			else
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | WR -%s", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
+		}
+	}
 
-			ShowSyncHudText(client, Finish_Handle, szPBFormatted);
+	g_fLastDifferenceFinishTime[client] = GetGameTime();
+}
+
+
+/////
+//DISPLAY
+/////
+public void Finish_Display(int client)
+{
+	if (GetGameTime() - g_fLastDifferenceFinishTime[client] < g_iFinish_HoldTime[client]) {
+		if (g_bFinish[client] && !IsFakeClient(client)) {
+			int target;
+
+			if (IsPlayerAlive(client))
+				target = client;
+			else
+				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+			
+			if(target == -1)
+				return;
+
+			if (StrContains(szFinishFormatted[target], "+", false) == 0) {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 0.1, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (StrContains(szFinishFormatted[target], "-", false) == 0) {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 0.1, g_iFinish_Color[client][1][0], g_iFinish_Color[client][1][1], g_iFinish_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else {
+				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 0.1, g_iFinish_Color[client][2][0], g_iFinish_Color[client][2][1], g_iFinish_Color[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			
+			ShowSyncHudText(client, Finish_Handle, szFinishFormatted[target]);
 		}
 	}
 }

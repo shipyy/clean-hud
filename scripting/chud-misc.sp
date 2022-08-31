@@ -103,16 +103,6 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 
 }
 
-public int GetUpdateRate(int value)
-{
-	switch(value){
-		case 0: return 15;
-		case 1:	return 10;
-		case 2: return 5;
-		default: return 10;
-	}
-}
-
 public void LoadCookies(int client)
 {
 	for(int i = 0; i < 7; i++)
@@ -133,32 +123,29 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 		switch (module) {
 			case 0 : {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
+					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //13
 					g_bCSD[client] ? 1 : 0, 
 					g_iCSD_SpeedAxis[client], 
 					g_fCSD_POSX[client], g_fCSD_POSX[client],
 					g_iCSD_Color[client][0][0], g_iCSD_Color[client][0][1], g_iCSD_Color[client][0][2],
 					g_iCSD_Color[client][1][0], g_iCSD_Color[client][1][1], g_iCSD_Color[client][1][2],
-					g_iCSD_Color[client][2][0], g_iCSD_Color[client][2][1], g_iCSD_Color[client][2][2],
-					g_iCSD_UpdateRate[client]
+					g_iCSD_Color[client][2][0], g_iCSD_Color[client][2][1], g_iCSD_Color[client][2][2]
 				);
 			}
 			case 1: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d", //7
+					"%d|%.1f|%.1f|%d|%d|%d", //6
 					g_bKeys[client] ? 1 : 0, 
 					g_fKeys_POSX[client], g_fKeys_POSY[client],
-					g_iKeys_Color[client][0][0], g_iKeys_Color[client][0][1], g_iKeys_Color[client][0][2],
-					g_iKeys_UpdateRate[client]
+					g_iKeys_Color[client][0][0], g_iKeys_Color[client][0][1], g_iKeys_Color[client][0][2]
 				);
 			}
 			case 2: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d", //7
+					"%d|%.1f|%.1f|%d|%d|%d", //6
 					g_bSync[client] ? 1 : 0, 
 					g_fSync_POSX[client], g_fSync_POSY[client],
-					g_iSync_Color[client][0][0], g_iSync_Color[client][0][1], g_iSync_Color[client][0][2],
-					g_iSync_UpdateRate[client]
+					g_iSync_Color[client][0][0], g_iSync_Color[client][0][1], g_iSync_Color[client][0][2]
 				);
 
 			}
@@ -176,12 +163,11 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 4: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d", //10
+					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d", //9
 					g_bTimer[client] ? 1 : 0, 
 					g_fTimer_POSX[client], g_fTimer_POSY[client],
 					g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2],
-					g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2],
-					g_iTimer_UpdateRate[client]
+					g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2]
 				);
 			}
 			case 5: {
@@ -277,7 +263,7 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 	if (module != -1) {
 		switch (module) {
 			case 0 : {
-				if (fields == 14) {
+				if (fields == 13) {
 					g_bCSD[client] = StringToInt(Modules[0]) == 1 ? true : false;
 					g_iCSD_SpeedAxis[client] = StringToInt(Modules[1]);
 					g_fCSD_POSX[client] = StringToFloat(Modules[2]);
@@ -295,8 +281,6 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 					g_iCSD_Color[client][2][1] = StringToInt(Modules[11]);
 					g_iCSD_Color[client][2][2] = StringToInt(Modules[12]);
 
-					g_iCSD_UpdateRate[client] = StringToInt(Modules[13]);
-
 					CPrintToChat(client, "%t" , "Settings_Imported", "Center Speed Display", szPlayerName);
 
 				}
@@ -305,7 +289,7 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 				}
 			}
 			case 1 : {
-				if (fields == 7) {
+				if (fields == 6) {
 					g_bKeys[client] = StringToInt(Modules[0]) == 1 ? true : false;
 					g_fKeys_POSX[client] = StringToFloat(Modules[1]);
 					g_fKeys_POSY[client] = StringToFloat(Modules[2]);
@@ -314,8 +298,6 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 					g_iKeys_Color[client][0][1] = StringToInt(Modules[4]);
 					g_iKeys_Color[client][0][2] = StringToInt(Modules[5]);
 
-					g_iKeys_UpdateRate[client] = StringToInt(Modules[6]);
-
 					CPrintToChat(client, "%t" , "Settings_Imported", "Sync", szPlayerName);
 				}
 				else {
@@ -323,7 +305,7 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 				}
 			}
 			case 2 : {
-				if (fields == 7) {
+				if (fields == 6) {
 					g_bSync[client] = StringToInt(Modules[0]) == 1 ? true : false;
 					g_fSync_POSX[client] = StringToFloat(Modules[1]);
 					g_fSync_POSY[client] = StringToFloat(Modules[2]);
@@ -331,8 +313,6 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 					g_iSync_Color[client][0][0] = StringToInt(Modules[3]);
 					g_iSync_Color[client][0][1] = StringToInt(Modules[4]);
 					g_iSync_Color[client][0][2] = StringToInt(Modules[5]);
-
-					g_iSync_UpdateRate[client] = StringToInt(Modules[6]);
 
 					CPrintToChat(client, "%t" , "Settings_Imported", "Keys", szPlayerName);
 				}
@@ -368,7 +348,7 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 				}
 			}
 			case 4 : {
-				if (fields == 10) {
+				if (fields == 9) {
 					g_bTimer[client] = StringToInt(Modules[0]) == 1 ? true : false;
 					g_fTimer_POSX[client] = StringToFloat(Modules[1]);
 					g_fTimer_POSY[client] = StringToFloat(Modules[2]);
@@ -380,8 +360,6 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 					g_iTimer_Color[client][1][0] = StringToInt(Modules[6]);
 					g_iTimer_Color[client][1][1] = StringToInt(Modules[7]);
 					g_iTimer_Color[client][1][2] = StringToInt(Modules[8]);
-
-					g_iTimer_UpdateRate[client] = StringToInt(Modules[9]);
 
 					CPrintToChat(client, "%t" , "Settings_Imported", "Timer", szPlayerName);
 				}
@@ -438,7 +416,7 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 		}
 	}
 	else {
-		if (fields == 74) {
+		if (fields == 70) {
 			//CSD
 			g_bCSD[client] = StringToInt(Modules[0]) == 1 ? true : false;
 			g_iCSD_SpeedAxis[client] = StringToInt(Modules[1]);
@@ -457,96 +435,88 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 			g_iCSD_Color[client][2][1] = StringToInt(Modules[11]);
 			g_iCSD_Color[client][2][2] = StringToInt(Modules[12]);
 
-			g_iCSD_UpdateRate[client] = StringToInt(Modules[13]);
-
 			//KEYS
-			g_bKeys[client] = StringToInt(Modules[14]) == 1 ? true : false;
-			g_fKeys_POSX[client] = StringToFloat(Modules[15]);
-			g_fKeys_POSY[client] = StringToFloat(Modules[6]);
+			g_bKeys[client] = StringToInt(Modules[13]) == 1 ? true : false;
+			g_fKeys_POSX[client] = StringToFloat(Modules[14]);
+			g_fKeys_POSY[client] = StringToFloat(Modules[15]);
 
-			g_iKeys_Color[client][0][0] = StringToInt(Modules[17]);
-			g_iKeys_Color[client][0][1] = StringToInt(Modules[18]);
-			g_iKeys_Color[client][0][2] = StringToInt(Modules[19]);
-
-			g_iKeys_UpdateRate[client] = StringToInt(Modules[20]);
+			g_iKeys_Color[client][0][0] = StringToInt(Modules[16]);
+			g_iKeys_Color[client][0][1] = StringToInt(Modules[17]);
+			g_iKeys_Color[client][0][2] = StringToInt(Modules[18]);
 
 			//SYNC
-			g_bSync[client] = StringToInt(Modules[21]) == 1 ? true : false;
-			g_fSync_POSX[client] = StringToFloat(Modules[22]);
-			g_fSync_POSY[client] = StringToFloat(Modules[23]);
+			g_bSync[client] = StringToInt(Modules[19]) == 1 ? true : false;
+			g_fSync_POSX[client] = StringToFloat(Modules[20]);
+			g_fSync_POSY[client] = StringToFloat(Modules[21]);
 
-			g_iSync_Color[client][0][0] = StringToInt(Modules[24]);
-			g_iSync_Color[client][0][1] = StringToInt(Modules[25]);
-			g_iSync_Color[client][0][2] = StringToInt(Modules[26]);
-
-			g_iSync_UpdateRate[client] = StringToInt(Modules[27]);
+			g_iSync_Color[client][0][0] = StringToInt(Modules[22]);
+			g_iSync_Color[client][0][1] = StringToInt(Modules[23]);
+			g_iSync_Color[client][0][2] = StringToInt(Modules[24]);
 
 			//CP
-			g_bCP[client] = StringToInt(Modules[28]) == 1 ? true : false;
-			g_fCP_POSX[client] = StringToFloat(Modules[29]);
-			g_fCP_POSY[client] = StringToFloat(Modules[30]);
+			g_bCP[client] = StringToInt(Modules[25]) == 1 ? true : false;
+			g_fCP_POSX[client] = StringToFloat(Modules[26]);
+			g_fCP_POSY[client] = StringToFloat(Modules[27]);
 
-			g_iCP_Color[client][0][0] = StringToInt(Modules[31]);
-			g_iCP_Color[client][0][1] = StringToInt(Modules[32]);
-			g_iCP_Color[client][0][2] = StringToInt(Modules[33]);
+			g_iCP_Color[client][0][0] = StringToInt(Modules[28]);
+			g_iCP_Color[client][0][1] = StringToInt(Modules[29]);
+			g_iCP_Color[client][0][2] = StringToInt(Modules[30]);
 
-			g_iCP_Color[client][1][0] = StringToInt(Modules[34]);
-			g_iCP_Color[client][1][1] = StringToInt(Modules[35]);
-			g_iCP_Color[client][1][2] = StringToInt(Modules[36]);
+			g_iCP_Color[client][1][0] = StringToInt(Modules[31]);
+			g_iCP_Color[client][1][1] = StringToInt(Modules[32]);
+			g_iCP_Color[client][1][2] = StringToInt(Modules[33]);
 
-			g_iCP_Color[client][2][0] = StringToInt(Modules[37]);
-			g_iCP_Color[client][2][1] = StringToInt(Modules[38]);
-			g_iCP_Color[client][2][2] = StringToInt(Modules[39]);
+			g_iCP_Color[client][2][0] = StringToInt(Modules[34]);
+			g_iCP_Color[client][2][1] = StringToInt(Modules[35]);
+			g_iCP_Color[client][2][2] = StringToInt(Modules[36]);
 
-			g_iCP_HoldTime[client] = StringToInt(Modules[40]);
-			g_iCP_CompareMode[client] = StringToInt(Modules[41]);
+			g_iCP_HoldTime[client] = StringToInt(Modules[37]);
+			g_iCP_CompareMode[client] = StringToInt(Modules[38]);
 
 			//TIMER
-			g_bTimer[client] = StringToInt(Modules[42]) == 1 ? true : false;
-			g_fTimer_POSX[client] = StringToFloat(Modules[43]);
-			g_fTimer_POSY[client] = StringToFloat(Modules[44]);
+			g_bTimer[client] = StringToInt(Modules[39]) == 1 ? true : false;
+			g_fTimer_POSX[client] = StringToFloat(Modules[40]);
+			g_fTimer_POSY[client] = StringToFloat(Modules[41]);
 
-			g_iTimer_Color[client][0][0] = StringToInt(Modules[45]);
-			g_iTimer_Color[client][0][1] = StringToInt(Modules[46]);
-			g_iTimer_Color[client][0][2] = StringToInt(Modules[47]);
+			g_iTimer_Color[client][0][0] = StringToInt(Modules[42]);
+			g_iTimer_Color[client][0][1] = StringToInt(Modules[43]);
+			g_iTimer_Color[client][0][2] = StringToInt(Modules[44]);
 
-			g_iTimer_Color[client][1][0] = StringToInt(Modules[48]);
-			g_iTimer_Color[client][1][1] = StringToInt(Modules[49]);
-			g_iTimer_Color[client][1][2] = StringToInt(Modules[50]);
-
-			g_iTimer_UpdateRate[client] = StringToInt(Modules[51]);
+			g_iTimer_Color[client][1][0] = StringToInt(Modules[45]);
+			g_iTimer_Color[client][1][1] = StringToInt(Modules[46]);
+			g_iTimer_Color[client][1][2] = StringToInt(Modules[47]);
 
 			//MAPINFO
-			g_bMapInfo[client] = StringToInt(Modules[51]) == 1 ? true : false;
-			g_fMapInfo_POSX[client] = StringToFloat(Modules[52]);
-			g_fMapInfo_POSY[client] = StringToFloat(Modules[53]);
+			g_bMapInfo[client] = StringToInt(Modules[48]) == 1 ? true : false;
+			g_fMapInfo_POSX[client] = StringToFloat(Modules[49]);
+			g_fMapInfo_POSY[client] = StringToFloat(Modules[50]);
 
-			g_iMapInfo_Color[client][0][0] = StringToInt(Modules[54]);
-			g_iMapInfo_Color[client][0][1] = StringToInt(Modules[55]);
-			g_iMapInfo_Color[client][0][2] = StringToInt(Modules[56]);
+			g_iMapInfo_Color[client][0][0] = StringToInt(Modules[51]);
+			g_iMapInfo_Color[client][0][1] = StringToInt(Modules[52]);
+			g_iMapInfo_Color[client][0][2] = StringToInt(Modules[53]);
 
-			g_iMapInfo_ShowMode[client] = StringToInt(Modules[57]);
-			g_iMapInfo_CompareMode[client] = StringToInt(Modules[58]);
+			g_iMapInfo_ShowMode[client] = StringToInt(Modules[54]);
+			g_iMapInfo_CompareMode[client] = StringToInt(Modules[55]);
 
 			//FINISH
-			g_bFinish[client] = StringToInt(Modules[60]) == 1 ? true : false;
-			g_fFinish_POSX[client] = StringToFloat(Modules[61]);
-			g_fFinish_POSY[client] = StringToFloat(Modules[62]);
+			g_bFinish[client] = StringToInt(Modules[56]) == 1 ? true : false;
+			g_fFinish_POSX[client] = StringToFloat(Modules[57]);
+			g_fFinish_POSY[client] = StringToFloat(Modules[58]);
 
-			g_iFinish_Color[client][0][0] = StringToInt(Modules[63]);
-			g_iFinish_Color[client][0][1] = StringToInt(Modules[64]);
-			g_iFinish_Color[client][0][2] = StringToInt(Modules[65]);
+			g_iFinish_Color[client][0][0] = StringToInt(Modules[59]);
+			g_iFinish_Color[client][0][1] = StringToInt(Modules[60]);
+			g_iFinish_Color[client][0][2] = StringToInt(Modules[61]);
 
-			g_iFinish_Color[client][1][0] = StringToInt(Modules[66]);
-			g_iFinish_Color[client][1][1] = StringToInt(Modules[67]);
-			g_iFinish_Color[client][1][2] = StringToInt(Modules[68]);
+			g_iFinish_Color[client][1][0] = StringToInt(Modules[62]);
+			g_iFinish_Color[client][1][1] = StringToInt(Modules[63]);
+			g_iFinish_Color[client][1][2] = StringToInt(Modules[64]);
 
-			g_iFinish_Color[client][2][0] = StringToInt(Modules[69]);
-			g_iFinish_Color[client][2][1] = StringToInt(Modules[70]);
-			g_iFinish_Color[client][2][2] = StringToInt(Modules[71]);
+			g_iFinish_Color[client][2][0] = StringToInt(Modules[65]);
+			g_iFinish_Color[client][2][1] = StringToInt(Modules[66]);
+			g_iFinish_Color[client][2][2] = StringToInt(Modules[67]);
 
-			g_iFinish_HoldTime[client] = StringToInt(Modules[72]);
-			g_iFinish_CompareMode[client] = StringToInt(Modules[73]);
+			g_iFinish_HoldTime[client] = StringToInt(Modules[68]);
+			g_iFinish_CompareMode[client] = StringToInt(Modules[69]);
 			
 			CPrintToChat(client, "%t" , "Settings_Imported_All", szPlayerName);
 

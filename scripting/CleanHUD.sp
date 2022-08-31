@@ -58,6 +58,14 @@ public void OnPluginStart()
     g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
 
     //INIT MODULES
+    CSD_Handle = CreateHudSynchronizer();
+    Keys_Handle = CreateHudSynchronizer();
+    Sync_Handle = CreateHudSynchronizer();
+    CP_Handle = CreateHudSynchronizer();
+    Timer_Handle = CreateHudSynchronizer();
+    MapInfo_Handle = CreateHudSynchronizer();
+    Finish_Handle = CreateHudSynchronizer();
+    /*
     Init_CSD();
     Init_KEYS();
     Init_SYNC();
@@ -65,16 +73,14 @@ public void OnPluginStart()
     Init_TIMER();
     Init_MAPINFO();
     Init_FINISH();
+    */
 }
 
 public void OnPluginEnd()
 {
     for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x)) {
-            if (!IsFakeClient(x))
-                SaveCookies(x);
-            SDKUnhook(x, SDKHook_PostThinkPost, Hook_PostThinkPost);
-        }
+        if (IsValidClient(x) && !IsFakeClient(x))
+            SaveCookies(x);
 }
 
 public void OnClientPutInServer(int client)
@@ -88,20 +94,12 @@ public void OnClientPutInServer(int client)
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
     WaitingForResponse[client] = None;
-
-    for(int i = 0; i < 6; i++)
-        g_iCurrentTick[client][i] = 0;
-    
-    SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
 public void OnMapStart()
 {
     //TRANSLATIONS
     LoadTranslations("cleanhud.phrases");
-
-    //GET TICKRATE
-    g_fTickrate = (1 / GetTickInterval());
 }
 
 public void OnClientCookiesCached(int client)
