@@ -257,11 +257,22 @@ public void MapInfo_Display(int client)
         int bonus;
         surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
 
+        //MAP / BONUS DATA
         char szWRName[MAX_NAME_LENGTH], szWRTime[32];
         float WRTime;
         float PBTime;
         int client_rank;
         char szClientCountry[100];
+        char szShowModeFormatted[32];
+        char szCompareModeFormatted[32];
+
+        //STAGE VARS
+        char szStageWRName[MAX_NAME_LENGTH];
+        float StageWRTime;
+        float StagePBTime;
+        char szStageComparison[32];
+        char szStageWRDiffFormatted[32];
+        char szStagePBFormatted[32];
 
         if (bonus != 0) {
             surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
@@ -270,11 +281,36 @@ public void MapInfo_Display(int client)
         else {
             surftimer_GetMapData(szWRName, szWRTime, WRTime);
             surftimer_GetPlayerData(target, 0, PBTime, client_rank, szClientCountry);
+
+            if (surftimer_GetMapStages() != 0) {
+                surftimer_GetStageData(target, szStageWRName, StageWRTime, StagePBTime);
+
+                //FORMAT STAGE PB
+                if (StagePBTime != -1.0)
+                    Format_Time(client, StagePBTime, szStagePBFormatted, sizeof szStagePBFormatted, true);
+                else
+                    Format(szStagePBFormatted, sizeof szStagePBFormatted, "N/A");
+
+                //FORMAT STAGE WR
+                if (StageWRTime != 9999999.0) {
+                    float stage_wr_diff = StageWRTime - StagePBTime;
+                    Format_Time(client, stage_wr_diff, szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, true);
+
+                    //SLOWER
+                    if (stage_wr_diff <= 0)
+                        Format(szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, "+%f", stage_wr_diff);
+                    else
+                        Format(szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, "-%f", stage_wr_diff);
+                }
+                else
+                    Format(szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, "N/A");
+
+                Format(szStageComparison, sizeof szStageComparison , "Stage %d\nPB %s | WR %s", stage, szStagePBFormatted, szStageWRDiffFormatted);
+
+            }
         }
 
-        char szShowModeFormatted[32];
-        char szCompareModeFormatted[32];
-
+        //MAP TIME COMPARISONS
         //FORMAT SHOW MODE
         //PB
         if ( g_iMapInfo_ShowMode[client] == 2) {
@@ -354,6 +390,7 @@ public void MapInfo_Display(int client)
         }
 
         SetHudTextParams(g_fMapInfo_POSX[client] == 0.5 ? -1.0 : g_fMapInfo_POSX[client], g_fMapInfo_POSY[client] == 0.5 ? -1.0 : g_fMapInfo_POSY[client], 0.1, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2], 255, 0, 0.0, 0.0, 0.0);
+        Format(szMapInfo, sizeof szMapInfo, "%s\n%s", szStageComparison, szMapInfo);
         ShowSyncHudText(client, MapInfo_Handle, szMapInfo);
     }
 }

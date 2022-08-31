@@ -261,18 +261,31 @@ public void Timer_Display(int client)
 
 		float CurrentTime;
 		CurrentTime = surftimer_GetCurrentTime(target);
+		PrintToConsole(0, "===value of currenttime %f", CurrentTime);
 
-		if ( CurrentTime > PersonalBest)
+		if ( CurrentTime > PersonalBest || (CurrentTime == -1 || CurrentTime == -1))
 			SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], 0.1, g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-		else
+		else if ( CurrentTime < PersonalBest || (CurrentTime == -1 || CurrentTime == -1))
 			SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], 0.1, g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 
 		char szFormattedCurrentTime[32];
-		if(CurrentTime >= 0.0)
-			Format_Time(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
-		else
-			Format_Time(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+		if(CurrentTime > 0.0) {
+			int wrcp_timer;
+			int practice;
+			int stage;
+			int bonus;
+			surftimer_GetPlayerInfo(target, wrcp_timer, practice, stage, bonus);
 
+			Format_Time(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+
+			if (practice)
+				Format(szFormattedCurrentTime, sizeof szFormattedCurrentTime, "P: %s", szFormattedCurrentTime);
+		}
+		else if (CurrentTime == 0.0)
+			Format(szFormattedCurrentTime, sizeof szFormattedCurrentTime, "00:00.000");
+		else if (CurrentTime == -1.0)
+			Format(szFormattedCurrentTime, sizeof szFormattedCurrentTime, "Timer Disabled");
+		
 		ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
 	}
 }
