@@ -264,7 +264,7 @@ public void MapInfo_Display(int client)
         char szClientCountry[16], szClientCountryCode[3], szClientContinentCode[3];
 
         if (bonus != 0) {
-            surftimer_GetBonusData(client, szWRName, WRTime, PBTime);
+            surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
         }
         else {
             surftimer_GetMapData(szWRName, szWRTime, WRTime);
