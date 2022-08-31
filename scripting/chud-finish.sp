@@ -286,8 +286,9 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 	char szPBDiffFormatted[64];
 	char szWRDiffFormatted[64];
 
+	Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);
+
 	if (g_iFinish_CompareMode[client] == 0) {
-		Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);
 		Format_Time(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
 
 		if( zonegroup == 0) {
@@ -304,7 +305,6 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 		}
 	}
 	else {
-		Format_Time(client, runtime, szFinishFormatted[client], sizeof szFinishFormatted, true);
 		Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
 		
 		if( zonegroup == 0) {

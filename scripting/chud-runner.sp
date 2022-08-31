@@ -22,12 +22,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public void Hook_PostThinkPost(int entity)
-{
-	for(int i = 0; i < 6; i++)
-		++g_iClientTick[entity][i];
-}
-
 public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)
 {
 	int clientid = GetEventInt(event, "userid");

@@ -13,8 +13,6 @@ public Timer_SetDefaults(int client)
 	for (int i = 0; i < 2; i++)
 		for (int j = 0; j < 3; j++)
 			g_iTimer_Color[client][i][j] = 255;
-	
-	g_iTimer_UpdateRate[client] = 0;
 }
 
 public void CHUD_TIMER(int client)
@@ -38,15 +36,7 @@ public void CHUD_TIMER(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Color
-	AddMenuItem(menu, "", "Color      |");
-
-	// Refresh
-	if (g_iTimer_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
-	else if (g_iTimer_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
-	else
-		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
+	AddMenuItem(menu, "", "Color      |\n \n");
 
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
@@ -64,8 +54,7 @@ public int CHUD_TIMER_Handler(Menu menu, MenuAction action, int param1, int para
 			case 0: Timer_Toggle(param1, true);
 			case 1: Timer_Position(param1);
 			case 2: Timer_Color(param1);
-			case 3: Timer_UpdateRate(param1, true);
-			case 4: Export(param1, 4, false, true);
+			case 3: Export(param1, 4, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -243,66 +232,48 @@ public void Timer_Color_Change(int client, int color_type, int color_index)
 }
 
 /////
-//UPDATE RATE
-/////
-void Timer_UpdateRate(int client, bool from_menu)
-{
-	if (g_iTimer_UpdateRate[client] != 2)
-		g_iTimer_UpdateRate[client]++;
-	else
-		g_iTimer_UpdateRate[client] = 0;
-
-	if (from_menu) {
-		CHUD_TIMER(client);
-	}
-}
-
-/////
 //DISPLAY
 /////
 public void Timer_Display(int client)
 {
     if (g_bTimer[client] && !IsFakeClient(client)) {
-		if(g_iClientTick[client][3] - g_iCurrentTick[client][3] >= GetUpdateRate(g_iTimer_UpdateRate[client])) {
-            g_iCurrentTick[client][3] += GetUpdateRate(g_iTimer_UpdateRate[client]);
             
-            int target;
-            
-            if (IsPlayerAlive(client))
-				target = client;
-			else
-				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-            
-            if(target == -1)
-				return;
-                
-            int target_style = surftimer_GetClientStyle(target);
-            if (target_style == 5)
-				g_fLastSpeed[target] /= 0.5;
-			else if (target_style == 6)
-                g_fLastSpeed[target] /= 1.5;
-                
-            float PersonalBest;
-            int MapRank;
-            char country[16], countryCode[3], continentCode[3];
-            surftimer_GetPlayerData(target, PersonalBest, MapRank, country, countryCode, continentCode);
+		int target;
+		
+		if (IsPlayerAlive(client))
+			target = client;
+		else
+			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+		
+		if(target == -1)
+			return;
+			
+		int target_style = surftimer_GetClientStyle(target);
+		if (target_style == 5)
+			g_fLastSpeed[target] /= 0.5;
+		else if (target_style == 6)
+			g_fLastSpeed[target] /= 1.5;
+			
+		float PersonalBest;
+		int MapRank;
+		char country[16], countryCode[3], continentCode[3];
+		surftimer_GetPlayerData(target, PersonalBest, MapRank, country, countryCode, continentCode);
 
-            float CurrentTime;
-            CurrentTime = surftimer_GetCurrentTime(target);
+		float CurrentTime;
+		CurrentTime = surftimer_GetCurrentTime(target);
 
-            if ( CurrentTime > PersonalBest)
-                SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], GetUpdateRate(g_iTimer_UpdateRate[client]) / g_fTickrate + 0.1, g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-            else
-                SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], GetUpdateRate(g_iTimer_UpdateRate[client]) / g_fTickrate + 0.1, g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+		if ( CurrentTime > PersonalBest)
+			SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], 0.1, g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+		else
+			SetHudTextParams(g_fTimer_POSX[client] == 0.5 ? -1.0 : g_fTimer_POSX[client], g_fTimer_POSY[client] == 0.5 ? -1.0 : g_fTimer_POSY[client], 0.1, g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 
-            char szFormattedCurrentTime[32];
-            if(CurrentTime >= 0.0)
-                Format_Time(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
-            else
-                Format_Time(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+		char szFormattedCurrentTime[32];
+		if(CurrentTime >= 0.0)
+			Format_Time(client, CurrentTime, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
+		else
+			Format_Time(client, 0.0, szFormattedCurrentTime, sizeof szFormattedCurrentTime, true);
 
-            ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
-		}
+		ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
 	}
 }
 
@@ -334,8 +305,6 @@ public void Timer_ConvertStringToData(int client, char szData[512])
 	g_iTimer_Color[client][1][0] = StringToInt(szSlower[0]);
 	g_iTimer_Color[client][1][1] = StringToInt(szSlower[1]);
 	g_iTimer_Color[client][1][2] = StringToInt(szSlower[2]);
-
-	g_iTimer_UpdateRate[client] = StringToInt(szModules[4]);
 }
 
 char[] Timer_ConvertDataToString(int client)
@@ -353,9 +322,6 @@ char[] Timer_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2]);
 	//TYPE 2
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iTimer_Color[client][1][0], g_iTimer_Color[client][1][1], g_iTimer_Color[client][1][2]);
-
-	//UPDATE RATE
-	Format(szData, sizeof szData, "%s%d", szData, g_iTimer_UpdateRate[client]);
 
 	return szData;
 }

@@ -69,11 +69,8 @@ public void OnPluginStart()
 public void OnPluginEnd()
 {
     for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x)) {
-            if (!IsFakeClient(x))
-                SaveCookies(x);
-            SDKUnhook(x, SDKHook_PostThinkPost, Hook_PostThinkPost);
-        }
+        if (IsValidClient(x) && !IsFakeClient(x))
+            SaveCookies(x);
 }
 
 public void OnClientPutInServer(int client)
@@ -87,20 +84,12 @@ public void OnClientPutInServer(int client)
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
     g_iWaitingForResponse[client] = None;
-
-    for(int i = 0; i < 6; i++)
-        g_iCurrentTick[client][i] = 0;
-    
-    SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
 }
 
 public void OnMapStart()
 {
     //TRANSLATIONS
     LoadTranslations("cleanhud.phrases");
-
-    //GET TICKRATE
-    g_fTickrate = (1 / GetTickInterval());
 }
 
 public void OnClientCookiesCached(int client)

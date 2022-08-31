@@ -12,8 +12,6 @@ public Sync_SetDefaults(int client)
 
     for (int i = 0; i < 3; i++)
         g_iSync_Color[client][i] = 255;
-
-    g_iSync_UpdateRate[client] = 0;
 }
 
 public void CHUD_SYNC(int client)
@@ -37,16 +35,8 @@ public void CHUD_SYNC(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Color
-	Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
+	Format(szItem, sizeof szItem, "Color      | %d %d %d\n \n", g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
 	AddMenuItem(menu, "", szItem);
-
-	// Refresh
-	if (g_iSync_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
-	else if (g_iSync_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
-	else
-		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
 
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
@@ -64,8 +54,7 @@ public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param
 			case 0: Sync_Toggle(param1, true);
 			case 1: Sync_Position(param1);
 			case 2: Sync_Color(param1);
-			case 3: Sync_UpdateRate(param1, true);
-			case 4: Export(param1, 2, false, true);
+			case 3: Export(param1, 2, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -210,50 +199,31 @@ public void Sync_Color_Change(int client, int color_type, int color_index)
 public void Sync_Display(int client)
 {   
     if (g_bSync[client] && !IsFakeClient(client)) {
-        if(g_iClientTick[client][2] - g_iCurrentTick[client][2] >= GetUpdateRate(g_iSync_UpdateRate[client])) 
-        {
-            g_iCurrentTick[client][2] += GetUpdateRate(g_iSync_UpdateRate[client]);
 
-            int target;
+		int target;
 
-            //FINAL STRING
-            char szSync[32];
-            
-            if (IsPlayerAlive(client))
-                target = client;
-            else
-                target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+		//FINAL STRING
+		char szSync[32];
+		
+		if (IsPlayerAlive(client))
+			target = client;
+		else
+			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-            if(target == -1)
-                return;
+		if(target == -1)
+			return;
 
-            Format(szSync, sizeof szSync, "%.2f%", surftimer_GetClientSync(target));
-            
-            //COLOR
-            int displayColor[3];
-            displayColor[0] = g_iSync_Color[client][0];
-            displayColor[1] = g_iSync_Color[client][1];
-            displayColor[2] = g_iSync_Color[client][2];
-            
-            SetHudTextParams(g_fSync_POSX[client] == 0.5 ? -1.0 : g_fSync_POSX[client], g_fSync_POSY[client] == 0.5 ? -1.0 : g_fSync_POSY[client], GetUpdateRate(g_iSync_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-            ShowSyncHudText(client, Sync_Handle, szSync);
-        }
+		Format(szSync, sizeof szSync, "%.2f%", surftimer_GetClientSync(target));
+		
+		//COLOR
+		int displayColor[3];
+		displayColor[0] = g_iSync_Color[client][0];
+		displayColor[1] = g_iSync_Color[client][1];
+		displayColor[2] = g_iSync_Color[client][2];
+		
+		SetHudTextParams(g_fSync_POSX[client] == 0.5 ? -1.0 : g_fSync_POSX[client], g_fSync_POSY[client] == 0.5 ? -1.0 : g_fSync_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, Sync_Handle, szSync);
     }
-}
-
-/////
-//UPDATE RATE
-/////
-void Sync_UpdateRate(int client, bool from_menu)
-{
-	if (g_iSync_UpdateRate[client] != 2)
-		g_iSync_UpdateRate[client]++;
-	else
-		g_iSync_UpdateRate[client] = 0;
-
-	if (from_menu) {
-		CHUD_SYNC(client);
-	}
 }
 
 /////
@@ -278,8 +248,6 @@ public void Sync_ConvertStringToData(int client, char szData[512])
 	g_iSync_Color[client][0] = StringToInt(szColor[0]);
 	g_iSync_Color[client][1] = StringToInt(szColor[1]);
 	g_iSync_Color[client][2] = StringToInt(szColor[2]);
-
-	g_iSync_UpdateRate[client] = StringToInt(szModules[3]);
 }
 
 char[] Sync_ConvertDataToString(int client)
@@ -294,9 +262,6 @@ char[] Sync_ConvertDataToString(int client)
 
 	//COLOR
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
-
-	//UPDATE RATE
-	Format(szData, sizeof szData, "%s%d", szData, g_iSync_UpdateRate[client]);
 
 	return szData;
 }

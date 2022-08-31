@@ -26,11 +26,6 @@ int g_iArrayToChange[MAXPLAYERS + 1];
 bool g_bEditing[MAXPLAYERS + 1][7];
 bool g_bEditingColor[MAXPLAYERS + 1][3];
 
-//TICKS
-float g_fTickrate;
-int g_iClientTick[MAXPLAYERS + 1][6];
-int g_iCurrentTick[MAXPLAYERS + 1][6];
-
 //HANDLES
 Handle CSD_Handle = null;
 Handle Keys_Handle = null;
@@ -50,7 +45,6 @@ int g_iCSD_SpeedAxis[MAXPLAYERS + 1];
 float g_fCSD_POSX[MAXPLAYERS + 1];
 float g_fCSD_POSY[MAXPLAYERS + 1];
 int g_iCSD_Color[MAXPLAYERS + 1][3][3]; // client | type(gain,loss,maintain) | value(R,G,B)
-int g_iCSD_UpdateRate[MAXPLAYERS + 1];
 float g_fLastSpeed[MAXPLAYERS +1];
 
 //KEYS
@@ -58,7 +52,6 @@ bool g_bKeys[MAXPLAYERS + 1];
 float g_fKeys_POSX[MAXPLAYERS + 1];
 float g_fKeys_POSY[MAXPLAYERS + 1];
 int g_iKeys_Color[MAXPLAYERS + 1][3];
-int g_iKeys_UpdateRate[MAXPLAYERS + 1];
 int g_iLastButton[MAXPLAYERS +1];
 int g_imouseDir[MAXPLAYERS + 1][2];
 
@@ -67,7 +60,6 @@ bool g_bSync[MAXPLAYERS + 1];
 float g_fSync_POSX[MAXPLAYERS + 1];
 float g_fSync_POSY[MAXPLAYERS + 1];
 int g_iSync_Color[MAXPLAYERS + 1][3];
-int g_iSync_UpdateRate[MAXPLAYERS + 1];
 
 //CHECKPOINTS
 bool g_bCP[MAXPLAYERS + 1];
@@ -84,7 +76,6 @@ bool g_bTimer[MAXPLAYERS + 1];
 float g_fTimer_POSX[MAXPLAYERS + 1];
 float g_fTimer_POSY[MAXPLAYERS + 1];
 int g_iTimer_Color[MAXPLAYERS + 1][2][3]; // client | type(faster,slower) | value(R,G,B)
-int g_iTimer_UpdateRate[MAXPLAYERS + 1];
 
 //MAP INFO
 bool g_bMapInfo[MAXPLAYERS + 1];

@@ -14,8 +14,6 @@ public CSD_SetDefaults(int client)
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			g_iCSD_Color[client][i][j] = 255;
-	
-	g_iCSD_UpdateRate[client] = 0;
 }
 
 public void CHUD_CSD(int client)
@@ -47,15 +45,7 @@ public void CHUD_CSD(int client)
 	AddMenuItem(menu, "", szItem);
 
 	// Color
-	AddMenuItem(menu, "", "Color      |");
-
-	// Refresh
-	if (g_iCSD_UpdateRate[client] == 0)
-		AddMenuItem(menu, "", "Refresh  | SLOW\n \n");
-	else if (g_iCSD_UpdateRate[client] == 1)
-		AddMenuItem(menu, "", "Refresh  | MEDIUM\n \n");
-	else
-		AddMenuItem(menu, "", "Refresh  | FAST\n \n");
+	AddMenuItem(menu, "", "Color      |\n \n");
 
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
@@ -74,8 +64,7 @@ public int CHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 			case 1: CSD_Axis(param1);
 			case 2: CSD_Position(param1);
 			case 3: CSD_Color(param1);
-			case 4: CSD_UpdateRate(param1);
-			case 5: Export(param1, 0, false, true);
+			case 4: Export(param1, 0, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -261,19 +250,6 @@ public void CSD_Color_Change(int client, int color_type, int color_index)
 }
 
 /////
-//UPDATE RATE
-/////
-void CSD_UpdateRate(int client)
-{
-	if (g_iCSD_UpdateRate[client] != 2)
-		g_iCSD_UpdateRate[client]++;
-	else
-		g_iCSD_UpdateRate[client] = 0;
-
-	CHUD_CSD(client);
-}
-
-/////
 //MISC
 ////
 int[] GetSpeedColourCSD(int client, float speed)
@@ -310,34 +286,30 @@ int[] GetSpeedColourCSD(int client, float speed)
 public void CSD_Display(int client)
 {
 	if (g_bCSD[client] && !IsFakeClient(client)) {
-		if(g_iClientTick[client][0] - g_iCurrentTick[client][0] >= GetUpdateRate(g_iCSD_UpdateRate[client]))
-		{
-			g_iCurrentTick[client][0] += GetUpdateRate(g_iCSD_UpdateRate[client]);
 
-			char szSpeed[128];
-			int displayColor[3];
-			int target;
-			displayColor = GetSpeedColourCSD(client, GetSpeed(client));
+		char szSpeed[128];
+		int displayColor[3];
+		int target;
+		displayColor = GetSpeedColourCSD(client, GetSpeed(client));
 
-			if (IsPlayerAlive(client))
-				target = client;
-			else
-				target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+		if (IsPlayerAlive(client))
+			target = client;
+		else
+			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-			if(target == -1)
-				return;
+		if(target == -1)
+			return;
 
-			int target_style = surftimer_GetClientStyle(target);
-			if (target_style == 5)
-				g_fLastSpeed[target] /= 0.5;
-			else if (target_style == 6)
-				g_fLastSpeed[target] /= 1.5;
+		int target_style = surftimer_GetClientStyle(target);
+		if (target_style == 5)
+			g_fLastSpeed[target] /= 0.5;
+		else if (target_style == 6)
+			g_fLastSpeed[target] /= 1.5;
 
-			Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[target]));
+		Format(szSpeed, sizeof(szSpeed), "%d", RoundToNearest(g_fLastSpeed[target]));
 
-			SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? -1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? -1.0 : g_fCSD_POSY[client], GetUpdateRate(g_iCSD_UpdateRate[client]) / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-			ShowSyncHudText(client, CSD_Handle, szSpeed);
-		}
+		SetHudTextParams(g_fCSD_POSX[client] == 0.5 ? -1.0 : g_fCSD_POSX[client], g_fCSD_POSY[client] == 0.5 ? -1.0 : g_fCSD_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, CSD_Handle, szSpeed);
 	}
 }
 
@@ -377,8 +349,6 @@ public void CSD_ConvertStringToData(int client, char szData[512])
 	g_iCSD_Color[client][2][0] = StringToInt(szColorMaintain[0]);
 	g_iCSD_Color[client][2][1] = StringToInt(szColorMaintain[1]);
 	g_iCSD_Color[client][2][2] = StringToInt(szColorMaintain[2]);
-
-	g_iCSD_UpdateRate[client] = StringToInt(szModules[6]);
 }
 
 char[] CSD_ConvertDataToString(int client)
@@ -401,9 +371,6 @@ char[] CSD_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iCSD_Color[client][1][0], g_iCSD_Color[client][1][1], g_iCSD_Color[client][1][2]);
 	//TYPE 3
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iCSD_Color[client][2][0], g_iCSD_Color[client][2][1], g_iCSD_Color[client][2][2]);
-
-	//UPDATE RATE
-	Format(szData, sizeof szData, "%s%d", szData, g_iCSD_UpdateRate[client]);
 
 	return szData;
 }
