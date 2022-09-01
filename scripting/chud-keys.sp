@@ -227,8 +227,8 @@ public void Keys_Display(int client)
 		Keys[3] = (Buttons & IN_MOVERIGHT == IN_MOVERIGHT) ? "D" : "_";
 		Keys[4] = (Buttons & IN_DUCK == IN_DUCK) ? "C" : "_";
 		Keys[5] = (Buttons & IN_JUMP == IN_JUMP) ? "J" : "_";
-		Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "🠔" : "_";
-		Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "🠖" : "_";
+		Keys[6] = (Buttons & IN_LEFT == IN_LEFT) ? "←" : "_";
+		Keys[7] = (Buttons & IN_RIGHT == IN_RIGHT) ? "→" : "_";
 		Keys[8] = (g_imouseDir[target][0] < 0)  ? "<" : "_";
 		Keys[9] = (g_imouseDir[target][0] > 0)  ? ">" : "_";
 
