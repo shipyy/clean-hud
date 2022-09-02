@@ -280,6 +280,7 @@ public void MapInfo_Display(int client)
             surftimer_GetPlayerData(target, bonus, PBTime, client_rank, szClientCountry);
         }
         else {
+            //STAGE FORMAT
             surftimer_GetMapData(szWRName, szWRTime, WRTime);
             surftimer_GetPlayerData(target, 0, PBTime, client_rank, szClientCountry);
 
@@ -315,7 +316,7 @@ public void MapInfo_Display(int client)
                 else
                     Format(szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, "N/A");
 
-                Format(szStageInfo, sizeof szStageInfo, "-- Stage %d --\nPB %s (%s)", stage, szStagePBFormatted, szStageWRDiffFormatted);
+                Format(szStageInfo, sizeof szStageInfo, "Stage %d | %s (%s)", stage, szStagePBFormatted, szStageWRDiffFormatted);
 
                 //FORMAT WRCP STRING WITH NAME
                 //WRCP 00:00.000 (PLAYERNAME)
@@ -331,13 +332,13 @@ public void MapInfo_Display(int client)
             }
         }
 
-        //MAP TIME COMPARISONS
+        //MAP TIME COMPARISONS FORMAT
         //FORMAT SHOW MODE
         //PB
         if ( g_iMapInfo_ShowMode[client] == 2) {
             if (PBTime != -1.0) {
                 Format_Time(client, PBTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
-                Format(szShowModeFormatted, sizeof szShowModeFormatted, "-- MAP --\nPB %s", szShowModeFormatted);
+                Format(szShowModeFormatted, sizeof szShowModeFormatted, "Map | PB %s", szShowModeFormatted);
 
                 //FORMAT COMPARE MODE
                 if ( g_iMapInfo_CompareMode[client] == 2) {
@@ -356,15 +357,15 @@ public void MapInfo_Display(int client)
             else {
                 //FORMAT COMPARE MODE
                 if ( g_iMapInfo_CompareMode[client] == 2) {
-                    Format(szMapInfo, sizeof szMapInfo, "-- MAP --\nPB N/A | PB N/A", szShowModeFormatted);
+                    Format(szMapInfo, sizeof szMapInfo, "Map | PB N/A | PB N/A", szShowModeFormatted);
                 }
                 else if ( g_iMapInfo_CompareMode[client] == 1) {
                     if(WRTime != 9999999.0) {
                         Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                        Format(szMapInfo, sizeof szMapInfo, "-- MAP --\nPB N/A | WR +%s", szCompareModeFormatted);
+                        Format(szMapInfo, sizeof szMapInfo, "Map | PB N/A | WR +%s", szCompareModeFormatted);
                     }
                     else {
-                        Format(szMapInfo, sizeof szMapInfo, "-- MAP --\nPB N/A | WR N/A");
+                        Format(szMapInfo, sizeof szMapInfo, "Map | PB N/A | WR N/A");
                     }
                 }
             }
@@ -375,7 +376,7 @@ public void MapInfo_Display(int client)
 
             if(WRTime != 9999999.0) {
                 Format_Time(client, WRTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
-                Format(szShowModeFormatted, sizeof szShowModeFormatted, "-- MAP --\nWR %s", szShowModeFormatted);
+                Format(szShowModeFormatted, sizeof szShowModeFormatted, "Map | WR %s", szShowModeFormatted);
 
                 //FORMAT COMPARE MODE
                 if ( g_iMapInfo_CompareMode[client] == 2) {
