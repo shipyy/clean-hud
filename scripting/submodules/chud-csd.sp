@@ -22,8 +22,8 @@ public void SUBMODULE_CSD(int client)
 	else
 		AddMenuItem(menu, "", "Toggle   | Off");
 
-	// Position
-	Format(szItem, sizeof szItem, "Position | %d", g_CSD_SUBMODULE_INDEX[client]);
+	// AXIS
+	Format(szItem, sizeof szItem, "Axis | %d", g_iCSD_SpeedAxis[client]);
 	AddMenuItem(menu, "", szItem);
 
 	SetMenuExitBackButton(menu, true);
@@ -37,6 +37,7 @@ public int CHUD_CSD_Handler(Menu menu, MenuAction action, int param1, int param2
 		switch (param2)
 		{
 			case 0: CSD_Toggle(param1);
+			case 1: CSD_Axis(param1);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -110,11 +111,7 @@ int[] GetSpeedColourCSD(int client, float speed)
 public void CSD_Format(int client)
 {
 	if (g_bCSD[client] && !IsFakeClient(client)) {
-
-		char szSpeed[128];
-		int displayColor[3];
 		int target;
-		displayColor = GetSpeedColourCSD(client, GetSpeed(client));
 
 		if (IsPlayerAlive(client))
 			target = client;
@@ -135,4 +132,59 @@ public void CSD_Format(int client)
 	else {
 		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "");
 	}
+}
+
+/////
+//SQL
+/////
+public void db_LoadCSD(int client, int module, int submodule)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
+
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "SELECT * FROM chud_sub_CSD WHERE steamid = '%s';", g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_LoadCSDCallback, szQuery, pack, DBPrio_Low);
+}
+
+public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[Minimal HUD] SQL Error (SQL_LoadCSDCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
+
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	//int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
+
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+
+		g_bCSD[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+		g_iCSD_SpeedAxis[client] = SQL_FetchInt(hndl, 2);
+	}
+	else {
+		char szQuery[1024];
+		Format(szQuery, sizeof szQuery, "INSERT INTO chud_sub_CSD (steamid) VALUES('%s','%i','%i')", g_szSteamID[client], 0, 0);
+		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+
+		CSD_SetDefaults(client);
+	}
+
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (CSD_ID == g_SPEED_SUBMODULES)
+		LoadSettings(client, module + 1);
+}
+
+public void db_updateCSD(int client)
+{
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_CSD SET enabled = '%i', speedaxis = '%i'  WHERE steamid = '%s';", g_bCSD[client] ? '1' : '0', g_iCSD_SpeedAxis[client], g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, _, DBPrio_Low);
 }

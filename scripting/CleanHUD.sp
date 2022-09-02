@@ -23,6 +23,8 @@ public Plugin myinfo =
 #include "chud-globals.sp"
 #include "chud-commands.sp"
 #include "chud-forwards.sp"
+#include "chud-queries.sp"
+#include "chud-sql.sp"
 #include "modules/chud-SPEED.sp"
 #include "submodules/chud-csd.sp"
 #include "submodules/chud-keys.sp"
@@ -40,6 +42,9 @@ public void OnPluginStart()
     if (eGame != Engine_CSGO) {
         SetFailState("[Clean HUD] This plugin is for CSGO only.");
     }
+
+    //DATABASE
+    db_setupDatabase();
 
     //COMMANDS
     CreateCMDS();
@@ -64,6 +69,11 @@ public void OnClientPutInServer(int client)
 {
     if (!IsValidClient(client))
         return;
+
+    GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
+
+    if(!IsFakeClient(client))
+        LoadSettings(client, 0);
     
     //if (!IsFakeClient(x))
         //LOADOPTIONS(X);

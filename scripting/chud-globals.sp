@@ -1,6 +1,53 @@
 /////
+//DEFINES
+/////
+#define CURRENT_MODULE 1
+
+#define MODULES_COUNT 4
+
+#define SPEED_SUBMODULES 1
+int g_SPEED_SUBMODULES = 1;
+#define CSD_ID 1
+char g_szSPEED_SUBMODULE_NAME[][] =
+{
+	"CSD"
+};
+
+/*
+#define TIMER_SUBMODULES 3
+#define Stopwatch_ID 1
+#define Checkpoints_ID 2
+#define Finish_ID 3
+char g_szTIMER_SUBMODULE_NAME[][] =
+{
+	"Stopwatch",
+	"Checkpoints",
+	"Finish"
+};
+
+#define INPUT_SUBMODULES 2
+#define Keys_ID 1
+#define Sync_ID 2
+char g_szINPUT_SUBMODULE_NAME[][] =
+{
+	"Keys",
+	"Sync"
+};
+
+#define INFO_SUBMODULES 1
+#define MapInfo_ID 1
+char g_szINFO_SUBMODULE_NAME[][] =
+{
+	"MapInfo"
+};
+*/
+
+/////
 //GLOBALS
 /////
+
+//DATABASE
+Handle g_hDb = null;
 
 //CHAT RESPONSE
 ResponseType g_iWaitingForResponse[MAXPLAYERS + 1];
@@ -9,9 +56,12 @@ enum ResponseType
   None,
   ChangeColor,
 }
+
 int g_iColorIndex[MAXPLAYERS + 1];
 int g_iColorType[MAXPLAYERS + 1];
 int g_iArrayToChange[MAXPLAYERS + 1];
+
+char g_szSteamID[MAXPLAYERS + 1][32];
 
 //EEDITING
 /*
@@ -28,9 +78,9 @@ bool g_bEditingColor[MAXPLAYERS + 1][3];
 
 //HANDLES
 Handle Handle_SPEED_MODULE = null;
-Handle Handle_TIMER_MODULE = null;
-Handle Handle_INPUT_MODULE = null;
-Handle Handle_INFO_MODULE = null;
+//Handle Handle_TIMER_MODULE = null;
+//Handle Handle_INPUT_MODULE = null;
+//Handle Handle_INFO_MODULE = null;
 
 /////
 //PLAYERS DATA
@@ -46,12 +96,15 @@ Handle Handle_INFO_MODULE = null;
 // 3 -> INPUT MODULE - KEYS | SYNC
 // 4 -> INFO MODULE - MAP/BONUS WR/PB COMPARISONS | STAGE INCDICATOR | WRCP WITH WR NAME AND COMPARISONS
 
-char g_szSPEED_MODULE[MAXPLAYERS + 1][512];
 bool g_bSPEED_MODULE[MAXPLAYERS + 1];
-char g_szSPEED_SUBMODULE_INDEXES[MAXPLAYERS + 1][1];
 float g_fSPEED_MODULE_POSITION[MAXPLAYERS + 1][2];
 int g_iSPEED_MODULE_COLOR[MAXPLAYERS + 1][3][3];
+char g_szSPEED_SUBMODULE_INDEXES_STRINGS[MAXPLAYERS + 1][SPEED_SUBMODULES][32]; // EXAMPLE -- { "1|2|1" } -- this means that this module string would be composed of its 1st sub-module follow byt the 2nd and again 1st module again
+int g_iSPEED_SUBMODULES_INDEXES[MAXPLAYERS + 1][SPEED_SUBMODULES];
 
+char g_szSPEED_MODULE[MAXPLAYERS + 1][512];
+
+/*
 char g_szTIME_MODULE[MAXPLAYERS + 1][512];
 bool g_bTIME_MODULE[MAXPLAYERS + 1];
 char g_szTIME_SUBMODULE_INDEXES[MAXPLAYERS + 1][3];
@@ -63,6 +116,7 @@ char g_szINPUT_SUBMODULE_INDEXES[MAXPLAYERS + 1][2];
 char g_szINFO_MODULE[MAXPLAYERS + 1][512];
 bool g_bINFO_MODULE[MAXPLAYERS + 1];
 char g_szINFO_SUBMODULE_INDEXES[MAXPLAYERS + 1][3];
+*/
 
 /////
 //SUB MODULES

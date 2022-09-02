@@ -103,7 +103,6 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 
 }
 
-/*
 char[] Export(int client, int module, bool just_string, bool from_menu)
 {
 	char szSettings[128];
@@ -112,15 +111,18 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 		switch (module) {
 			case 0 : {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
-					g_bCSD[client] ? 1 : 0, 
-					g_iCSD_SpeedAxis[client], 
-					g_fCSD_POSX[client], g_fCSD_POSY[client],
-					g_iCSD_Color[client][0][0], g_iCSD_Color[client][0][1], g_iCSD_Color[client][0][2],
-					g_iCSD_Color[client][1][0], g_iCSD_Color[client][1][1], g_iCSD_Color[client][1][2],
-					g_iCSD_Color[client][2][0], g_iCSD_Color[client][2][1], g_iCSD_Color[client][2][2]
+					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
+					g_bSPEED_MODULE[client] ? 1 : 0, 
+					g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1],
+					g_iSPEED_MODULE_COLOR[client][0][0], g_iSPEED_MODULE_COLOR[client][0][1], g_iSPEED_MODULE_COLOR[client][0][2],
+					g_iSPEED_MODULE_COLOR[client][1][0], g_iSPEED_MODULE_COLOR[client][1][1], g_iSPEED_MODULE_COLOR[client][1][2],
+					g_iSPEED_MODULE_COLOR[client][2][0], g_iSPEED_MODULE_COLOR[client][2][1], g_iSPEED_MODULE_COLOR[client][2][2],
+					g_iSPEED_SUBMODULES_INDEXES[client][0],
+					g_bCSD[client],
+					g_iCSD_SpeedAxis[client]
 				);
 			}
+			/*
 			case 1: {
 				Format(szSettings, sizeof szSettings, 
 					"%d|%.1f|%.1f|%d|%d|%d", //7
@@ -182,6 +184,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				);
 
 			}
+			*/
 			case 7: {
 				GetClientName(client, szSettings, sizeof szSettings);
 			}
@@ -191,25 +194,29 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 
 			if (from_menu) {
 				switch (module) {
-					case 0 : CHUD_CSD(client);
+					case 0 : SPEED_MENU(client);
+					/*
 					case 1 : CHUD_KEYS(client);
 					case 2 : CHUD_SYNC(client);
 					case 3 : CHUD_CP(client);
 					case 4 : CHUD_TIMER(client);
 					case 5 : CHUD_MAPINFO(client);
 					case 6 : CHUD_FINISH(client);
+					*/
 				}
 			}
 
 			char szModule[32];
 			switch (module) {
-				case 0 : Format(szModule, sizeof szModule, "%s", "Center Speed Display");
+				case 0 : Format(szModule, sizeof szModule, "%s", "Speed Module");
+				/*
 				case 1 : Format(szModule, sizeof szModule, "%s", "Keys");
 				case 2 : Format(szModule, sizeof szModule, "%s", "Sync");
 				case 3 : Format(szModule, sizeof szModule, "%s", "Checkpoints");
 				case 4 : Format(szModule, sizeof szModule, "%s", "Timer");
-				case 5 : Format(szModule, sizeof szModule, "%s", "Map Infoap");
+				case 5 : Format(szModule, sizeof szModule, "%s", "Map Info");
 				case 6 : Format(szModule, sizeof szModule, "%s", "Finish");
+				*/
 			}
 
 			char szClientName[MAX_NAME_LENGTH];
@@ -232,7 +239,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 public void Export_All(int client, bool from_menu)
 {
 	char szSettings[1024];
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < MODULES_COUNT; i++)
 		Format(szSettings, sizeof szSettings, "%s|%s", szSettings, Export(client, i, true, from_menu));
 	
 	//ADD PLAYERNAME
@@ -252,31 +259,34 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 	if (module != -1) {
 		switch (module) {
 			case 0 : {
-				if (fields == 13) {
-					g_bCSD[client] = StringToInt(Modules[0]) == 1 ? true : false;
-					g_iCSD_SpeedAxis[client] = StringToInt(Modules[1]);
-					g_fCSD_POSX[client] = StringToFloat(Modules[2]);
-					g_fCSD_POSY[client] = StringToFloat(Modules[3]);
+				if (fields == 15) {
+					g_bSPEED_MODULE[client] = StringToInt(Modules[0]) == 1 ? true : false;
+					g_fSPEED_MODULE_POSITION[client][0] = StringToFloat(Modules[1]);
+					g_fSPEED_MODULE_POSITION[client][1] = StringToFloat(Modules[2]);
 
-					g_iCSD_Color[client][0][0] = StringToInt(Modules[4]);
-					g_iCSD_Color[client][0][1] = StringToInt(Modules[5]);
-					g_iCSD_Color[client][0][2] = StringToInt(Modules[6]);
+					g_iSPEED_MODULE_COLOR[client][0][0] = StringToInt(Modules[4]);
+					g_iSPEED_MODULE_COLOR[client][0][1] = StringToInt(Modules[5]);
+					g_iSPEED_MODULE_COLOR[client][0][2] = StringToInt(Modules[6]);
 
-					g_iCSD_Color[client][1][0] = StringToInt(Modules[7]);
-					g_iCSD_Color[client][1][1] = StringToInt(Modules[8]);
-					g_iCSD_Color[client][1][2] = StringToInt(Modules[9]);
+					g_iSPEED_MODULE_COLOR[client][1][0] = StringToInt(Modules[7]);
+					g_iSPEED_MODULE_COLOR[client][1][1] = StringToInt(Modules[8]);
+					g_iSPEED_MODULE_COLOR[client][1][2] = StringToInt(Modules[9]);
 
-					g_iCSD_Color[client][2][0] = StringToInt(Modules[10]);
-					g_iCSD_Color[client][2][1] = StringToInt(Modules[11]);
-					g_iCSD_Color[client][2][2] = StringToInt(Modules[12]);
+					g_iSPEED_MODULE_COLOR[client][2][0] = StringToInt(Modules[10]);
+					g_iSPEED_MODULE_COLOR[client][2][1] = StringToInt(Modules[11]);
+					g_iSPEED_MODULE_COLOR[client][2][2] = StringToInt(Modules[12]);
 
-					CPrintToChat(client, "%t" , "Settings_Imported", "Center Speed Display", szPlayerName);
+					for(int i = 0; i < SPEED_SUBMODULES; i++)
+						g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(Modules[i + 13]);
+
+					CPrintToChat(client, "%t" , "Settings_Imported", "SPEED module", szPlayerName);
 
 				}
 				else {
 					CPrintToChat(client, "%t" , "Import_Error");
 				}
 			}
+			/*
 			case 1 : {
 				if (fields == 6) {
 					g_bKeys[client] = StringToInt(Modules[0]) == 1 ? true : false;
@@ -401,9 +411,11 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 					CPrintToChat(client, "%t" , "Import_Error");
 				}
 			}
+			*/
 		}
 	}
 	else {
+		/*
 		if (fields == 70) {
 			//CSD
 			g_bCSD[client] = StringToInt(Modules[0]) == 1 ? true : false;
@@ -512,6 +524,57 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 		else {
 			CPrintToChat(client, "%t" , "Import_Error");
 		}
+		*/
 	}
 }
-*/
+
+public void SaveSettings(int client)
+{
+	db_updateCSD(client);
+	/*
+	db_updateKeys(client);
+	db_updateSync(client);
+	db_updateCP(client);
+	db_updateTimer(client);
+	db_updateMapInfo(client);
+	db_updateFinish(client);
+	*/
+}
+
+public void LoadSettings(int client, int setting_index)
+{
+	switch (setting_index) {
+		case 0: db_LoadSPEED(client);
+		/*
+		case 1: db_LoadKeys(client);
+		case 2: db_LoadSync(client);
+		case 3: db_LoadCP(client);
+		case 4: db_LoadTimer(client);
+		case 5: db_LoadMapInfo(client);
+		case 6: db_LoadFinish(client);
+		*/
+	}
+}
+
+public void LoadSubModules(int client, int module, int submodule)
+{
+	switch (module) {
+		case 1 : {
+			switch (submodule) {
+				case 1 : db_LoadCSD(client, module, submodule);
+			}
+		}
+	}
+}
+
+public int getSubModuleID(int client, int module, char[] szSubModuleString)
+{
+	switch (module) {
+		case 1 : {
+			if (StrContains(szSubModuleString, "CSD", false) == 0)
+				return CSD_ID;
+		}
+	}
+
+	return 0;
+}

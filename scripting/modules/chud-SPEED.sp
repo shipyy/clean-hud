@@ -21,15 +21,23 @@ public void SPEED_MENU(int client)
 	else
 		AddMenuItem(menu, "", "Toggle   | Off");
     
+	// Position
+	Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1]);
+	AddMenuItem(menu, "", szItem);
+
     // Color
 	Format(szItem, sizeof szItem, "Color\n \n");
+	AddMenuItem(menu, "", szItem);
+
+	// FORMAT ORDER
+	Format(szItem, sizeof szItem, "Format Order");
 	AddMenuItem(menu, "", szItem);
 
     // SUB MODULES
 	Format(szItem, sizeof szItem, "Customize Submodules\n \n");
 	AddMenuItem(menu, "", szItem);
 
-    // SUB MODULES
+    // EXPORT
 	Format(szItem, sizeof szItem, "Export");
 	AddMenuItem(menu, "", szItem);
 
@@ -46,8 +54,9 @@ public int SPEED_MENU_Handler(Menu menu, MenuAction action, int param1, int para
 			case 0: SPEED_Toggle(param1);
 			case 1: SPEED_Position(param1);
 			case 2: SPEED_Color(param1);
-			case 3: SPEED_SUBMODULES(param1);
-			case 4: SPEED_Color(param1);
+			case 3: SPEED_FORMATORDER(param1);
+			case 4: SPEED_CUSTOMIZE_SUBMODULES(param1);
+			case 5: Export(param1, 1, false, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -218,10 +227,68 @@ public void SPEED_Color_Change(int client, int color_type, int color_index)
 }
 
 /////
+//FORMAT ORDER
+/////
+public void SPEED_FORMATORDER(int client)
+{
+	Menu menu = CreateMenu(SPEED_FORMATORDER_MENU_Handler);
+
+	for(int i = 0; i < SPEED_SUBMODULES; i++)
+		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[client][getSubModuleID(client, 1, g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i])]);
+
+	SetMenuExitBackButton(menu, true);
+	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+public int SPEED_FORMATORDER_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	if (action == MenuAction_Select)
+	{
+		CHANGE_FORMAT_ID(param1, param2);
+	}
+	else if (action == MenuAction_Cancel)
+		SPEED_MENU(param1);
+	else if (action == MenuAction_End)
+		delete menu;
+
+	return 0;
+}
+
+public void CHANGE_FORMAT_ID(int client, int choice)
+{
+	Menu menu = CreateMenu(CHANGE_FORMAT_ID_MENU_Handler);
+
+	char szBuffer[32];
+
+	for(int i = 0; i < SPEED_SUBMODULES; i++) {
+		Format(szBuffer, sizeof szBuffer, "%d", choice);
+		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[client][1]);
+	}
+
+	SetMenuExitBackButton(menu, true);
+	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+}
+
+public int CHANGE_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	if (action == MenuAction_Select)
+	{
+		char szBuffer[32];
+		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
+		g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2 + 1;
+	}
+	else if (action == MenuAction_Cancel)
+		SPEED_FORMATORDER(param1);
+	else if (action == MenuAction_End)
+		delete menu;
+
+	return 0;
+}
+
+/////
 //SUBMODULES
 /////
-
-public void SPEED_SUBMODULES(int client)
+public void SPEED_CUSTOMIZE_SUBMODULES(int client)
 {
     Menu menu = CreateMenu(SPEED_SUBMODULES_Handler);
 
@@ -245,7 +312,6 @@ public int SPEED_SUBMODULES_Handler(Menu menu, MenuAction action, int param1, in
 
 	return 0;
 }
-
 
 /////
 //DISPLAY
@@ -295,4 +361,77 @@ public void SPEED_DISPLAY(int client)
         SetHudTextParams(posx, posy, 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
         ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
     }
+}
+
+public void db_LoadSPEED(int client)
+{
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "SELECT * FROM chud_SPEED WHERE steamid = '%s';", g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_LoadSPEEDCallback, szQuery, client, DBPrio_Low);
+
+	//LoadSubModules(client, 1, 1);
+}
+
+public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error, any client)
+{
+	if (hndl == null)
+	{
+		LogError("[Minimal HUD] SQL Error (SQL_LoadSPEEDCallback): %s", error);
+		return;
+	}
+
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
+
+		g_bSPEED_MODULE[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+
+		//POSITION
+		char SPEED_Pos[32];
+		char SPEED_Pos_SPLIT[2][16];
+		SQL_FetchString(hndl, 2, SPEED_Pos, sizeof SPEED_Pos);
+		ExplodeString(SPEED_Pos, "|", SPEED_Pos_SPLIT, sizeof SPEED_Pos_SPLIT, sizeof SPEED_Pos_SPLIT[]);
+		g_fSPEED_MODULE_POSITION[client][0] = StringToFloat(SPEED_Pos_SPLIT[0]);
+		g_fSPEED_MODULE_POSITION[client][1] = StringToFloat(SPEED_Pos_SPLIT[1]);
+
+		char SPEEDColor_SPLIT[3][12];
+		//GAIN COLOR
+		char SPEEDColor_Gain[32];
+		SQL_FetchString(hndl, 3, SPEEDColor_Gain, sizeof SPEEDColor_Gain);
+		ExplodeString(SPEEDColor_Gain, "|", SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT[]);
+		g_iSPEED_MODULE_COLOR[client][0][0] = StringToInt(SPEEDColor_SPLIT[0]);
+		g_iSPEED_MODULE_COLOR[client][0][1] = StringToInt(SPEEDColor_SPLIT[1]);
+		g_iSPEED_MODULE_COLOR[client][0][2] = StringToInt(SPEEDColor_SPLIT[2]);
+
+		//LOSS COLOR
+		char SPEEDColor_Loss[32];
+		SQL_FetchString(hndl, 4, SPEEDColor_Loss, sizeof SPEEDColor_Loss);
+		ExplodeString(SPEEDColor_Loss, "|", SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT[]);
+		g_iSPEED_MODULE_COLOR[client][1][0] = StringToInt(SPEEDColor_SPLIT[0]);
+		g_iSPEED_MODULE_COLOR[client][1][1] = StringToInt(SPEEDColor_SPLIT[1]);
+		g_iSPEED_MODULE_COLOR[client][1][2] = StringToInt(SPEEDColor_SPLIT[2]);
+
+		//MAINTAIN COLOR
+		char SPEEDColor_Maintain[32];
+		SQL_FetchString(hndl, 5, SPEEDColor_Maintain, sizeof SPEEDColor_Maintain);
+		ExplodeString(SPEEDColor_Maintain, "|", SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT, sizeof SPEEDColor_SPLIT[]);
+		g_iSPEED_MODULE_COLOR[client][2][0] = StringToInt(SPEEDColor_SPLIT[0]);
+		g_iSPEED_MODULE_COLOR[client][2][1] = StringToInt(SPEEDColor_SPLIT[1]);
+		g_iSPEED_MODULE_COLOR[client][2][2] = StringToInt(SPEEDColor_SPLIT[2]);
+
+		//FORMAT ORDER
+		char SPEEDFormatOrder[32];
+		char SPEEDFormatOrder_SPLIT[SPEED_SUBMODULES][12];
+		SQL_FetchString(hndl, 6, SPEEDFormatOrder, sizeof SPEEDFormatOrder);
+		ExplodeString(SPEEDFormatOrder, "|", SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT[]);
+		for(int i = 0; i < SPEED_SUBMODULES; i++)
+			g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(SPEEDColor_SPLIT[0]);
+	}
+	else {
+		char szQuery[1024];
+		Format(szQuery, sizeof szQuery, "INSERT INTO chud_SPEED (steamid) VALUES('%s')", g_szSteamID[client]);
+		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+
+		CSD_SetDefaults(client);
+	}
+
+	//LoadSettings(client, 1);
 }
