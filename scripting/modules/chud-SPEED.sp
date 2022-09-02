@@ -320,46 +320,53 @@ public void SPEED_DISPLAY(int client)
 {
     if (g_bSPEED_MODULE[client] && !IsFakeClient(client)) {
 
-        CSD_Format(client);
+		CSD_Format(client);
 
-        /*
-        this array would contain the submodules string ?
-        char g_SPEED_SUBMODULE_INDEXES[2]
+		/*
+		this array would contain the submodules string ?
+		char g_SPEED_SUBMODULE_INDEXES[2]
 
-        submodules index
-        1 speed
-        2 sync
+		submodules index
+		1 speed
+		2 sync
 
-        g_szSPEED_SUBMODULE_INDEXES[0] = SPEED
-        g_szSPEED_SUBMODULE_INDEXES[1] = SYNC
+		g_szSPEED_SUBMODULE_INDEXES[0] = SPEED
+		g_szSPEED_SUBMODULE_INDEXES[1] = SYNC
 
-        SO WHEN USER WOULD SWAP POSITION IN SUBMODULE MENU WE JUST SWAP/REPLACE THE STRINGS
-        //REPLACE
-        THIS CASE WE SIMPLY REPLACE THE SELECTED INDEX WITH THE SUBMODULE STRING
+		SO WHEN USER WOULD SWAP POSITION IN SUBMODULE MENU WE JUST SWAP/REPLACE THE STRINGS
+		//REPLACE
+		THIS CASE WE SIMPLY REPLACE THE SELECTED INDEX WITH THE SUBMODULE STRING
 
-        //SWAP
-        THIS CASE WE SWAP SUBMODULE STRINGS WITH THE ONE REQUESTED TO CHANGE
-        -- EXAMPLE --
-        SPEED IS INDEX 1
-        SYNC IS INDEX 2
-        - WE FIRST GET THE SPEED STRING, STORE IT
-        - WE GET THE NEW SUBMODULE SELECTED STRING AND STORE IT IN AUX VAR
-        - WE REPLACE THE NEW SELECTED SUBMODULE WITH THE SPEED STRING
-        - WE REPLACE THE SUBMODULE WHERE SPEED WAS AND REPLACE IT WITH THE VALUE OF THE AUX VAR
+		//SWAP
+		THIS CASE WE SWAP SUBMODULE STRINGS WITH THE ONE REQUESTED TO CHANGE
+		-- EXAMPLE --
+		SPEED IS INDEX 1
+		SYNC IS INDEX 2
+		- WE FIRST GET THE SPEED STRING, STORE IT
+		- WE GET THE NEW SUBMODULE SELECTED STRING AND STORE IT IN AUX VAR
+		- WE REPLACE THE NEW SELECTED SUBMODULE WITH THE SPEED STRING
+		- WE REPLACE THE SUBMODULE WHERE SPEED WAS AND REPLACE IT WITH THE VALUE OF THE AUX VAR
 
 
-        for(int i = 0; i < g_SPEED_MODULE_INDEXES.Length; i++) {
-            Format(szSPEED_MODULE, sizeof szSPEED_MODULE, "%s\n%s", szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES[i])
-        }
-        */
-        int displayColor[3];
-        displayColor = GetSpeedColourCSD(client, GetSpeed(client));
+		for(int i = 0; i < g_SPEED_MODULE_INDEXES.Length; i++) {
+			Format(szSPEED_MODULE, sizeof szSPEED_MODULE, "%s\n%s", szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES[i])
+		}
+		*/
 
-        float  posx = g_fSPEED_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][0];
-        float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
+		for(int i = 0; i < SPEED_SUBMODULES; i++)
+			if (i == 0)
+				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s", g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
+			else
+				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s\n%s", g_szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
 
-        SetHudTextParams(posx, posy, 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-        ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
+		int displayColor[3];
+		displayColor = GetSpeedColourCSD(client, GetSpeed(client));
+
+		float  posx = g_fSPEED_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][0];
+		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
+
+		SetHudTextParams(posx, posy, 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
     }
 }
 

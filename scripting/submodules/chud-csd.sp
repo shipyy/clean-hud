@@ -128,6 +128,11 @@ public void CSD_Format(int client)
 			g_fLastSpeed[target] /= 1.5;
 
 		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "%d", RoundToNearest(g_fLastSpeed[target]));
+
+		//CHECK IF THIS SUBMODULES ID (CSD_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
+		for(int i = 0; i < SPEED_SUBMODULES; i++)
+			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == CSD_ID)
+				Format(g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szSPEED_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szCSD_SUBMODULE[client]);
 	}
 	else {
 		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "");
