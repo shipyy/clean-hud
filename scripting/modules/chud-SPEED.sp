@@ -2,6 +2,19 @@ public Init_SPEED_MODULE(){
 	Handle_SPEED_MODULE = CreateHudSynchronizer();
 }
 
+public SPEED_SetDefaults(int client)
+{
+	PrintToServer("Loading SPEED Defaults!");
+
+	g_bSPEED_MODULE[client] = false;
+	g_fSPEED_MODULE_POSITION[client][0] = 0.5;
+	g_fSPEED_MODULE_POSITION[client][1] = 0.5;
+	
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			g_iSPEED_MODULE_COLOR[client][i][j] = 255;
+}
+
 /////
 //MENU
 /////
@@ -375,8 +388,6 @@ public void db_LoadSPEED(int client)
 	char szQuery[1024];
 	Format(szQuery, sizeof szQuery, "SELECT * FROM chud_SPEED WHERE steamid = '%s';", g_szSteamID[client]);
 	SQL_TQuery(g_hDb, SQL_LoadSPEEDCallback, szQuery, client, DBPrio_Low);
-
-	//LoadSubModules(client, 1, 1);
 }
 
 public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error, any client)
@@ -437,8 +448,8 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 		Format(szQuery, sizeof szQuery, "INSERT INTO chud_SPEED (steamid) VALUES('%s')", g_szSteamID[client]);
 		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
-		CSD_SetDefaults(client);
+		SPEED_SetDefaults(client);
 	}
 
-	//LoadSettings(client, 1);
+	LoadSubModules(client, 1, 1);
 }

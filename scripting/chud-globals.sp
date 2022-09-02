@@ -99,9 +99,9 @@ Handle Handle_SPEED_MODULE = null;
 bool g_bSPEED_MODULE[MAXPLAYERS + 1];
 float g_fSPEED_MODULE_POSITION[MAXPLAYERS + 1][2];
 int g_iSPEED_MODULE_COLOR[MAXPLAYERS + 1][3][3];
+
 char g_szSPEED_SUBMODULE_INDEXES_STRINGS[MAXPLAYERS + 1][SPEED_SUBMODULES][32]; // EXAMPLE -- { "1|2|1" } -- this means that this module string would be composed of its 1st sub-module follow byt the 2nd and again 1st module again
 int g_iSPEED_SUBMODULES_INDEXES[MAXPLAYERS + 1][SPEED_SUBMODULES];
-
 char g_szSPEED_MODULE[MAXPLAYERS + 1][512];
 
 /*

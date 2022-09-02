@@ -166,7 +166,7 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 	ResetPack(pack);
 	int client = ReadPackCell(pack);
 	int module = ReadPackCell(pack);
-	//int submodule = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
 	CloseHandle(pack);
 
 	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
@@ -185,6 +185,8 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
 	if (CSD_ID == g_SPEED_SUBMODULES)
 		LoadSettings(client, module + 1);
+	else
+		LoadSubModules(client, module, submodule + 1);
 }
 
 public void db_updateCSD(int client)
