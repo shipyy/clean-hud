@@ -15,6 +15,9 @@ int g_iColorIndex[MAXPLAYERS + 1];
 int g_iColorType[MAXPLAYERS + 1];
 int g_iArrayToChange[MAXPLAYERS + 1];
 
+bool g_bEditing[MAXPLAYERS + 1][7];
+bool g_bEditingColor[MAXPLAYERS + 1][3];
+
 //HANDLES
 Handle CSD_Handle;
 Handle Keys_Handle;
