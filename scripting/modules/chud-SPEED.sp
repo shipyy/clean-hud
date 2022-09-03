@@ -73,7 +73,7 @@ public int SPEED_MENU_Handler(Menu menu, MenuAction action, int param1, int para
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		delete menu;
+		CHUD_MainMenu_Display(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -213,6 +213,58 @@ public void SPEED_Color_Change_MENU(int client, int type)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
+int[] GetSpeedColour_Float(int client, float speed)
+{	
+	int displayColor[3] = {255, 255, 255};
+	
+	//gaining speed or mainting
+	if (g_fLastSpeed[client] < speed || (g_fLastSpeed[client] == speed && speed != 0.0) ) {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][0][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][0][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][0][2];
+	}
+	//losing speed
+	else if (g_fLastSpeed[client] > speed ) {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][1][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][1][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][1][2];
+	}
+	//not moving (speed == 0)
+	else {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][2][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][2][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][2][2];
+	}
+
+	return displayColor;
+}
+
+int[] GetSpeedColour_Int(int client, int speed)
+{	
+	int displayColor[3] = {255, 255, 255};
+	
+	//gaining speed or mainting
+	if (RoundToNearest(g_fLastSpeed[client]) < speed || (RoundToNearest(g_fLastSpeed[client]) == speed && speed != 0.0) ) {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][0][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][0][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][0][2];
+	}
+	//losing speed
+	else if (RoundToNearest(g_fLastSpeed[client]) > speed ) {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][1][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][1][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][1][2];
+	}
+	//not moving (speed == 0)
+	else {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][2][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][2][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][2][2];
+	}
+
+	return displayColor;
+}
+
 public int SPEED_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select){
@@ -247,7 +299,7 @@ public void SPEED_FORMATORDER(int client)
 	Menu menu = CreateMenu(SPEED_FORMATORDER_MENU_Handler);
 
 	for(int i = 0; i < SPEED_SUBMODULES; i++)
-		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[client][getSubModuleID(client, 1, g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i])]);
+		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i])]);
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -273,9 +325,12 @@ public void CHANGE_FORMAT_ID(int client, int choice)
 
 	char szBuffer[32];
 
+	Format(szBuffer, sizeof szBuffer, "%d", choice);
+	AddMenuItem(menu, szBuffer, "None\n \n");
+
 	for(int i = 0; i < SPEED_SUBMODULES; i++) {
 		Format(szBuffer, sizeof szBuffer, "%d", choice);
-		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[client][1]);
+		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[0]);
 	}
 
 	SetMenuExitBackButton(menu, true);
@@ -288,7 +343,8 @@ public int CHANGE_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int param
 	{
 		char szBuffer[32];
 		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-		g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2 + 1;
+		g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2;
+		CHANGE_FORMAT_ID(param1, StringToInt(szBuffer));
 	}
 	else if (action == MenuAction_Cancel)
 		SPEED_FORMATORDER(param1);
@@ -332,7 +388,6 @@ public int SPEED_SUBMODULES_Handler(Menu menu, MenuAction action, int param1, in
 public void SPEED_DISPLAY(int client)
 {
     if (g_bSPEED_MODULE[client] && !IsFakeClient(client)) {
-
 		CSD_Format(client);
 
 		/*
@@ -366,14 +421,21 @@ public void SPEED_DISPLAY(int client)
 		}
 		*/
 
+		//CHECK FOR NON-SELECTED SUBMODULES
 		for(int i = 0; i < SPEED_SUBMODULES; i++)
+			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == 0)
+				Format(g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szSPEED_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+
+
+		for(int i = 0; i < SPEED_SUBMODULES; i++) {
 			if (i == 0)
 				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s", g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
 			else
 				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s\n%s", g_szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
+		}
 
 		int displayColor[3];
-		displayColor = GetSpeedColourCSD(client, GetSpeed(client));
+		displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 
 		float  posx = g_fSPEED_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][0];
 		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
@@ -441,7 +503,7 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 		SQL_FetchString(hndl, 6, SPEEDFormatOrder, sizeof SPEEDFormatOrder);
 		ExplodeString(SPEEDFormatOrder, "|", SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT[]);
 		for(int i = 0; i < SPEED_SUBMODULES; i++)
-			g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(SPEEDColor_SPLIT[0]);
+			g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(SPEEDFormatOrder_SPLIT[0]);
 	}
 	else {
 		char szQuery[1024];
@@ -459,7 +521,7 @@ public void db_SET_SPEED(int client)
 	char szQuery[1024];
 
 	char szPosition[32];
-	char szPosX[4], szPosY[4];
+	char szPosX[8], szPosY[8];
 	char szGain[32];
 	char szLoss[32];
 	char szMaintain[32];
@@ -471,24 +533,24 @@ public void db_SET_SPEED(int client)
 
 	//POSITION
 	Format(szPosX, sizeof szPosX, "%.1f", g_fSPEED_MODULE_POSITION[client][0]);
-	Format(szPosX, sizeof szPosX, "%.1f", g_fSPEED_MODULE_POSITION[client][1]);
+	Format(szPosY, sizeof szPosY, "%.1f", g_fSPEED_MODULE_POSITION[client][1]);
 	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
 
 	//COLORS
 	IntToString(g_iSPEED_MODULE_COLOR[client][0][0], szGain_R, sizeof szGain_R);
 	IntToString(g_iSPEED_MODULE_COLOR[client][0][1], szGain_G, sizeof szGain_G);
 	IntToString(g_iSPEED_MODULE_COLOR[client][0][2], szGain_B, sizeof szGain_B);
-	Format(szGain, sizeof szGain, "%d|%d|%d", szGain_R, szGain_G, szGain_B);
+	Format(szGain, sizeof szGain, "%s|%s|%s", szGain_R, szGain_G, szGain_B);
 
 	IntToString(g_iSPEED_MODULE_COLOR[client][1][0], szLoss_R, sizeof szLoss_R);
 	IntToString(g_iSPEED_MODULE_COLOR[client][1][1], szLoss_G, sizeof szLoss_G);
 	IntToString(g_iSPEED_MODULE_COLOR[client][1][2], szLoss_B, sizeof szLoss_B);
-	Format(szLoss, sizeof szLoss, "%d|%d|%d", szLoss_R, szLoss_G, szLoss_B);
+	Format(szLoss, sizeof szLoss, "%s|%s|%s", szLoss_R, szLoss_G, szLoss_B);
 
 	IntToString(g_iSPEED_MODULE_COLOR[client][2][0], szMaintain_R, sizeof szMaintain_R);
 	IntToString(g_iSPEED_MODULE_COLOR[client][2][1], szMaintain_G, sizeof szMaintain_G);
 	IntToString(g_iSPEED_MODULE_COLOR[client][2][2], szMaintain_B, sizeof szMaintain_B);
-	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
+	Format(szMaintain, sizeof szMaintain, "%s|%s|%s", szMaintain_R, szMaintain_G, szMaintain_B);
 
 	//FORMAT ORDER BY ID
 	for(int i = 0; i < SPEED_SUBMODULES; i++) {

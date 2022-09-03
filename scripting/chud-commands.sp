@@ -64,12 +64,12 @@ public Action Client_Import(int client, int args)
     if (args == 3) {
         GetCmdArg(2, szImportSettings, sizeof szImportSettings);
         GetCmdArg(3, szPlayerName, sizeof szPlayerName);
-        //Import(client, GetCmdArgInt(1), szImportSettings, szPlayerName);
+        Import(client, GetCmdArgInt(1), szImportSettings, szPlayerName);
     }
     else {
         GetCmdArg(1, szImportSettings, sizeof szImportSettings);
         GetCmdArg(2, szPlayerName, sizeof szPlayerName);
-        //Import(client, -1, szImportSettings, szPlayerName);
+        Import(client, -1, szImportSettings, szPlayerName);
     }
     
     return Plugin_Handled;

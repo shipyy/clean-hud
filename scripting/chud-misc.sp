@@ -109,9 +109,9 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 
 	if (module != -1){
 		switch (module) {
-			case 0 : {
+			case 1 : {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
+					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
 					g_bSPEED_MODULE[client] ? 1 : 0, 
 					g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1],
 					g_iSPEED_MODULE_COLOR[client][0][0], g_iSPEED_MODULE_COLOR[client][0][1], g_iSPEED_MODULE_COLOR[client][0][2],
@@ -256,28 +256,35 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 	char Modules[74][8];
 	int fields = ExplodeString(szImportSettings, "|", Modules, sizeof Modules, sizeof Modules[]);
 
+	PrintToChatAll("module input %d ", module);
+
 	if (module != -1) {
 		switch (module) {
-			case 0 : {
+			case 1 : {
 				if (fields == 15) {
 					g_bSPEED_MODULE[client] = StringToInt(Modules[0]) == 1 ? true : false;
 					g_fSPEED_MODULE_POSITION[client][0] = StringToFloat(Modules[1]);
 					g_fSPEED_MODULE_POSITION[client][1] = StringToFloat(Modules[2]);
 
-					g_iSPEED_MODULE_COLOR[client][0][0] = StringToInt(Modules[4]);
-					g_iSPEED_MODULE_COLOR[client][0][1] = StringToInt(Modules[5]);
-					g_iSPEED_MODULE_COLOR[client][0][2] = StringToInt(Modules[6]);
+					g_iSPEED_MODULE_COLOR[client][0][0] = StringToInt(Modules[3]);
+					g_iSPEED_MODULE_COLOR[client][0][1] = StringToInt(Modules[4]);
+					g_iSPEED_MODULE_COLOR[client][0][2] = StringToInt(Modules[5]);
 
-					g_iSPEED_MODULE_COLOR[client][1][0] = StringToInt(Modules[7]);
-					g_iSPEED_MODULE_COLOR[client][1][1] = StringToInt(Modules[8]);
-					g_iSPEED_MODULE_COLOR[client][1][2] = StringToInt(Modules[9]);
+					g_iSPEED_MODULE_COLOR[client][1][0] = StringToInt(Modules[6]);
+					g_iSPEED_MODULE_COLOR[client][1][1] = StringToInt(Modules[7]);
+					g_iSPEED_MODULE_COLOR[client][1][2] = StringToInt(Modules[8]);
 
-					g_iSPEED_MODULE_COLOR[client][2][0] = StringToInt(Modules[10]);
-					g_iSPEED_MODULE_COLOR[client][2][1] = StringToInt(Modules[11]);
-					g_iSPEED_MODULE_COLOR[client][2][2] = StringToInt(Modules[12]);
+					g_iSPEED_MODULE_COLOR[client][2][0] = StringToInt(Modules[9]);
+					g_iSPEED_MODULE_COLOR[client][2][1] = StringToInt(Modules[10]);
+					g_iSPEED_MODULE_COLOR[client][2][2] = StringToInt(Modules[11]);
 
+					//1 SUBMODULE
 					for(int i = 0; i < SPEED_SUBMODULES; i++)
-						g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(Modules[i + 13]);
+						g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(Modules[i + 12]);
+
+					g_bCSD[client] = StringToInt(Modules[13]) == 1 ? true : false;
+					g_iCSD_SpeedAxis[client] = StringToInt(Modules[14]);
+
 
 					CPrintToChat(client, "%t" , "Settings_Imported", "SPEED module", szPlayerName);
 
@@ -584,8 +591,9 @@ public int getSubModuleID(int client, int module, char[] szSubModuleString)
 {
 	switch (module) {
 		case 1 : {
-			if (StrContains(szSubModuleString, "CSD", false) == 0)
+			if (StrContains(szSubModuleString, "CSD", false) == 0) {
 				return CSD_ID;
+			}
 		}
 	}
 

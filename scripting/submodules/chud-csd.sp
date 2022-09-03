@@ -75,37 +75,6 @@ void CSD_Axis(int client)
 }
 
 /////
-//MISC
-////
-int[] GetSpeedColourCSD(int client, float speed)
-{	
-	int displayColor[3] = {255, 255, 255};
-	
-	//gaining speed or mainting
-	if (g_fLastSpeed[client] < speed || (g_fLastSpeed[client] == speed && speed != 0.0) ) {
-		displayColor[0] = g_szSPEED_MODULE[client][0][0];
-		displayColor[1] = g_szSPEED_MODULE[client][0][1];
-		displayColor[2] = g_szSPEED_MODULE[client][0][2];
-	}
-	//losing speed
-	else if (g_fLastSpeed[client] > speed ) {
-		displayColor[0] = g_szSPEED_MODULE[client][1][0];
-		displayColor[1] = g_szSPEED_MODULE[client][1][1];
-		displayColor[2] = g_szSPEED_MODULE[client][1][2];
-	}
-	//not moving (speed == 0)
-	else {
-		displayColor[0] = g_szSPEED_MODULE[client][2][0];
-		displayColor[1] = g_szSPEED_MODULE[client][2][1];
-		displayColor[2] = g_szSPEED_MODULE[client][2][2];
-	}
-
-	g_fLastSpeed[client] = speed;
-
-	return displayColor;
-}
-
-/////
 //DISPLAY
 /////
 public void CSD_Format(int client)
@@ -115,9 +84,12 @@ public void CSD_Format(int client)
 
 		if (IsPlayerAlive(client))
 			target = client;
-		else
+		else {
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
+			g_fLastSpeed[target] = GetSpeed(target);
+		}
+		
 		if(target == -1)
 			return;
 
@@ -130,9 +102,10 @@ public void CSD_Format(int client)
 		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "%d", RoundToNearest(g_fLastSpeed[target]));
 
 		//CHECK IF THIS SUBMODULES ID (CSD_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
-		for(int i = 0; i < SPEED_SUBMODULES; i++)
+		for(int i = 0; i < SPEED_SUBMODULES; i++) {
 			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == CSD_ID)
 				Format(g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szSPEED_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szCSD_SUBMODULE[client]);
+		}
 	}
 	else {
 		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "");

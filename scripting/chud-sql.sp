@@ -5,21 +5,21 @@
 public void db_setupDatabase()
 {
 	char szError[255];
-	g_hDb = SQL_Connect("minimalhud", false, szError, 255);
+	g_hDb = SQL_Connect("cleanhud", false, szError, 255);
 
 	if (g_hDb == null)
-		SetFailState("[Minimal HUD] Unable to connect to database (%s)", szError);
+		SetFailState("[Clean HUD] Unable to connect to database (%s)", szError);
 
 	char szIdent[8];
 	SQL_ReadDriver(g_hDb, szIdent, 8);
 
 	if (strcmp(szIdent, "mysql", false) != 0) {
-		SetFailState("[Minimal HUD] Invalid database type");
+		SetFailState("[Clean HUD] Invalid database type");
 	}
 
 	// If tables haven't been created yet.
 	SQL_LockDatabase(g_hDb);
-	if (!SQL_FastQuery(g_hDb, "SELECT enabled FROM mh_CSD LIMIT 1"))
+	if (!SQL_FastQuery(g_hDb, "SELECT enabled FROM chud_SPEED LIMIT 1"))
 	{
 		SQL_UnlockDatabase(g_hDb);
 		db_createTables();
