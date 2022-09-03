@@ -453,3 +453,53 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 
 	LoadSubModules(client, 1, 1);
 }
+
+public void db_updateSPEED(int client)
+{
+	char szQuery[1024];
+
+	char szPosition[32];
+	char szPosX[4], szPosY[4];
+	char szGain[32];
+	char szLoss[32];
+	char szMaintain[32];
+	char szGain_R[3], szGain_G[3], szGain_B[3];
+	char szLoss_R[3], szLoss_G[3], szLoss_B[3];
+	char szMaintain_R[3], szMaintain_G[3], szMaintain_B[3];
+	char szFormatOrder[32];
+	char szFormatOrder_temp[32];
+
+	//POSITION
+	Format(szPosX, sizeof szPosX, "%.1f", g_fSPEED_MODULE_POSITION[client][0]);
+	Format(szPosX, sizeof szPosX, "%.1f", g_fSPEED_MODULE_POSITION[client][1]);
+	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
+
+	//COLORS
+	IntToString(g_iSPEED_MODULE_COLOR[client][0][0], szGain_R, sizeof szGain_R);
+	IntToString(g_iSPEED_MODULE_COLOR[client][0][1], szGain_G, sizeof szGain_G);
+	IntToString(g_iSPEED_MODULE_COLOR[client][0][2], szGain_B, sizeof szGain_B);
+	Format(szGain, sizeof szGain, "%d|%d|%d", szGain_R, szGain_G, szGain_B);
+
+	IntToString(g_iSPEED_MODULE_COLOR[client][1][0], szLoss_R, sizeof szLoss_R);
+	IntToString(g_iSPEED_MODULE_COLOR[client][1][1], szLoss_G, sizeof szLoss_G);
+	IntToString(g_iSPEED_MODULE_COLOR[client][1][2], szLoss_B, sizeof szLoss_B);
+	Format(szLoss, sizeof szLoss, "%d|%d|%d", szLoss_R, szLoss_G, szLoss_B);
+
+	IntToString(g_iSPEED_MODULE_COLOR[client][2][0], szMaintain_R, sizeof szMaintain_R);
+	IntToString(g_iSPEED_MODULE_COLOR[client][2][1], szMaintain_G, sizeof szMaintain_G);
+	IntToString(g_iSPEED_MODULE_COLOR[client][2][2], szMaintain_B, sizeof szMaintain_B);
+	Format(szMaintain, sizeof szMaintain, "%d|%d|%d", szMaintain_R, szMaintain_G, szMaintain_B);
+
+	//FORMAT ORDER BY ID
+	for(int i = 0; i < SPEED_SUBMODULES; i++) {
+		IntToString(g_iSPEED_MODULE_COLOR[client][client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
+		Format(szFormatOrder_temp, sizeof szFormatOrder_temp, "%s|", szFormatOrder_temp);
+		StrCat(szFormatOrder, sizeof szFormatOrder, szFormatOrder_temp);
+	}
+	for(int i = 0; i < 32; i++)
+		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
+			szFormatOrder[i] = '\0';
+
+	Format(szQuery, sizeof szQuery, "UPDATE chud_SPEED SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bSPEED_MODULE[client] ? '1' : '0', szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+}
