@@ -137,7 +137,7 @@ public void FINISH_Display(int client)
 		if(target == -1)
 			return;
 
-		if (GetGameTime() - g_fLastDifferenceTime[target] < g_iTIMER_HOLDTIME[client]) {
+		if (GetGameTime() - g_fLastDifferenceFinishTime[target] < g_iTIMER_HOLDTIME[client]) {
 			//CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
 			for(int i = 0; i < TIMER_SUBMODULES; i++)
 				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == FINISH_ID)

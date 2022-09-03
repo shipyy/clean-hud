@@ -105,7 +105,7 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 
 char[] Export(int client, int module, bool just_string, bool from_menu)
 {
-	char szSettings[128];
+	char szSettings[256];
 
 	if (module != -1){
 		switch (module) {
@@ -122,15 +122,22 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 					g_iCSD_SpeedAxis[client]
 				);
 			}
-			/*
-			case 1: {
+			case 2: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d", //7
-					g_bKeys[client] ? 1 : 0, 
-					g_fKeys_POSX[client], g_fKeys_POSY[client],
-					g_iKeys_Color[client][0][0], g_iKeys_Color[client][0][1], g_iKeys_Color[client][0][2]
+					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //21
+					g_bTIMER_MODULE[client] ? 1 : 0, 
+					g_fTIMER_MODULE_POSITION[client][0], g_fTIMER_MODULE_POSITION[client][1],
+					g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2],
+					g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2],
+					g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2],
+					g_iTIMER_SUBMODULES_INDEXES[client][0], g_iTIMER_SUBMODULES_INDEXES[client][1], g_iTIMER_SUBMODULES_INDEXES[client][2],
+					g_iTIMER_HOLDTIME[client],
+					g_bStopwatch[client],
+					g_bCP[client], g_iCP_CompareMode[client],
+					g_bFinish[client], g_iFinish_CompareMode[client]
 				);
 			}
+			/*
 			case 2: {
 				Format(szSettings, sizeof szSettings, 
 					"%d|%.1f|%.1f|%d|%d|%d", //7
@@ -194,7 +201,8 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 
 			if (from_menu) {
 				switch (module) {
-					case 0 : SPEED_MENU(client);
+					case 1 : SPEED_MENU(client);
+					case 2 : TIMER_MENU(client);
 					/*
 					case 1 : CHUD_KEYS(client);
 					case 2 : CHUD_SYNC(client);
@@ -208,7 +216,8 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 
 			char szModule[32];
 			switch (module) {
-				case 0 : Format(szModule, sizeof szModule, "%s", "Speed Module");
+				case 1 : Format(szModule, sizeof szModule, "%s", "Speed Module");
+				case 2 : Format(szModule, sizeof szModule, "%s", "Timer Module");
 				/*
 				case 1 : Format(szModule, sizeof szModule, "%s", "Keys");
 				case 2 : Format(szModule, sizeof szModule, "%s", "Sync");
@@ -288,6 +297,42 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 
 					CPrintToChat(client, "%t" , "Settings_Imported", "SPEED module", szPlayerName);
 
+				}
+				else {
+					CPrintToChat(client, "%t" , "Import_Error");
+				}
+			}
+			case 2 : {
+				if (fields == 21) {
+					g_bTIMER_MODULE[client] = StringToInt(Modules[0]) == 1 ? true : false;
+					g_fTIMER_MODULE_POSITION[client][0] = StringToFloat(Modules[1]);
+					g_fTIMER_MODULE_POSITION[client][1] = StringToFloat(Modules[2]);
+
+					g_iTIMER_MODULE_COLOR[client][0][0] = StringToInt(Modules[3]);
+					g_iTIMER_MODULE_COLOR[client][0][1] = StringToInt(Modules[4]);
+					g_iTIMER_MODULE_COLOR[client][0][2] = StringToInt(Modules[5]);
+
+					g_iTIMER_MODULE_COLOR[client][1][0] = StringToInt(Modules[6]);
+					g_iTIMER_MODULE_COLOR[client][1][1] = StringToInt(Modules[7]);
+					g_iTIMER_MODULE_COLOR[client][1][2] = StringToInt(Modules[8]);
+
+					g_iTIMER_MODULE_COLOR[client][2][0] = StringToInt(Modules[9]);
+					g_iTIMER_MODULE_COLOR[client][2][1] = StringToInt(Modules[10]);
+					g_iTIMER_MODULE_COLOR[client][2][2] = StringToInt(Modules[11]);
+
+					//3 SUBMODULES
+					for(int i = 0; i < TIMER_SUBMODULES; i++)
+						g_iTIMER_SUBMODULES_INDEXES[client][i] = StringToInt(Modules[i + 12]);
+
+					g_iTIMER_HOLDTIME[client] = StringToInt(Modules[15]);
+
+					g_bStopwatch[client] = StringToInt(Modules[16]) == 1 ? true : false;
+
+					g_bCP[client] = StringToInt(Modules[17]) == 1 ? true : false;
+					g_iCP_CompareMode[client] = StringToInt(Modules[18]);
+
+					g_bFinish[client] = StringToInt(Modules[19]) == 1 ? true : false;
+					g_iFinish_CompareMode[client] = StringToInt(Modules[20]);
 				}
 				else {
 					CPrintToChat(client, "%t" , "Import_Error");

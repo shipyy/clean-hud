@@ -78,7 +78,7 @@ public int TIMER_MENU_Handler(Menu menu, MenuAction action, int param1, int para
             case 3: TIMER_HoldTime(param1); 
             case 4: TIMER_FORMATORDER(param1);
             case 5: TIMER_CUSTOMIZE_SUBMODULES(param1);
-            case 6: Export(param1, 1, false, true);
+            case 6: Export(param1, 2, false, true);
         }
     }
     else if (action == MenuAction_Cancel) {
