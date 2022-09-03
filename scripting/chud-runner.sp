@@ -24,7 +24,8 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;
 
-	//SAVEOPTOINS(CLIENT);
+	//START SAVING EVERY MODULES AND THEIR SUBMODULES (STARTING AT MODULE INDEX 1)
+	SaveModule(client, 1);
 
 	return Plugin_Handled;
 }

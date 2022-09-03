@@ -528,23 +528,36 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 	}
 }
 
-public void SaveSettings(int client)
+public void SaveModule(int client, int module_index)
 {
-	db_updateCSD(client);
-	/*
-	db_updateKeys(client);
-	db_updateSync(client);
-	db_updateCP(client);
-	db_updateTimer(client);
-	db_updateMapInfo(client);
-	db_updateFinish(client);
-	*/
+	switch (module_index) {
+		case 1: db_SET_SPEED(client);
+		/*
+		db_updateKeys(client);
+		db_updateSync(client);
+		db_updateCP(client);
+		db_updateTimer(client);
+		db_updateMapInfo(client);
+		db_updateFinish(client);
+		*/
+	}
 }
 
-public void LoadSettings(int client, int setting_index)
+public void SaveSubModule(int client, int module, int submodule)
 {
-	switch (setting_index) {
-		case 0: db_LoadSPEED(client);
+	switch (module) {
+		case 1 : {
+			switch (submodule) {
+				case 1 : db_SET_CSD(client, module, submodule);
+			}
+		}
+	}
+}
+
+public void LoadModule(int client, int module_index)
+{
+	switch (module_index) {
+		case 1: db_LoadSPEED(client);
 		/*
 		case 1: db_LoadKeys(client);
 		case 2: db_LoadSync(client);
@@ -556,12 +569,12 @@ public void LoadSettings(int client, int setting_index)
 	}
 }
 
-public void LoadSubModules(int client, int module, int submodule)
+public void LoadSubModule(int client, int module, int submodule)
 {
 	switch (module) {
 		case 1 : {
 			switch (submodule) {
-				case 1 : db_LoadCSD(client, module, submodule);
+				case 1 : db_GET_CSD(client, module, submodule);
 			}
 		}
 	}

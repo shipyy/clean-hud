@@ -73,7 +73,7 @@ public void OnClientPutInServer(int client)
     GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
 
     if(!IsFakeClient(client))
-        LoadSettings(client, 0);
+        LoadModule(client, 1);
     
     //if (!IsFakeClient(x))
         //LOADOPTIONS(X);

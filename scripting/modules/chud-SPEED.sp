@@ -451,10 +451,10 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 		SPEED_SetDefaults(client);
 	}
 
-	LoadSubModules(client, 1, 1);
+	LoadSubModule(client, 1, 1);
 }
 
-public void db_updateSPEED(int client)
+public void db_SET_SPEED(int client)
 {
 	char szQuery[1024];
 
@@ -501,5 +501,18 @@ public void db_updateSPEED(int client)
 			szFormatOrder[i] = '\0';
 
 	Format(szQuery, sizeof szQuery, "UPDATE chud_SPEED SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bSPEED_MODULE[client] ? '1' : '0', szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
+	SQL_TQuery(g_hDb, db_SET_SPEEDCallback, szQuery, client, DBPrio_Low);
+
+}
+
+public void db_SET_SPEEDCallback(Handle owner, Handle hndl, const char[] error, any client)
+{
+	if (hndl == null)
+	{
+		LogError("[SurfTimer] SQL Error (db_SET_SPEEDCallback): %s", error);
+		CloseHandle(client);
+		return;
+	}
+
+	SaveSubModule(client, 1, 1);
 }

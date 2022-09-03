@@ -142,7 +142,7 @@ public void CSD_Format(int client)
 /////
 //SQL
 /////
-public void db_LoadCSD(int client, int module, int submodule)
+public void db_GET_CSD(int client, int module, int submodule)
 {
 	DataPack pack = new DataPack();
 	pack.WriteCell(client);
@@ -184,14 +184,43 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 
 	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
 	if (CSD_ID == g_SPEED_SUBMODULES)
-		LoadSettings(client, module + 1);
+		LoadModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
 	else
-		LoadSubModules(client, module, submodule + 1);
+		LoadSubModule(client, module, submodule + 1);
 }
 
-public void db_updateCSD(int client)
+public void db_SET_CSD(int client, int module, int submodule)
 {
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
+
 	char szQuery[1024];
 	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_CSD SET enabled = '%i', speedaxis = '%i'  WHERE steamid = '%s';", g_bCSD[client] ? '1' : '0', g_iCSD_SpeedAxis[client], g_szSteamID[client]);
-	SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, _, DBPrio_Low);
+	SQL_TQuery(g_hDb, db_SET_CSDCallback, szQuery, pack, DBPrio_Low);
+}
+
+public void db_SET_CSDCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[SurfTimer] SQL Error (db_SET_CSDCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
+
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
+
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (CSD_ID == g_SPEED_SUBMODULES)
+		SaveModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
+	else
+		SaveSubModule(client, module, submodule + 1);
 }
