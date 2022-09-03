@@ -25,11 +25,11 @@ public void CHUD_MainMenu_Display(int client)
     //CSD
     AddMenuItem(menu, "", "SPEED");
 
-    //KEYS
-    AddMenuItem(menu, "", "INPUT");
-
     //Timer
     AddMenuItem(menu, "", "TIMER");
+
+    //KEYS
+    AddMenuItem(menu, "", "INPUT");
 
     //MAP INFO
     AddMenuItem(menu, "", "INFO");
@@ -45,6 +45,7 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
     if (action == MenuAction_Select) {
         switch(param2){
             case 0: SPEED_MENU(param1);
+            case 1: TIMER_MENU(param1);
         }
     }
     else if (action == MenuAction_End) {

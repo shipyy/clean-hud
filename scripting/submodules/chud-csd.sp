@@ -86,8 +86,8 @@ public void CSD_Format(int client)
 			target = client;
 		else {
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-
-			g_fLastSpeed[target] = GetSpeed(target);
+			if (IsValidClient(target))
+				g_fLastSpeed[target] = GetSpeed(target);
 		}
 		
 		if(target == -1)
@@ -131,7 +131,7 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 {
 	if (hndl == null)
 	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadCSDCallback): %s", error);
+		LogError("[Clean HUD] SQL Error (SQL_LoadCSDCallback): %s", error);
 		CloseHandle(pack);
 		return;
 	}
@@ -149,7 +149,7 @@ public void SQL_LoadCSDCallback(Handle owner, Handle hndl, const char[] error, a
 	}
 	else {
 		char szQuery[1024];
-		Format(szQuery, sizeof szQuery, "INSERT INTO chud_sub_CSD (steamid) VALUES('%s','%i','%i')", g_szSteamID[client], 0, 0);
+		Format(szQuery, sizeof szQuery, "INSERT INTO chud_sub_CSD (steamid) VALUES('%s')", g_szSteamID[client]);
 		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
 		CSD_SetDefaults(client);
@@ -171,7 +171,7 @@ public void db_SET_CSD(int client, int module, int submodule)
 	pack.WriteCell(submodule);
 
 	char szQuery[1024];
-	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_CSD SET enabled = '%i', speedaxis = '%i'  WHERE steamid = '%s';", g_bCSD[client] ? '1' : '0', g_iCSD_SpeedAxis[client], g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_CSD SET enabled = '%i', speedaxis = '%i'  WHERE steamid = '%s';", g_bCSD[client] ? 1 : 0, g_iCSD_SpeedAxis[client], g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_CSDCallback, szQuery, pack, DBPrio_Low);
 }
 
@@ -179,7 +179,7 @@ public void db_SET_CSDCallback(Handle owner, Handle hndl, const char[] error, an
 {
 	if (hndl == null)
 	{
-		LogError("[SurfTimer] SQL Error (db_SET_CSDCallback): %s", error);
+		LogError("[Clean HUD] SQL Error (db_SET_CSDCallback): %s", error);
 		CloseHandle(pack);
 		return;
 	}

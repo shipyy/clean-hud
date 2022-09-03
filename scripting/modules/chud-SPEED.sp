@@ -213,6 +213,32 @@ public void SPEED_Color_Change_MENU(int client, int type)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
+public int SPEED_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
+{
+	char szBuffer[32];
+
+	if (action == MenuAction_Select){
+		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
+		SPEED_Color_Change(param1, StringToInt(szBuffer), param2);
+	}
+	else if (action == MenuAction_Cancel)
+		SPEED_Color(param1);
+	else if (action == MenuAction_End)
+		delete menu;
+
+	return 0;
+}
+
+public void SPEED_Color_Change(int client, int color_type, int color_index)
+{
+	CPrintToChat(client, "%t", "Color_Input");
+	g_iArrayToChange[client] = 1;
+	g_iColorIndex[client] = color_index;
+	g_iColorType[client] = color_type;
+	g_iWaitingForResponse[client] = ChangeColor;
+}
+
+/*
 int[] GetSpeedColour_Float(int client, float speed)
 {	
 	int displayColor[3] = {255, 255, 255};
@@ -238,6 +264,7 @@ int[] GetSpeedColour_Float(int client, float speed)
 
 	return displayColor;
 }
+*/
 
 int[] GetSpeedColour_Int(int client, int speed)
 {	
@@ -265,32 +292,6 @@ int[] GetSpeedColour_Int(int client, int speed)
 	return displayColor;
 }
 
-public int SPEED_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	if (action == MenuAction_Select){
-
-		char szBuffer[32];
-		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-
-		SPEED_Color_Change(param1, StringToInt(szBuffer), param2);
-	}
-	else if (action == MenuAction_Cancel)
-		SPEED_Color(param1);
-	else if (action == MenuAction_End)
-		delete menu;
-
-	return 0;
-}
-
-public void SPEED_Color_Change(int client, int color_type, int color_index)
-{
-	CPrintToChat(client, "%t", "Color_Input");
-	g_iArrayToChange[client] = 1;
-	g_iColorIndex[client] = color_index;
-	g_iColorType[client] = color_type;
-	g_iWaitingForResponse[client] = ChangeColor;
-}
-
 /////
 //FORMAT ORDER
 /////
@@ -299,7 +300,7 @@ public void SPEED_FORMATORDER(int client)
 	Menu menu = CreateMenu(SPEED_FORMATORDER_MENU_Handler);
 
 	for(int i = 0; i < SPEED_SUBMODULES; i++)
-		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i])]);
+		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, i)]);
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -309,7 +310,7 @@ public int SPEED_FORMATORDER_MENU_Handler(Menu menu, MenuAction action, int para
 {
 	if (action == MenuAction_Select)
 	{
-		CHANGE_FORMAT_ID(param1, param2);
+		CHANGE_SPEED_FORMAT_ID(param1, param2);
 	}
 	else if (action == MenuAction_Cancel)
 		SPEED_MENU(param1);
@@ -319,9 +320,9 @@ public int SPEED_FORMATORDER_MENU_Handler(Menu menu, MenuAction action, int para
 	return 0;
 }
 
-public void CHANGE_FORMAT_ID(int client, int choice)
+public void CHANGE_SPEED_FORMAT_ID(int client, int choice)
 {
-	Menu menu = CreateMenu(CHANGE_FORMAT_ID_MENU_Handler);
+	Menu menu = CreateMenu(CHANGE_SPEED_FORMAT_ID_MENU_Handler);
 
 	char szBuffer[32];
 
@@ -330,21 +331,22 @@ public void CHANGE_FORMAT_ID(int client, int choice)
 
 	for(int i = 0; i < SPEED_SUBMODULES; i++) {
 		Format(szBuffer, sizeof szBuffer, "%d", choice);
-		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[0]);
+		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, g_iSPEED_SUBMODULES_INDEXES[client][i])]);
 	}
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int CHANGE_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int CHANGE_SPEED_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
 		char szBuffer[32];
 		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-		g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2;
-		CHANGE_FORMAT_ID(param1, StringToInt(szBuffer));
+		if (param2 != 0)
+			g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)-1] = param2;
+		SPEED_FORMATORDER(param1);
 	}
 	else if (action == MenuAction_Cancel)
 		SPEED_FORMATORDER(param1);
@@ -387,39 +389,12 @@ public int SPEED_SUBMODULES_Handler(Menu menu, MenuAction action, int param1, in
 /////
 public void SPEED_DISPLAY(int client)
 {
-    if (g_bSPEED_MODULE[client] && !IsFakeClient(client)) {
+	if (g_bSPEED_MODULE[client] && !IsFakeClient(client)) {
+
+		float posx = g_fSPEED_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][0];
+		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
+
 		CSD_Format(client);
-
-		/*
-		this array would contain the submodules string ?
-		char g_SPEED_SUBMODULE_INDEXES[2]
-
-		submodules index
-		1 speed
-		2 sync
-
-		g_szSPEED_SUBMODULE_INDEXES[0] = SPEED
-		g_szSPEED_SUBMODULE_INDEXES[1] = SYNC
-
-		SO WHEN USER WOULD SWAP POSITION IN SUBMODULE MENU WE JUST SWAP/REPLACE THE STRINGS
-		//REPLACE
-		THIS CASE WE SIMPLY REPLACE THE SELECTED INDEX WITH THE SUBMODULE STRING
-
-		//SWAP
-		THIS CASE WE SWAP SUBMODULE STRINGS WITH THE ONE REQUESTED TO CHANGE
-		-- EXAMPLE --
-		SPEED IS INDEX 1
-		SYNC IS INDEX 2
-		- WE FIRST GET THE SPEED STRING, STORE IT
-		- WE GET THE NEW SUBMODULE SELECTED STRING AND STORE IT IN AUX VAR
-		- WE REPLACE THE NEW SELECTED SUBMODULE WITH THE SPEED STRING
-		- WE REPLACE THE SUBMODULE WHERE SPEED WAS AND REPLACE IT WITH THE VALUE OF THE AUX VAR
-
-
-		for(int i = 0; i < g_SPEED_MODULE_INDEXES.Length; i++) {
-			Format(szSPEED_MODULE, sizeof szSPEED_MODULE, "%s\n%s", szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES[i])
-		}
-		*/
 
 		//CHECK FOR NON-SELECTED SUBMODULES
 		for(int i = 0; i < SPEED_SUBMODULES; i++)
@@ -437,12 +412,9 @@ public void SPEED_DISPLAY(int client)
 		int displayColor[3];
 		displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 
-		float  posx = g_fSPEED_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][0];
-		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
-
 		SetHudTextParams(posx, posy, 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 		ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
-    }
+	}
 }
 
 public void db_LoadSPEED(int client)
@@ -456,7 +428,7 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 {
 	if (hndl == null)
 	{
-		LogError("[Minimal HUD] SQL Error (SQL_LoadSPEEDCallback): %s", error);
+		LogError("[Clean HUD] SQL Error (SQL_LoadSPEEDCallback): %s", error);
 		return;
 	}
 
@@ -525,9 +497,9 @@ public void db_SET_SPEED(int client)
 	char szGain[32];
 	char szLoss[32];
 	char szMaintain[32];
-	char szGain_R[3], szGain_G[3], szGain_B[3];
-	char szLoss_R[3], szLoss_G[3], szLoss_B[3];
-	char szMaintain_R[3], szMaintain_G[3], szMaintain_B[3];
+	char szGain_R[8], szGain_G[8], szGain_B[8];
+	char szLoss_R[8], szLoss_G[8], szLoss_B[8];
+	char szMaintain_R[8], szMaintain_G[8], szMaintain_B[8];
 	char szFormatOrder[32];
 	char szFormatOrder_temp[32];
 
@@ -562,7 +534,7 @@ public void db_SET_SPEED(int client)
 		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
 			szFormatOrder[i] = '\0';
 
-	Format(szQuery, sizeof szQuery, "UPDATE chud_SPEED SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bSPEED_MODULE[client] ? '1' : '0', szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE chud_SPEED SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bSPEED_MODULE[client] ? 1 : 0, szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_SPEEDCallback, szQuery, client, DBPrio_Low);
 
 }
@@ -571,7 +543,7 @@ public void db_SET_SPEEDCallback(Handle owner, Handle hndl, const char[] error, 
 {
 	if (hndl == null)
 	{
-		LogError("[SurfTimer] SQL Error (db_SET_SPEEDCallback): %s", error);
+		LogError("[Clean HUD] SQL Error (db_SET_SPEEDCallback): %s", error);
 		CloseHandle(client);
 		return;
 	}

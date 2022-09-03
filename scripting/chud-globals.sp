@@ -10,21 +10,24 @@ int g_SPEED_SUBMODULES = 1;
 #define CSD_ID 1
 char g_szSPEED_SUBMODULE_NAME[][] =
 {
+	"None",
 	"CSD"
 };
 
-/*
 #define TIMER_SUBMODULES 3
-#define Stopwatch_ID 1
-#define Checkpoints_ID 2
-#define Finish_ID 3
+int g_TIMER_SUBMODULES = 3;
+#define STOPWATCH_ID 1
+#define CHECKPOINTS_ID 2
+#define FINISH_ID 3
 char g_szTIMER_SUBMODULE_NAME[][] =
 {
+	"None",
 	"Stopwatch",
 	"Checkpoints",
 	"Finish"
 };
 
+/*
 #define INPUT_SUBMODULES 2
 #define Keys_ID 1
 #define Sync_ID 2
@@ -73,12 +76,12 @@ char g_szSteamID[MAXPLAYERS + 1][32];
 5 - MAPINFO
 6 - FINISH
 */
-bool g_bEditing[MAXPLAYERS + 1][7];
+bool g_bEditing[MAXPLAYERS + 1][4];
 bool g_bEditingColor[MAXPLAYERS + 1][3];
 
 //HANDLES
 Handle Handle_SPEED_MODULE = null;
-//Handle Handle_TIMER_MODULE = null;
+Handle Handle_TIMER_MODULE = null;
 //Handle Handle_INPUT_MODULE = null;
 //Handle Handle_INFO_MODULE = null;
 
@@ -96,6 +99,7 @@ Handle Handle_SPEED_MODULE = null;
 // 3 -> INPUT MODULE - KEYS | SYNC
 // 4 -> INFO MODULE - MAP/BONUS WR/PB COMPARISONS | STAGE INCDICATOR | WRCP WITH WR NAME AND COMPARISONS
 
+//SPEED MODULE
 bool g_bSPEED_MODULE[MAXPLAYERS + 1];
 float g_fSPEED_MODULE_POSITION[MAXPLAYERS + 1][2];
 int g_iSPEED_MODULE_COLOR[MAXPLAYERS + 1][3][3];
@@ -104,11 +108,17 @@ char g_szSPEED_SUBMODULE_INDEXES_STRINGS[MAXPLAYERS + 1][SPEED_SUBMODULES][32]; 
 int g_iSPEED_SUBMODULES_INDEXES[MAXPLAYERS + 1][SPEED_SUBMODULES];
 char g_szSPEED_MODULE[MAXPLAYERS + 1][512];
 
-/*
-char g_szTIME_MODULE[MAXPLAYERS + 1][512];
-bool g_bTIME_MODULE[MAXPLAYERS + 1];
-char g_szTIME_SUBMODULE_INDEXES[MAXPLAYERS + 1][3];
+//TIMER MODULE
+bool g_bTIMER_MODULE[MAXPLAYERS + 1];
+float g_fTIMER_MODULE_POSITION[MAXPLAYERS + 1][2];
+int g_iTIMER_MODULE_COLOR[MAXPLAYERS + 1][3][3];
+int g_iTIMER_HOLDTIME[MAXPLAYERS + 1];
 
+char g_szTIMER_SUBMODULE_INDEXES_STRINGS[MAXPLAYERS + 1][TIMER_SUBMODULES][32];
+int g_iTIMER_SUBMODULES_INDEXES[MAXPLAYERS + 1][TIMER_SUBMODULES];
+char g_szTIMER_MODULE[MAXPLAYERS + 1][512];
+
+/*
 char g_szINPUT_MODULE[MAXPLAYERS + 1][512];
 bool g_bINPUT_MODULE[MAXPLAYERS + 1];
 char g_szINPUT_SUBMODULE_INDEXES[MAXPLAYERS + 1][2];
@@ -122,16 +132,44 @@ char g_szINFO_SUBMODULE_INDEXES[MAXPLAYERS + 1][3];
 //SUB MODULES
 /////
 
+//SPEED MODULE
 //CSD
-char g_szCSD_SUBMODULE[MAXPLAYERS + 1];
-int g_CSD_SUBMODULE_INDEX[MAXPLAYERS + 1];
+char g_szCSD_SUBMODULE[MAXPLAYERS + 1][128];
 
 bool g_bCSD[MAXPLAYERS + 1];
 int g_iCSD_SpeedAxis[MAXPLAYERS + 1];
 float g_fLastSpeed[MAXPLAYERS +1];
 
+//TIMER MODULE
+//CHECKPOINTS
+char g_szCP_SUBMODULE[MAXPLAYERS + 1][128];
+
+bool g_bCP[MAXPLAYERS + 1];
+float g_fLastDifferenceTime[MAXPLAYERS + 1];
+int g_iCP_CompareMode[MAXPLAYERS + 1];
+
+//TIMER
+char g_szSTOPWATCH_SUBMODULE[MAXPLAYERS + 1][128];
+
+bool g_bStopwatch[MAXPLAYERS + 1];
+
+//FINISH
+char g_szFINISH_SUBMODULE[MAXPLAYERS + 1][128];
+
+bool g_bFinish[MAXPLAYERS + 1];
+float g_fLastDifferenceFinishTime[MAXPLAYERS + 1];
+int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+
+//MAP INFO
+bool g_bMapInfo[MAXPLAYERS + 1];
+float g_fMapInfo_POSX[MAXPLAYERS + 1];
+float g_fMapInfo_POSY[MAXPLAYERS + 1];
+int g_iMapInfo_Color[MAXPLAYERS + 1][3];
+int g_iMapInfo_ShowMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+int g_iMapInfo_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
+
 //KEYS
-char g_szKEYS_SUBMODULE[MAXPLAYERS + 1];
+//char g_szKEYS_SUBMODULE[MAXPLAYERS + 1];
 bool g_bKeys[MAXPLAYERS + 1];
 float g_fKeys_POSX[MAXPLAYERS + 1];
 float g_fKeys_POSY[MAXPLAYERS + 1];
@@ -140,46 +178,8 @@ int g_iLastButton[MAXPLAYERS +1];
 int g_imouseDir[MAXPLAYERS + 1][2];
 
 //SYNC
-char g_szSYNC_SUBMODULE[MAXPLAYERS + 1];
+//char g_szSYNC_SUBMODULE[MAXPLAYERS + 1];
 bool g_bSync[MAXPLAYERS + 1];
 float g_fSync_POSX[MAXPLAYERS + 1];
 float g_fSync_POSY[MAXPLAYERS + 1];
 int g_iSync_Color[MAXPLAYERS + 1][3];
-
-//CHECKPOINTS
-char g_szCP_SUBMODULE[MAXPLAYERS + 1];
-bool g_bCP[MAXPLAYERS + 1];
-float g_fCP_POSX[MAXPLAYERS + 1];
-float g_fCP_POSY[MAXPLAYERS + 1];
-int g_iCP_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
-int g_iCP_HoldTime[MAXPLAYERS + 1];
-int g_iCP_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
-float g_fLastDifferenceTime[MAXPLAYERS + 1];
-char szCPFormatted[MAXPLAYERS + 1][32];
-
-//TIMER
-char g_szTIMER_SUBMODULE[MAXPLAYERS + 1];
-bool g_bTimer[MAXPLAYERS + 1];
-float g_fTimer_POSX[MAXPLAYERS + 1];
-float g_fTimer_POSY[MAXPLAYERS + 1];
-int g_iTimer_Color[MAXPLAYERS + 1][2][3]; // client | type(faster,slower) | value(R,G,B)
-
-//MAP INFO
-char g_szMAPINFO_SUBMODULE[MAXPLAYERS + 1];
-bool g_bMapInfo[MAXPLAYERS + 1];
-float g_fMapInfo_POSX[MAXPLAYERS + 1];
-float g_fMapInfo_POSY[MAXPLAYERS + 1];
-int g_iMapInfo_Color[MAXPLAYERS + 1][3];
-int g_iMapInfo_ShowMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
-int g_iMapInfo_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
-
-//FINISH
-char g_szFINISH_SUBMODULE[MAXPLAYERS + 1];
-bool g_bFinish[MAXPLAYERS + 1];
-float g_fFinish_POSX[MAXPLAYERS + 1];
-float g_fFinish_POSY[MAXPLAYERS + 1];
-int g_iFinish_Color[MAXPLAYERS + 1][3][3]; // client | type(gain,loss,maintain) | value(R,G,B)
-int g_iFinish_HoldTime[MAXPLAYERS + 1];
-int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
-char szFinishFormatted[MAXPLAYERS + 1][64];
-float g_fLastDifferenceFinishTime[MAXPLAYERS + 1];

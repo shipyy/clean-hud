@@ -26,6 +26,7 @@ public Plugin myinfo =
 #include "chud-queries.sp"
 #include "chud-sql.sp"
 #include "modules/chud-SPEED.sp"
+#include "modules/chud-TIMER.sp"
 #include "submodules/chud-csd.sp"
 #include "submodules/chud-keys.sp"
 #include "submodules/chud-sync.sp"
@@ -53,7 +54,7 @@ public void OnPluginStart()
     CreateHooks();
 
     Init_SPEED_MODULE();
-    //Init_TIMER_MODULE();
+    Init_TIMER_MODULE();
     //Init_INPUT_MODULE();
     //Init_INFO_MODULE();
 }
@@ -75,6 +76,12 @@ public void OnClientPutInServer(int client)
     if(!IsFakeClient(client))
         LoadModule(client, 1);
     
+    for(int i = 0; i < 4; i++)
+        g_bEditing[client][i] = false;
+    
+    for(int i = 0; i < 3; i++)
+        g_bEditingColor[client][i] = false;
+
     //if (!IsFakeClient(x))
         //LOADOPTIONS(X);
 

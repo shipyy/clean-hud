@@ -7,6 +7,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 {
 	if (IsValidClient(client) && !IsFakeClient(client)) {
 		SPEED_DISPLAY(client);
+		TIMER_DISPLAY(client);
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -44,9 +45,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 	{
 		switch (g_iArrayToChange[client]) {
 			case 1: SPEED_Color_Change_MENU(client, g_iColorType[client]);
-			////case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
-			case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
-			//case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
+			case 2: TIMER_Color_Change_MENU(client, g_iColorType[client]);
 		}
 		CPrintToChat(client, "%t", "Cancel_Input");
 		g_iWaitingForResponse[client] = None;
@@ -67,20 +66,12 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 
 				switch (g_iArrayToChange[client]) {
 					case 1: {
-						g_iSPEED_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CSD
+						g_iSPEED_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //SPEED MODULE
 						SPEED_Color_Change_MENU(client, g_iColorType[client]);
 					}
 					case 2: {
-						//g_iCP_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //CP
-						//CP_Color_Change_MENU(client, g_iColorType[client]);
-					}
-					case 3: {
-						//g_iTimer_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER
-						//Timer_Color_Change_MENU(client, g_iColorType[client]);
-					}
-					case 4: {
-						//g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
-						//Finish_Color_Change_MENU(client, g_iColorType[client]);
+						g_iTIMER_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER MODULE
+						TIMER_Color_Change_MENU(client, g_iColorType[client]);
 					}
 				}
 			}

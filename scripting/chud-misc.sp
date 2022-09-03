@@ -565,6 +565,7 @@ public void LoadModule(int client, int module_index)
 {
 	switch (module_index) {
 		case 1: db_LoadSPEED(client);
+		case 2: db_LoadTIMER(client);
 		/*
 		case 1: db_LoadKeys(client);
 		case 2: db_LoadSync(client);
@@ -584,18 +585,35 @@ public void LoadSubModule(int client, int module, int submodule)
 				case 1 : db_GET_CSD(client, module, submodule);
 			}
 		}
-	}
-}
-
-public int getSubModuleID(int client, int module, char[] szSubModuleString)
-{
-	switch (module) {
-		case 1 : {
-			if (StrContains(szSubModuleString, "CSD", false) == 0) {
-				return CSD_ID;
+		case 2 : {
+			switch (submodule) {
+				case 1 : db_GET_STOPWATCH(client, module, submodule);
+				case 2 : db_GET_CP(client, module, submodule);
+				case 3 : db_GET_FINISH(client, module, submodule);
 			}
 		}
 	}
+}
 
-	return 0;
+public int getSubModuleID(int client, int module, int submodule)
+{
+	switch (module) {
+		case 1 : {
+			switch (submodule) {
+				case 0 : return 0;
+				case 1 : return CSD_ID;
+			}
+		}
+		case 2 : {
+			switch (submodule) {
+				case 0 : return 0;
+				case 1 : return STOPWATCH_ID;
+				case 2 : return CHECKPOINTS_ID;
+				case 3 : return FINISH_ID;
+			}
+		}
+		default: return 0;
+	}
+
+	return -1;
 }

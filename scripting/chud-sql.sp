@@ -52,19 +52,19 @@ public void db_createTables()
 
 public void SQLTxn_CreateDatabaseSuccess(Handle db, any data, int numQueries, Handle[] results, any[] queryData)
 {
-	PrintToServer("[Minimal HUD] Database tables succesfully created!");
+	PrintToServer("[Clean HUD] Database tables succesfully created!");
 }
 
 public void SQLTxn_CreateDatabaseFailed(Handle db, any data, int numQueries, const char[] error, int failIndex, any[] queryData)
 {
-	SetFailState("[Minimal HUD] Database tables could not be created! Error: %s", error);
+	SetFailState("[Clean HUD] Database tables could not be created! Error: %s", error);
 }
 
 public void SQL_CheckCallback(Handle owner, Handle hndl, const char[] error, any data)
 {
 	if (hndl == null)
 	{
-		LogError("[Minimal HUD] SQL Error (SQL_CheckCallback): %s", error);
+		LogError("[Clean HUD] SQL Error (SQL_CheckCallback): %s", error);
 		return;
 	}
 }
