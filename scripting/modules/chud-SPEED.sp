@@ -300,7 +300,7 @@ public void SPEED_FORMATORDER(int client)
 	Menu menu = CreateMenu(SPEED_FORMATORDER_MENU_Handler);
 
 	for(int i = 0; i < SPEED_SUBMODULES; i++)
-		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, i)]);
+		AddMenuItem(menu, "", g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, g_iSPEED_SUBMODULES_INDEXES[client][i])]);
 
 	SetMenuExitBackButton(menu, true);
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
@@ -329,9 +329,9 @@ public void CHANGE_SPEED_FORMAT_ID(int client, int choice)
 	Format(szBuffer, sizeof szBuffer, "%d", choice);
 	AddMenuItem(menu, szBuffer, "None\n \n");
 
-	for(int i = 0; i < SPEED_SUBMODULES; i++) {
+	for(int i = 1; i <= SPEED_SUBMODULES; i++) {
 		Format(szBuffer, sizeof szBuffer, "%d", choice);
-		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[getSubModuleID(client, 1, g_iSPEED_SUBMODULES_INDEXES[client][i])]);
+		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[i]);
 	}
 
 	SetMenuExitBackButton(menu, true);
@@ -344,8 +344,7 @@ public int CHANGE_SPEED_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int
 	{
 		char szBuffer[32];
 		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-		if (param2 != 0)
-			g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)-1] = param2;
+		g_iSPEED_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2;
 		SPEED_FORMATORDER(param1);
 	}
 	else if (action == MenuAction_Cancel)

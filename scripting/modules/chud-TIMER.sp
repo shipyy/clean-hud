@@ -303,7 +303,7 @@ public void CHANGE_TIMER_FORMAT_ID(int client, int choice)
 	Format(szBuffer, sizeof szBuffer, "%d", choice);
 	AddMenuItem(menu, szBuffer, "None\n \n");
 
-	for(int i = 0; i < TIMER_SUBMODULES; i++) {
+	for(int i = 1; i <= TIMER_SUBMODULES; i++) {
 		Format(szBuffer, sizeof szBuffer, "%d", choice);
 		AddMenuItem(menu, szBuffer, g_szTIMER_SUBMODULE_NAME[i]);
 	}
