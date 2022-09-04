@@ -91,6 +91,9 @@ public void OnClientPutInServer(int client)
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
 
+    if(!IsFakeClient(client))
+        SetDefaults(client);
+
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
     WaitingForResponse[client] = None;

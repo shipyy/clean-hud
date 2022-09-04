@@ -5,6 +5,18 @@ stock bool IsValidClient(int client)
     return false;
 }
 
+public void SetDefaults(int client)
+{
+    for(int i = 0; i < 7; i++)
+        g_bEditing[client][i] = false;
+    
+    for(int i = 0; i < 3; i++)
+        g_bEditingColor[client][i] = false;
+
+    szCustomFormatted[client] = "";
+    szFinishFormatted[client] = "";
+}
+
 public float GetSpeed(int client)
 {
 	float fVelocity[3];
