@@ -247,7 +247,10 @@ public void Timer_Display(int client)
 		
 		if(target == -1)
 			return;
-			
+		
+		if(IsFakeClient(target))
+			return;
+
 		int target_style = surftimer_GetClientStyle(target);
 		if (target_style == 5)
 			g_fLastSpeed[target] /= 0.5;
