@@ -85,11 +85,11 @@ public void MapInfo_Toggle(int client, bool from_menu)
 {
     if (g_bMapInfo[client]) {
 		g_bMapInfo[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
+		
 	}
 	else {
 		g_bMapInfo[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
+		
 	}
 
     if (from_menu) {
@@ -248,14 +248,14 @@ public void MapInfo_Display(int client)
         else
             target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-        if(target == -1)
+        if (target == -1)
             return;
 
         int wrcptimer;
         int pracmode;
         int stage;
         int bonus;
-        surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
+        //surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
 
         //MAP / BONUS DATA
         char szWRName[MAX_NAME_LENGTH], szWRTime[32];
@@ -275,22 +275,93 @@ public void MapInfo_Display(int client)
         char szStagePBFormatted[32];
         char szStageWRCPFormatted[32];
 
-        if (bonus != 0) {
-            surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
-            surftimer_GetPlayerData(target, bonus, PBTime, client_rank, szClientCountry);
+        char szZone[32];
+
+        //SPECCIING A REPLAY
+        if (IsFakeClient(target)) {
+            surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
+
+            if (bonus != 0) {
+                surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
+            }
+            else {
+                //STAGE FORMAT
+                surftimer_GetMapData(szWRName, szWRTime, WRTime);
+
+                if (surftimer_GetMapStages() != 0) {
+                    surftimer_GetStageData(target, szStageWRName, StageWRTime, StagePBTime);
+
+                    //FORMAT WRCP STRING WITH NAME
+                    //WRCP 00:00.000 (PLAYERNAME)
+                    if (StageWRTime != -1.0) {
+                        Format_Time(client, StageWRTime, szStageWRCPFormatted, sizeof szStageWRCPFormatted, true);
+                        Format(szStageWRCPFormatted, sizeof szStageWRCPFormatted , "WRCP %s (%s)", szStageWRCPFormatted, szStageWRName);
+                    }
+                    else
+                        Format(szStageWRCPFormatted, sizeof szStageWRCPFormatted, "WRCP N/A");
+
+                    Format(szStageInfo, sizeof szStageInfo, "%s", szStageWRCPFormatted);
+                }
+            }
+
+            if (bonus != 0)
+                Format(szZone, sizeof szZone, "Bonus %d", bonus);
+            else
+                Format(szZone, sizeof szZone, "Map");
+
+            //CHECK WHICH BOT WE ARE SPECCING
+            char szBotWR[32];
+            char szStageBotWR[32];
+            char szBotName[MAX_NAME_LENGTH];
+            GetClientName(target, szBotName, sizeof szBotName);
+
+            Format_Time(client, WRTime, szBotWR, sizeof szBotWR, true);
+            Format_Time(client, StageWRTime, szStageBotWR, sizeof szStageBotWR, true);
+
+            int mapbotlength = strlen(szBotWR);
+            szBotWR[mapbotlength-1] = '\0';
+            szBotWR[mapbotlength-4] = ':';
+
+            int wrcpbotlength = strlen(szStageBotWR);
+            szStageBotWR[wrcpbotlength-1] = '\0';
+            szStageBotWR[wrcpbotlength-4] = ':';
+
+            // MAP/BONUS REPLAY
+            if (StrContains(szBotName, szBotWR, false) != -1) {
+                if(WRTime != -1.0) {
+                    Format_Time(client, WRTime, szBotWR, sizeof szBotWR, true);
+                    Format(szMapInfo, sizeof szMapInfo, "%s | WR %s", szZone, szBotWR);
+                }
+                else {
+                    Format(szMapInfo, sizeof szMapInfo, "%s | WR N/A", szZone);
+                }
+
+                //CLEAR THE STAGE INFO CAUSE WE ARE ON A MAP/BONUS REPLAY
+                Format(szStageInfo, sizeof szStageInfo, "%s", "");
+            }
+            // STAGE REPLAY
+            else if (StrContains(szBotName, szStageBotWR, false) != -1) {
+                Format(szStageInfo, sizeof szStageInfo, "Stage %d | %s", stage, szStageInfo);
+
+                //CLEAR THE MAP/BONUS INFO CAUSE WE ARE ON A STAGE REPLAY
+                Format(szMapInfo, sizeof szMapInfo, "%s", "");
+            }
         }
+        //SPECCING PLAYER OR ALIVE
         else {
-            //STAGE FORMAT
-            surftimer_GetMapData(szWRName, szWRTime, WRTime);
-            surftimer_GetPlayerData(target, 0, PBTime, client_rank, szClientCountry);
+            surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
 
-            if (surftimer_GetMapStages() != 0) {
-                surftimer_GetStageData(target, szStageWRName, StageWRTime, StagePBTime);
+            if (bonus != 0) {
+                surftimer_GetBonusData(target, szWRName, WRTime, PBTime);
+                surftimer_GetPlayerData(target, bonus, PBTime, client_rank, szClientCountry);
+            }
+            else {
+                //STAGE FORMAT
+                surftimer_GetMapData(szWRName, szWRTime, WRTime);
+                surftimer_GetPlayerData(target, 0, PBTime, client_rank, szClientCountry);
 
-                //FORMAT STAGE PB COMPARISON
-                //Stage 1 | PB 12:34.567 (+00:00.00)
-
-                if (!IsFakeClient(target)) {
+                if (surftimer_GetMapStages() != 0) {
+                    surftimer_GetStageData(target, szStageWRName, StageWRTime, StagePBTime);
 
                     if (StagePBTime != -1.0)
                         Format_Time(client, StagePBTime, szStagePBFormatted, sizeof szStagePBFormatted, true);
@@ -298,7 +369,7 @@ public void MapInfo_Display(int client)
                         Format(szStagePBFormatted, sizeof szStagePBFormatted, "N/A");
 
                     //FORMAT STAGE WR COMPARISON
-                    if (StageWRTime != 9999999.0) {
+                    if (StageWRTime != -1.0) {
                         float stage_wr_diff = StageWRTime - StagePBTime;
                         if (stage_wr_diff != 0.0) {
                             Format_Time(client, stage_wr_diff, szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, true);
@@ -324,7 +395,7 @@ public void MapInfo_Display(int client)
                     //FORMAT WRCP STRING WITH NAME
                     //WRCP 00:00.000 (PLAYERNAME)
                     //FORMAT STAGE PB
-                    if (StageWRTime != 9999999.0) {
+                    if (StageWRTime != -1.0) {
                         Format_Time(client, StageWRTime, szStageWRCPFormatted, sizeof szStageWRCPFormatted, true);
                         Format(szStageWRCPFormatted, sizeof szStageWRCPFormatted , "WRCP %s (%s)", szStageWRCPFormatted, szStageWRName);
                     }
@@ -333,31 +404,14 @@ public void MapInfo_Display(int client)
 
                     Format(szStageInfo, sizeof szStageInfo, "%s\n%s", szStageInfo, szStageWRCPFormatted);
                 }
-                else {
-                    //FORMAT WRCP STRING WITH NAME
-                    //WRCP 00:00.000 (PLAYERNAME)
-                    if (StageWRTime != 9999999.0) {
-                        Format_Time(client, StageWRTime, szStageWRCPFormatted, sizeof szStageWRCPFormatted, true);
-                        Format(szStageWRCPFormatted, sizeof szStageWRCPFormatted , "WRCP %s (%s)", szStageWRCPFormatted, szStageWRName);
-                    }
-                    else
-                        Format(szStageWRCPFormatted, sizeof szStageWRCPFormatted, "WRCP N/A");
-
-                    Format(szStageInfo, sizeof szStageInfo, "%s", szStageWRCPFormatted);
-                }
             }
-        }
 
-        char szZone[32];
-        if (bonus != 0)
-            Format(szZone, sizeof szZone, "Bonus %d", bonus);
-        else
-            Format(szZone, sizeof szZone, "Map");
+            if (bonus != 0)
+                Format(szZone, sizeof szZone, "Bonus %d", bonus);
+            else
+                Format(szZone, sizeof szZone, "Map");
 
-        //MAP TIME COMPARISONS FORMAT
-        //FORMAT SHOW MODE
-        //PB
-        if (!IsFakeClient(target)) {
+            //MAP INFO STRING
             if (g_iMapInfo_ShowMode[client] == 2) {
                 if (PBTime != -1.0) {
                     Format_Time(client, PBTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
@@ -368,7 +422,7 @@ public void MapInfo_Display(int client)
                         Format(szMapInfo, sizeof szMapInfo, "%s (+00:00.000)", szShowModeFormatted);
                     }
                     else if ( g_iMapInfo_CompareMode[client] == 1) {
-                        if(WRTime != 9999999.0) {
+                        if(WRTime != -1.0) {
                             Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
                             Format(szMapInfo, sizeof szMapInfo, "%s (+%s)", szShowModeFormatted, szCompareModeFormatted);
                         }
@@ -383,7 +437,7 @@ public void MapInfo_Display(int client)
                         Format(szMapInfo, sizeof szMapInfo, "%s | PB N/A | PB N/A", szZone);
                     }
                     else if ( g_iMapInfo_CompareMode[client] == 1) {
-                        if(WRTime != 9999999.0) {
+                        if(WRTime != -1.0) {
                             Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
                             Format(szMapInfo, sizeof szMapInfo, "%s | PB N/A | WR +%s", szZone, szCompareModeFormatted);
                         }
@@ -392,12 +446,11 @@ public void MapInfo_Display(int client)
                         }
                     }
                 }
-
             }
             //WR
             else if ( g_iMapInfo_ShowMode[client] == 1) {
 
-                if(WRTime != 9999999.0) {
+                if(WRTime != -1.0) {
                     Format_Time(client, WRTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
                     Format(szShowModeFormatted, sizeof szShowModeFormatted, "%s | WR %s", szZone, szShowModeFormatted);
 
@@ -431,38 +484,6 @@ public void MapInfo_Display(int client)
                         Format(szMapInfo, sizeof szMapInfo, "%s | WR N/A (N/A)", szZone);
                     }
                 }
-            }
-        }
-        else{
-            char szBotWR[32];
-            char szStageBotWR[32];
-            char szBotName[MAX_NAME_LENGTH];
-            GetClientName(target, szBotName, sizeof szBotName);
-
-            Format_Time(client, WRTime, szBotWR, sizeof szBotWR, true);
-            Format_Time(client, StageWRTime, szStageBotWR, sizeof szStageBotWR, true);
-
-            int mapbotlength = strlen(szBotWR);
-            szBotWR[mapbotlength-1] = '\0';
-            szBotWR[mapbotlength-4] = ':';
-
-            int wrcpbotlength = strlen(szStageBotWR);
-            szStageBotWR[wrcpbotlength-1] = '\0';
-            szStageBotWR[wrcpbotlength-4] = ':';
-
-            if (StrContains(szBotName, szBotWR, false) != -1) {
-                if(WRTime != 9999999.0) {
-                    Format_Time(client, WRTime, szBotWR, sizeof szBotWR, true);
-                    Format(szMapInfo, sizeof szMapInfo, "%s | WR %s", szZone, szBotWR);
-                }
-                else {
-                    Format(szMapInfo, sizeof szMapInfo, "%s | WR N/A", szZone);
-                }
-
-                Format(szStageInfo, sizeof szStageInfo, "%s", "");
-            }
-            else if (StrContains(szBotName, szStageBotWR, false) != -1) {
-                Format(szMapInfo, sizeof szMapInfo, "%s", "");
             }
         }
 

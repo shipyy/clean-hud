@@ -89,11 +89,9 @@ public void Finish_Toggle(int client, bool from_menu)
 {
     if (g_bFinish[client]) {
 		g_bFinish[client] = false;
-		//FinishrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
 	}
 	else {
 		g_bFinish[client] = true;
-		//FinishrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
 	}
 
     if (from_menu) {
@@ -290,8 +288,6 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 	char szCurrentRunFormatted[64];
 	char szPBDiffFormatted[64];
 	char szWRDiffFormatted[64];
-
-	PrintToConsole(0 , "===value of pb %f | value of wr %f", pb_diff ,wr_diff);
 
 	if (g_iFinish_CompareMode[client] == 0) {
 		Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);

@@ -99,11 +99,9 @@ public void CP_Toggle(int client, bool from_menu)
 {
     if (g_bCP[client]) {
 		g_bCP[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
 	}
 	else {
 		g_bCP[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
 	}
 
     if (from_menu) {

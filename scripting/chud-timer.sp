@@ -72,11 +72,9 @@ public void Timer_Toggle(int client, bool from_menu)
 {
     if (g_bTimer[client]) {
 		g_bTimer[client] = false;
-		//TimerrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
 	}
 	else {
 		g_bTimer[client] = true;
-		//TimerrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
 	}
 
     if (from_menu) {

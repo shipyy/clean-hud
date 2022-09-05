@@ -73,11 +73,11 @@ public void Keys_Toggle(int client, bool from_menu)
 {
     if (g_bKeys[client]) {
 		g_bKeys[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
+		
 	}
 	else {
 		g_bKeys[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
+		
 	}
 
     if (from_menu) {
