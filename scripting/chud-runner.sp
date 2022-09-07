@@ -40,7 +40,7 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if (WaitingForResponse[client] == None)
-		return Plugin_Continue;
+		return Plugin_Handled;
 
 	char Input[MAX_MESSAGE_LENGTH];
 	strcopy(Input, sizeof(Input), sArgs);

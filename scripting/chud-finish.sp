@@ -382,7 +382,7 @@ public void Finish_Display(int client)
 			return;
 		}
 
-		if (GetGameTime() - g_fLastDifferenceFinishTime[client] < g_iFinish_HoldTime[client]) {
+		if (GetGameTime() - g_fLastDifferenceFinishTime[target] < g_iFinish_HoldTime[client]) {
 			if (StrContains(szFinishFormatted[target], "+", false) == 0) {
 				SetHudTextParams(g_fFinish_POSX[client] == 0.5 ? -1.0 : g_fFinish_POSX[client], g_fFinish_POSY[client] == 0.5 ? -1.0 : g_fFinish_POSY[client], 0.1, g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 			}

@@ -376,7 +376,7 @@ public void CP_Display(int client)
 			return;
 		}
 
-		if (GetGameTime() - g_fLastDifferenceTime[client] < g_iCP_HoldTime[client]) {
+		if (GetGameTime() - g_fLastDifferenceTime[target] < g_iCP_HoldTime[client]) {
 			if (CustomRuntime_Difference[target] != 666666.0){
 				
 				if (CustomRuntime_Difference[target] > 0) {
