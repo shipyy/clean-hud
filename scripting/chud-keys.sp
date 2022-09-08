@@ -127,7 +127,7 @@ public int CHUD_Keys_Position_Handler(Menu menu, MenuAction action, int param1, 
 void Keys_PosX(int client)
 {
 	if (g_fKeys_POSX[client] < 1.0){
-		g_fKeys_POSX[client] += 0.1;
+		g_fKeys_POSX[client] += 0.05;
 	}
 	else
 		g_fKeys_POSX[client] = 0.0;
@@ -139,7 +139,7 @@ void Keys_PosY(int client)
 {
 	
 	if (g_fKeys_POSY[client] < 1.0)
-		g_fKeys_POSY[client] += 0.1;
+		g_fKeys_POSY[client] += 0.05;
 	else
 		g_fKeys_POSY[client] = 0.0;
 

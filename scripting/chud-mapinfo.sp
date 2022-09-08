@@ -139,7 +139,7 @@ public int CHUD_MapInfo_Position_Handler(Menu menu, MenuAction action, int param
 void MapInfo_PosX(int client)
 {
 	if (g_fMapInfo_POSX[client] < 1.0){
-		g_fMapInfo_POSX[client] += 0.1;
+		g_fMapInfo_POSX[client] += 0.05;
 	}
 	else
 		g_fMapInfo_POSX[client] = 0.0;
@@ -151,7 +151,7 @@ void MapInfo_PosY(int client)
 {
 	
 	if (g_fMapInfo_POSY[client] < 1.0)
-		g_fMapInfo_POSY[client] += 0.1;
+		g_fMapInfo_POSY[client] += 0.05;
 	else
 		g_fMapInfo_POSY[client] = 0.0;
 

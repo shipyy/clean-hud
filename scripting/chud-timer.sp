@@ -125,7 +125,7 @@ public int CHUD_TIMER_Position_Handler(Menu menu, MenuAction action, int param1,
 void Timer_PosX(int client)
 {
 	if (g_fTimer_POSX[client] < 1.0){
-		g_fTimer_POSX[client] += 0.1;
+		g_fTimer_POSX[client] += 0.05;
 	}
 	else
 		g_fTimer_POSX[client] = 0.0;
@@ -137,7 +137,7 @@ void Timer_PosY(int client)
 {
 	
 	if (g_fTimer_POSY[client] < 1.0)
-		g_fTimer_POSY[client] += 0.1;
+		g_fTimer_POSY[client] += 0.05;
 	else
 		g_fTimer_POSY[client] = 0.0;
 

@@ -105,6 +105,13 @@ public void OnMapStart()
     LoadTranslations("cleanhud.phrases");
 }
 
+public void OnMapEnd()
+{
+    for(int i = 1; i <= MaxClients; i++)
+        if (IsValidClient(i) && !IsFakeClient(i))
+		    SaveCookies(i);
+}
+
 public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))

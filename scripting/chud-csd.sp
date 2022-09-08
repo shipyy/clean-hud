@@ -143,7 +143,7 @@ public int CHUD_CSD_Position_Handler(Menu menu, MenuAction action, int param1, i
 void CSD_PosX(int client)
 {
 	if (g_fCSD_POSX[client] < 1.0)
-		g_fCSD_POSX[client] += 0.1;
+		g_fCSD_POSX[client] += 0.05;
 	else
 		g_fCSD_POSX[client] = 0.0;
 
@@ -153,7 +153,7 @@ void CSD_PosX(int client)
 void CSD_PosY(int client)
 {
 	if (g_fCSD_POSY[client] < 1.0)
-		g_fCSD_POSY[client] += 0.1;
+		g_fCSD_POSY[client] += 0.05;
 	else
 		g_fCSD_POSY[client] = 0.0;
 

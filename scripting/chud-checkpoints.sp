@@ -152,7 +152,7 @@ public int CHUD_CP_Position_Handler(Menu menu, MenuAction action, int param1, in
 void CP_PosX(int client)
 {
 	if (g_fCP_POSX[client] < 1.0){
-		g_fCP_POSX[client] += 0.1;
+		g_fCP_POSX[client] += 0.05;
 	}
 	else
 		g_fCP_POSX[client] = 0.0;
@@ -164,7 +164,7 @@ void CP_PosY(int client)
 {
 	
 	if (g_fCP_POSY[client] < 1.0)
-		g_fCP_POSY[client] += 0.1;
+		g_fCP_POSY[client] += 0.05;
 	else
 		g_fCP_POSY[client] = 0.0;
 
@@ -320,6 +320,7 @@ public void CP_Format(int client, float runtime, float pb_runtime, float wr_runt
 	}
 
 	CustomRuntime_Difference[client] = customCheckpoints.Get(g_iCP_CompareMode[client]-1);
+	delete customCheckpoints;
 	
 	if (CustomRuntime_Difference[client] != 666666.0){
 		Format_Time(client, CustomRuntime_Difference[client], szCustomFormatted[client], sizeof szCustomFormatted, true);

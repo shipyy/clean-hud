@@ -124,7 +124,7 @@ public int CHUD_Sync_Position_Handler(Menu menu, MenuAction action, int param1, 
 void Sync_PosX(int client)
 {
 	if (g_fSync_POSX[client] < 1.0){
-		g_fSync_POSX[client] += 0.1;
+		g_fSync_POSX[client] += 0.05;
 	}
 	else
 		g_fSync_POSX[client] = 0.0;
@@ -136,7 +136,7 @@ void Sync_PosY(int client)
 {
 	
 	if (g_fSync_POSY[client] < 1.0)
-		g_fSync_POSY[client] += 0.1;
+		g_fSync_POSY[client] += 0.05;
 	else
 		g_fSync_POSY[client] = 0.0;
 

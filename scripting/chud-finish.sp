@@ -142,7 +142,7 @@ public int CHUD_Finish_Position_Handler(Menu menu, MenuAction action, int param1
 void Finish_PosX(int client)
 {
 	if (g_fFinish_POSX[client] < 1.0){
-		g_fFinish_POSX[client] += 0.1;
+		g_fFinish_POSX[client] += 0.05;
 	}
 	else
 		g_fFinish_POSX[client] = 0.0;
@@ -154,7 +154,7 @@ void Finish_PosY(int client)
 {
 	
 	if (g_fFinish_POSY[client] < 1.0)
-		g_fFinish_POSY[client] += 0.1;
+		g_fFinish_POSY[client] += 0.05;
 	else
 		g_fFinish_POSY[client] = 0.0;
 
