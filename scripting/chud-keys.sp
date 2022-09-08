@@ -32,7 +32,7 @@ public void CHUD_KEYS(int client)
 
 
 	// Position
-	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fKeys_POSX[client], g_fKeys_POSY[client]);
+	Format(szItem, sizeof szItem, "Position | %.2f %.2f", g_fKeys_POSX[client], g_fKeys_POSY[client]);
 	AddMenuItem(menu, "", szItem);
 
 	// Color
@@ -274,7 +274,7 @@ char[] Keys_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%d|", g_bKeys[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fKeys_POSX[client], g_fKeys_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fKeys_POSX[client], g_fKeys_POSY[client]);
 
 	//COLOR
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iKeys_Color[client][0], g_iKeys_Color[client][1], g_iKeys_Color[client][2]);

@@ -31,7 +31,7 @@ public void CHUD_SYNC(int client)
 		AddMenuItem(menu, "", "Toggle   | Off");
 		
 	// Position
-	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fSync_POSX[client], g_fSync_POSY[client]);
+	Format(szItem, sizeof szItem, "Position | %.2f %.2f", g_fSync_POSX[client], g_fSync_POSY[client]);
 	AddMenuItem(menu, "", szItem);
 
 	// Color
@@ -256,7 +256,7 @@ char[] Sync_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%d|", g_bSync[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fSync_POSX[client], g_fSync_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fSync_POSX[client], g_fSync_POSY[client]);
 
 	//COLOR
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);

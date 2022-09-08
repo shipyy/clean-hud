@@ -32,7 +32,7 @@ public void CHUD_TIMER(int client)
 		AddMenuItem(menu, "", "Toggle   | Off");
 
 	// Position
-	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fTimer_POSX[client], g_fTimer_POSY[client]);
+	Format(szItem, sizeof szItem, "Position | %.2f %.2f", g_fTimer_POSX[client], g_fTimer_POSY[client]);
 	AddMenuItem(menu, "", szItem);
 
 	// Color
@@ -328,7 +328,7 @@ char[] Timer_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%d|", g_bTimer[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fTimer_POSX[client], g_fTimer_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fTimer_POSX[client], g_fTimer_POSY[client]);
 
 	//COLORS
 	//TYPE 1

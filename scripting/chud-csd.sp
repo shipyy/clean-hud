@@ -41,7 +41,7 @@ public void CHUD_CSD(int client)
 		AddMenuItem(menu, "", "Axis       | Z");
 
 	// Position
-	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fCSD_POSX[client], g_fCSD_POSY[client]);
+	Format(szItem, sizeof szItem, "Position | %.2f %.2f", g_fCSD_POSX[client], g_fCSD_POSY[client]);
 	AddMenuItem(menu, "", szItem);
 
 	// Color
@@ -362,7 +362,7 @@ char[] CSD_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%s%d|", szData, g_iCSD_SpeedAxis[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fCSD_POSX[client], g_fCSD_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fCSD_POSX[client], g_fCSD_POSY[client]);
 
 	//COLORS
 	//TYPE 1

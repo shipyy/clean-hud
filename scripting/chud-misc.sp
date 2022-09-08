@@ -135,7 +135,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 		switch (module) {
 			case 0 : {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //13
+					"%d|%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d", //13
 					g_bCSD[client] ? 1 : 0, 
 					g_iCSD_SpeedAxis[client], 
 					g_fCSD_POSX[client], g_fCSD_POSX[client],
@@ -146,7 +146,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 1: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d", //6
+					"%d|%.2f|%.2f|%d|%d|%d", //6
 					g_bKeys[client] ? 1 : 0, 
 					g_fKeys_POSX[client], g_fKeys_POSY[client],
 					g_iKeys_Color[client][0][0], g_iKeys_Color[client][0][1], g_iKeys_Color[client][0][2]
@@ -154,7 +154,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 2: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d", //6
+					"%d|%.2f|%.2f|%d|%d|%d", //6
 					g_bSync[client] ? 1 : 0, 
 					g_fSync_POSX[client], g_fSync_POSY[client],
 					g_iSync_Color[client][0][0], g_iSync_Color[client][0][1], g_iSync_Color[client][0][2]
@@ -163,7 +163,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 3: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
 					g_bCP[client] ? 1 : 0, 
 					g_fCP_POSX[client], g_fCP_POSX[client],
 					g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2],
@@ -175,7 +175,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 4: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d", //9
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d", //9
 					g_bTimer[client] ? 1 : 0, 
 					g_fTimer_POSX[client], g_fTimer_POSY[client],
 					g_iTimer_Color[client][0][0], g_iTimer_Color[client][0][1], g_iTimer_Color[client][0][2],
@@ -184,7 +184,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 5: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d", //8
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d", //8
 					g_bMapInfo[client] ? 1 : 0, 
 					g_fMapInfo_POSX[client], g_fMapInfo_POSY[client],
 					g_iMapInfo_Color[client][0][0], g_iMapInfo_Color[client][0][1], g_iMapInfo_Color[client][0][2],
@@ -194,7 +194,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 6: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //14
 					g_bFinish[client] ? 1 : 0, 
 					g_fFinish_POSX[client], g_fFinish_POSX[client],
 					g_iFinish_Color[client][0][0], g_iFinish_Color[client][0][1], g_iFinish_Color[client][0][2],

@@ -34,7 +34,7 @@ public void CHUD_MAPINFO(int client)
         AddMenuItem(menu, "", "Toggle     | Off");
         
     // Position
-    Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
+    Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
     AddMenuItem(menu, "", szItem);
 
     // Color
@@ -532,7 +532,7 @@ char[] MapInfo_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%d|", g_bMapInfo[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
 
 	//COLOR
 	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2]);

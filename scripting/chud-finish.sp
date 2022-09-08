@@ -35,7 +35,7 @@ public void CHUD_FINISH(int client)
 		AddMenuItem(menu, "", "Toggle      | Off");
 
 	// Position
-	Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fFinish_POSX[client], g_fFinish_POSY[client]);
+	Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fFinish_POSX[client], g_fFinish_POSY[client]);
 	AddMenuItem(menu, "", szItem);
 
 	// Color
@@ -445,7 +445,7 @@ char[] Finish_ConvertDataToString(int client)
 	Format(szData, sizeof szData, "%d|", g_bFinish[client]);
 
 	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fFinish_POSX[client], g_fFinish_POSY[client]);
+	Format(szData, sizeof szData, "%s%.2f:%.2f|", szData, g_fFinish_POSX[client], g_fFinish_POSY[client]);
 
 	//COLORS
 	//TYPE 1
