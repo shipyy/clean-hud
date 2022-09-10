@@ -358,6 +358,9 @@ public void CP_Display(int client)
 
 		if(target == -1)
 			return;
+		
+		if (IsFakeClient(target))
+			return;
 			
 		if (g_bEditing[client][3]) {
 			if (g_bEditingColor[client][0]) {
