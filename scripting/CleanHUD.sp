@@ -65,9 +65,9 @@ public void OnPluginStart()
 
 public void OnPluginEnd()
 {
-    //for (int x = 1; x <= MaxClients; x++)
-        //if (IsValidClient(x) && !IsFakeClient(x))
-            //SAVEOPTIONS(X);
+    for (int i = 1; i <= MaxClients; i++)
+        if (IsValidClient(i) && !IsFakeClient(i))
+            SaveModule(i, 1);
 }
 
 public void OnClientPutInServer(int client)
@@ -88,9 +88,6 @@ public void OnClientPutInServer(int client)
     for(int i = 0; i < 3; i++)
         g_bEditingColor[client][i] = false;
 
-    //if (!IsFakeClient(x))
-        //LOADOPTIONS(X);
-
     g_fLastSpeed[client] = 0.0;
     g_iLastButton[client] = 0;
     g_iWaitingForResponse[client] = None;
@@ -100,4 +97,11 @@ public void OnMapStart()
 {
     //TRANSLATIONS
     LoadTranslations("cleanhud.phrases");
+}
+
+public void OnMapEnd()
+{
+    for (int i = 1; i <= MaxClients; i++)
+        if (IsValidClient(i) && !IsFakeClient(i))
+            SaveModule(i, 1);
 }
