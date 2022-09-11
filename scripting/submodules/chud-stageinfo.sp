@@ -94,7 +94,7 @@ public void STAGEINFO_Display(int client)
         char szStagePBFormatted[32];
         char szStageWRCPFormatted[32];
 
-        if (total_stages != 0) {
+        if (total_stages != 0 && bonus == 0) {
             surftimer_GetStageData(target, szStageWRName, StageWRTime, StagePBTime);
 
             if (StagePBTime != -1.0) {
@@ -141,9 +141,11 @@ public void STAGEINFO_Display(int client)
 
             Format(g_szSTAGEINFO_SUBMODULE[client], sizeof g_szSTAGEINFO_SUBMODULE[], "%s\n%s", szStageInfo, szStageWRCPFormatted);
         }
-        else {
-            PrintToChatAll("HERE_002");
+        if (total_stages == 0 && bonus == 0) {
             Format(g_szSTAGEINFO_SUBMODULE[client], sizeof g_szSTAGEINFO_SUBMODULE[], "%s", "Linear Map");
+        }
+        if (total_stages != 0 && bonus != 0) {
+            Format(g_szSTAGEINFO_SUBMODULE[client], sizeof g_szSTAGEINFO_SUBMODULE[], "%s", "");
         }
 
         //CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE

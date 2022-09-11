@@ -88,7 +88,10 @@ public void STAGEINDICATOR_Display(int client)
         if (total_stages != 0) {
             surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
 
-            Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Stage %d/%d", stage, total_stages);
+            if (bonus != 0)
+                Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Bonus %d", bonus);
+            else
+                Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Stage %d/%d", stage, total_stages);
         }
         else {
             Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "");
