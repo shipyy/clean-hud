@@ -292,7 +292,7 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 	if (g_iFinish_CompareMode[client] == 0) {
 		Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);
 		Format_Time(client, pb_diff, szPBDiffFormatted, sizeof szPBDiffFormatted, true);
-		if(pb_diff != runtime) {
+		if(pb_diff != 999999.0) {
 			if( zonegroup == 0) {
 				if( pb_diff >= 0)
 					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB +%s", szCurrentRunFormatted, szPBDiffFormatted);
@@ -319,7 +319,7 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 		Format_Time(client, runtime, szCurrentRunFormatted, sizeof szCurrentRunFormatted, true);
 		Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
 
-		if(wr_diff != -999999.0) {
+		if(wr_diff != 999999.0) {
 			if( zonegroup == 0) {
 				if (wr_diff >= 0)
 					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR +%s", szCurrentRunFormatted, szWRDiffFormatted);

@@ -322,7 +322,7 @@ public void CP_Format(int client, float runtime, float pb_runtime, float wr_runt
 	CustomRuntime_Difference[client] = customCheckpoints.Get(g_iCP_CompareMode[client]-1);
 	delete customCheckpoints;
 	
-	if (CustomRuntime_Difference[client] != 666666.0){
+	if (CustomRuntime_Difference[client] != 999999.0){
 		Format_Time(client, CustomRuntime_Difference[client], szCustomFormatted[client], sizeof szCustomFormatted, true);
 		
 		if (CustomRuntime_Difference[client] > 0) {
@@ -381,7 +381,7 @@ public void CP_Display(int client)
 		}
 
 		if (GetGameTime() - g_fLastDifferenceTime[target] < g_iCP_HoldTime[client]) {
-			if (CustomRuntime_Difference[target] != 666666.0){
+			if (CustomRuntime_Difference[target] != 999999.0){
 				
 				if (CustomRuntime_Difference[target] > 0) {
 					SetHudTextParams(g_fCP_POSX[client] == 0.5 ? -1.0 : g_fCP_POSX[client], g_fCP_POSY[client] == 0.5 ? -1.0 : g_fCP_POSY[client], 0.1, g_iCP_Color[client][0][0], g_iCP_Color[client][0][1], g_iCP_Color[client][0][2], 255, 0, 0.0, 0.0, 0.0);
