@@ -13,6 +13,9 @@ public SPEED_SetDefaults(int client)
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			g_iSPEED_MODULE_COLOR[client][i][j] = 255;
+	
+	for (int i = 0; i < SPEED_SUBMODULES; i++)
+		g_iSPEED_SUBMODULES_INDEXES[client][i] = 0;
 }
 
 /////
@@ -330,7 +333,6 @@ public void CHANGE_SPEED_FORMAT_ID(int client, int choice)
 	AddMenuItem(menu, szBuffer, "None\n \n");
 
 	for(int i = 1; i <= SPEED_SUBMODULES; i++) {
-		Format(szBuffer, sizeof szBuffer, "%d", choice);
 		AddMenuItem(menu, szBuffer, g_szSPEED_SUBMODULE_NAME[i]);
 	}
 

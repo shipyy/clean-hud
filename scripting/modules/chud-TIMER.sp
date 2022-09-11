@@ -4,17 +4,20 @@ public Init_TIMER_MODULE(){
 
 public TIMER_SetDefaults(int client)
 {
-    PrintToServer("Loading TIMER Defaults!");
+	PrintToServer("Loading TIMER Defaults!");
 
-    g_bTIMER_MODULE[client] = false;
-    g_fTIMER_MODULE_POSITION[client][0] = 0.5;
-    g_fTIMER_MODULE_POSITION[client][1] = 0.5;
+	g_bTIMER_MODULE[client] = false;
+	g_fTIMER_MODULE_POSITION[client][0] = 0.5;
+	g_fTIMER_MODULE_POSITION[client][1] = 0.5;
 
-    g_iTIMER_HOLDTIME[client] = 3;
+	g_iTIMER_HOLDTIME[client] = 3;
 
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            g_iTIMER_MODULE_COLOR[client][i][j] = 255;
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 3; j++)
+			g_iTIMER_MODULE_COLOR[client][i][j] = 255;
+
+	for (int i = 0; i < TIMER_SUBMODULES; i++)
+		g_iTIMER_SUBMODULES_INDEXES[client][i] = 0;
 }
 
 /////
@@ -304,7 +307,6 @@ public void CHANGE_TIMER_FORMAT_ID(int client, int choice)
 	AddMenuItem(menu, szBuffer, "None\n \n");
 
 	for(int i = 1; i <= TIMER_SUBMODULES; i++) {
-		Format(szBuffer, sizeof szBuffer, "%d", choice);
 		AddMenuItem(menu, szBuffer, g_szTIMER_SUBMODULE_NAME[i]);
 	}
 
@@ -511,9 +513,9 @@ public void db_SET_TIMER(int client)
 	char szGain[32];
 	char szLoss[32];
 	char szMaintain[32];
-	char szGain_R[3], szGain_G[3], szGain_B[3];
-	char szLoss_R[3], szLoss_G[3], szLoss_B[3];
-	char szMaintain_R[3], szMaintain_G[3], szMaintain_B[3];
+	char szGain_R[8], szGain_G[8], szGain_B[8];
+	char szLoss_R[8], szLoss_G[8], szLoss_B[8];
+	char szMaintain_R[8], szMaintain_G[8], szMaintain_B[8];
 	char szFormatOrder[32];
 	char szFormatOrder_temp[32];
 
@@ -562,5 +564,5 @@ public void db_SET_TIMERCallback(Handle owner, Handle hndl, const char[] error, 
 		return;
 	}
 
-	SaveSubModule(client, 1, 1);
+	SaveSubModule(client, 2, 1);
 }

@@ -1,38 +1,24 @@
-public Sync_SetDefaults(int client)
+public SYNC_SetDefaults(int client)
 {
-    PrintToServer("Loading Sync Defaults!");
+    PrintToServer("Loading SYNC Defaults!");
 
     g_bSync[client] = false;
-    g_fSync_POSX[client] = 0.5;
-    g_fSync_POSY[client] = 0.5;
-
-    for (int i = 0; i < 3; i++)
-        g_iSync_Color[client][i] = 255;
 }
 
-public void CHUD_SYNC(int client)
+public void SUBMODULE_SYNC(int client)
 {
 	if (!IsValidClient(client))
 		return;
 
-	Menu menu = CreateMenu(CHUD_Sync_Handler);
-	char szItem[128];
+	Menu menu = CreateMenu(SUBMODULE_SYNC_Handler);
 
-	SetMenuTitle(menu, "Sync Options Menu\n \n");
+	SetMenuTitle(menu, "SYNC Options Menu\n \n");
 
 	// Toggle
 	if (g_bSync[client])
 		AddMenuItem(menu, "", "Toggle   | On");
 	else
 		AddMenuItem(menu, "", "Toggle   | Off");
-		
-	// Position
-	Format(szItem, sizeof szItem, "Position | %.1f %.1f", g_fSync_POSX[client], g_fSync_POSY[client]);
-	AddMenuItem(menu, "", szItem);
-
-	// Color
-	Format(szItem, sizeof szItem, "Color      | %d %d %d\n \n", g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
-	AddMenuItem(menu, "", szItem);
 
 	// EXPORT
 	AddMenuItem(menu, "", "Export Settings");
@@ -41,20 +27,17 @@ public void CHUD_SYNC(int client)
 	DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int SUBMODULE_SYNC_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
 		{
-			case 0: Sync_Toggle(param1, true);
-			case 1: Sync_Position(param1);
-			case 2: Sync_Color(param1);
-			//case 3: Export(param1, 2, false, true);
+			case 0: SYNC_Toggle(param1, true);
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		CHUD_MainMenu_Display(param1);
+		INPUT_MENU(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -64,200 +47,126 @@ public int CHUD_Sync_Handler(Menu menu, MenuAction action, int param1, int param
 /////
 //TOGGLE
 /////
-public void Sync_Toggle(int client, bool from_menu)
+public void SYNC_Toggle(int client, bool from_menu)
 {
-    if (g_bSync[client]) {
+    if (g_bSync[client])
 		g_bSync[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
-	}
-	else {
+	else
 		g_bSync[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
-	}
 
-    if (from_menu) {
-        CHUD_SYNC(client);
-    }
-}
-
-/////
-//POSITION
-/////
-public void Sync_Position(int client)
-{
-
-	Menu menu = CreateMenu(CHUD_Sync_Position_Handler);
-	SetMenuTitle(menu, "Sync | Position\n \n");
-
-	char Display_String[256];
-
-	Format(Display_String, 256, "Position X : %.2f", g_fSync_POSX[client]);
-	AddMenuItem(menu, "", Display_String);
-
-	Format(Display_String, 256, "Position Y : %.2f", g_fSync_POSY[client]);
-	AddMenuItem(menu, "", Display_String);
-
-	SetMenuExitBackButton(menu, true);
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-public int CHUD_Sync_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	if (action == MenuAction_Select)
-	{
-		switch (param2)
-		{	
-			case 0: Sync_PosX(param1);
-			case 1: Sync_PosY(param1);
-		}
-	}
-	else if (action == MenuAction_Cancel)
-		CHUD_SYNC(param1);
-	else if (action == MenuAction_End)
-		delete menu;
-
-	return 0;
-}
-
-void Sync_PosX(int client)
-{
-	if (g_fSync_POSX[client] < 1.0){
-		g_fSync_POSX[client] += 0.1;
-	}
-	else
-		g_fSync_POSX[client] = 0.0;
-
-	Sync_Position(client);
-}
-
-void Sync_PosY(int client)
-{
-	
-	if (g_fSync_POSY[client] < 1.0)
-		g_fSync_POSY[client] += 0.1;
-	else
-		g_fSync_POSY[client] = 0.0;
-
-	Sync_Position(client);
-}
-
-
-/////
-//COLOR CHANGE
-/////
-public void Sync_Color(int client)
-{   
-    Menu menu = CreateMenu(Sync_Color_Change_Handler);
-    SetMenuTitle(menu, "Sync | Color\n \n");
-
-    //COLOR OPTIONS
-    char szBuffer[128];
-    Format(szBuffer, sizeof szBuffer, "%d", -2);
-
-    char szItemDisplay[32];
-
-    Format(szItemDisplay, sizeof szItemDisplay, "R | %d", g_iSync_Color[client][0]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
-
-    Format(szItemDisplay, sizeof szItemDisplay, "G | %d", g_iSync_Color[client][1]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
-
-    Format(szItemDisplay, sizeof szItemDisplay, "B | %d", g_iSync_Color[client][2]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
-    
-    SetMenuExitBackButton(menu, true);
-    DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-public int Sync_Color_Change_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	if (action == MenuAction_Select)
-		Sync_Color_Change(param1, -2, param2);
-	else if (action == MenuAction_Cancel)
-		CHUD_SYNC(param1);
-	else if (action == MenuAction_End)
-		delete menu;
-
-	return 0;
-}
-
-public void Sync_Color_Change(int client, int color_type, int color_index)
-{
-	CPrintToChat(client, "%t", "Color_Input");
-	g_iColorIndex[client] = color_index;
-	g_iColorType[client] = color_type;
-	g_iWaitingForResponse[client] = ChangeColor;
+    SUBMODULE_SYNC(client);
 }
 
 /////
 //DISPlAY
 /////
-public void Sync_Display(int client)
+public void SYNC_Display(int client)
 {   
     if (g_bSync[client] && !IsFakeClient(client)) {
 
 		int target;
-
-		//FINAL STRING
-		char szSync[32];
 		
 		if (IsPlayerAlive(client))
 			target = client;
 		else
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-		if(target == -1)
+		if(target == -1 || IsFakeClient(target))
 			return;
 
-		Format(szSync, sizeof szSync, "%.2f%", surftimer_GetClientSync(target));
+		Format(g_szSYNC_SUBMODULE[client], sizeof g_szSYNC_SUBMODULE[], "%.2f%", surftimer_GetClientSync(target));
 		
-		//COLOR
-		int displayColor[3];
-		displayColor[0] = g_iSync_Color[client][0];
-		displayColor[1] = g_iSync_Color[client][1];
-		displayColor[2] = g_iSync_Color[client][2];
-		
-		SetHudTextParams(g_fSync_POSX[client] == 0.5 ? -1.0 : g_fSync_POSX[client], g_fSync_POSY[client] == 0.5 ? -1.0 : g_fSync_POSY[client], 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
-		//ShowSyncHudText(client, Sync_Handle, szSync);
+		//CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
+		for(int i = 0; i < INPUT_SUBMODULES; i++)
+			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == SYNC_ID)
+				Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szSYNC_SUBMODULE[client]);
     }
+	else {
+		Format(g_szSYNC_SUBMODULE[client], sizeof g_szSYNC_SUBMODULE[], "");
+	}
 }
 
 /////
-//COOKIES
+//SQL
 /////
-public void Sync_ConvertStringToData(int client, char szData[512])
-{           
-	char szModules[4][16];
-	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
-	for(int i = 0; i < 4; i++)
-		ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+public void db_GET_SYNC(int client, int module, int submodule)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
 
-	g_bSync[client] = StringToInt(szModules[0]) == 1 ? true : false;
-
-	char szPosition[2][8];
-	ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
-	g_fSync_POSX[client] = StringToFloat(szPosition[0]);
-	g_fSync_POSY[client] = StringToFloat(szPosition[1]);
-
-	char szColor[3][8];
-	ExplodeString(szModules[2], ":", szColor, sizeof szColor, sizeof szColor[]);
-	g_iSync_Color[client][0] = StringToInt(szColor[0]);
-	g_iSync_Color[client][1] = StringToInt(szColor[1]);
-	g_iSync_Color[client][2] = StringToInt(szColor[2]);
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "SELECT * FROM chud_sub_sync WHERE steamid = '%s';", g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_LoadSYNCCallback, szQuery, pack, DBPrio_Low);
 }
 
-char[] Sync_ConvertDataToString(int client)
-{           
-	char szData[512];
+public void SQL_LoadSYNCCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[Clean HUD] SQL Error (SQL_LoadSYNCCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
 
-	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bSync[client]);
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
 
-	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fSync_POSX[client], g_fSync_POSY[client]);
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 
-	//COLOR
-	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iSync_Color[client][0], g_iSync_Color[client][1], g_iSync_Color[client][2]);
+		g_bSync[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	}
+	else {
+		char szQuery[1024];
+		Format(szQuery, sizeof szQuery, "INSERT INTO chud_sub_sync (steamid) VALUES('%s')", g_szSteamID[client]);
+		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
-	return szData;
+		SYNC_SetDefaults(client);
+	}
+
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (SYNC_ID == g_INPUT_SUBMODULES)
+		LoadModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
+	else
+		LoadSubModule(client, module, submodule + 1);
+}
+
+public void db_SET_SYNC(int client, int module, int submodule)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
+
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_sync SET enabled = '%i' WHERE steamid = '%s';", g_bSync[client] ? 1 : 0, g_szSteamID[client]);
+	SQL_TQuery(g_hDb, db_SET_SYNCCallback, szQuery, pack, DBPrio_Low);
+}
+
+public void db_SET_SYNCCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[Clean HUD] SQL Error (db_SET_SYNCCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
+
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
+
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (SYNC_ID == g_INPUT_SUBMODULES)
+		SaveModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
+	else
+		SaveSubModule(client, module, submodule + 1);
 }

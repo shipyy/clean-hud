@@ -46,6 +46,8 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
         switch(param2){
             case 0: SPEED_MENU(param1);
             case 1: TIMER_MENU(param1);
+            case 2: INPUT_MENU(param1);
+            case 3: INFO_MENU(param1);
         }
     }
     else if (action == MenuAction_End) {

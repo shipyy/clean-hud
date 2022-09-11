@@ -45,6 +45,8 @@ public void db_createTables()
 	SQL_AddQuery(createTableTnx, sql_Create_sub_Sync);
 	SQL_AddQuery(createTableTnx, sql_Create_mod_INFO);
 	SQL_AddQuery(createTableTnx, sql_Create_sub_mapinfo);
+	SQL_AddQuery(createTableTnx, sql_Create_sub_stageinfo);
+	SQL_AddQuery(createTableTnx, sql_Create_sub_stageindicator);
 
 	SQL_ExecuteTransaction(g_hDb, createTableTnx, SQLTxn_CreateDatabaseSuccess, SQLTxn_CreateDatabaseFailed);
 

@@ -8,6 +8,8 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	if (IsValidClient(client) && !IsFakeClient(client)) {
 		SPEED_DISPLAY(client);
 		TIMER_DISPLAY(client);
+		INPUT_DISPLAY(client);
+		INFO_DISPLAY(client);
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -72,6 +74,14 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 					case 2: {
 						g_iTIMER_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //TIMER MODULE
 						TIMER_Color_Change_MENU(client, g_iColorType[client]);
+					}
+					case 3: {
+						g_iINPUT_MODULE_COLOR[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //INPUT MODULE
+						INPUT_Color_Change_MENU(client, g_iColorType[client]);
+					}
+					case 4: {
+						g_iINFO_MODULE_COLOR[client][g_iColorIndex[client]] = color_value; //INFO MODULE
+						INFO_Color(client);
 					}
 				}
 			}

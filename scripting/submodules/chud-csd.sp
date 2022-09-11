@@ -108,7 +108,7 @@ public void CSD_Format(int client)
 		}
 	}
 	else {
-		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE, "");
+		Format(g_szCSD_SUBMODULE[client], sizeof g_szCSD_SUBMODULE[], "");
 	}
 }
 

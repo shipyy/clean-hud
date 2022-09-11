@@ -27,13 +27,17 @@ public Plugin myinfo =
 #include "chud-sql.sp"
 #include "modules/chud-SPEED.sp"
 #include "modules/chud-TIMER.sp"
+#include "modules/chud-INPUT.sp"
+#include "modules/chud-INFO.sp"
 #include "submodules/chud-csd.sp"
 #include "submodules/chud-keys.sp"
 #include "submodules/chud-sync.sp"
 #include "submodules/chud-checkpoints.sp"
 #include "submodules/chud-timer.sp"
-#include "submodules/chud-mapinfo.sp"
 #include "submodules/chud-finish.sp"
+#include "submodules/chud-mapinfo.sp"
+#include "submodules/chud-stageinfo.sp"
+#include "submodules/chud-stageindicator.sp"
 #include "chud-misc.sp"
 #include "chud-runner.sp"
 
@@ -55,8 +59,8 @@ public void OnPluginStart()
 
     Init_SPEED_MODULE();
     Init_TIMER_MODULE();
-    //Init_INPUT_MODULE();
-    //Init_INFO_MODULE();
+    Init_INPUT_MODULE();
+    Init_INFO_MODULE();
 }
 
 public void OnPluginEnd()
@@ -72,6 +76,8 @@ public void OnClientPutInServer(int client)
         return;
 
     GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
+
+    SetClientDefults(client);
 
     if(!IsFakeClient(client))
         LoadModule(client, 1);

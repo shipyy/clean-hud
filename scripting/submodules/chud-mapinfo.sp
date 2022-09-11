@@ -1,73 +1,54 @@
-public MapInfo_SetDefaults(int client)
+public MAPINFO_SetDefaults(int client)
 {
-    PrintToServer("Loading MapInfo Defaults!");
+    PrintToServer("Loading MAPINFO Defaults!");
 
     g_bMapInfo[client] = false;
-    g_fMapInfo_POSX[client] = 0.5;
-    g_fMapInfo_POSY[client] = 0.5;
-    
-    for (int i = 0; i < 3; i++)
-        g_iMapInfo_Color[client][i] = 255;
     
     g_iMapInfo_CompareMode[client] = 1;
     g_iMapInfo_ShowMode[client] = 2;
 }
 
-public void CHUD_MAPINFO(int client)
+public void SUBMODULE_MAPINFO(int client)
 {
     if (!IsValidClient(client))
         return;
 
-    Menu menu = CreateMenu(CHUD_MapInfo_Handler);
+    Menu menu = CreateMenu(SUBMODULE_MAPINFO_Handler);
     char szItem[128];
 
-    SetMenuTitle(menu, "MapInfo Options Menu\n \n");
+    SetMenuTitle(menu, "MAPINFO Options Menu\n \n");
 
     // Toggle
     if (g_bMapInfo[client])
         AddMenuItem(menu, "", "Toggle    | On");
     else
         AddMenuItem(menu, "", "Toggle    | Off");
-        
-    // Position
-    Format(szItem, sizeof szItem, "Position  | %.1f %.1f", g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
-    AddMenuItem(menu, "", szItem);
-
-    // Color
-    Format(szItem, sizeof szItem, "Color      | %d %d %d", g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2]);
-    AddMenuItem(menu, "", szItem);
-
+    
     // Show Mode
-    Format(szItem, sizeof szItem, "Show      | %s", g_iMapInfo_ShowMode[client] == 0 ? "PB" : "WR");
+    Format(szItem, sizeof szItem, "Show      | %s", g_iMapInfo_ShowMode[client] == 1 ? "WR" : "PB");
     AddMenuItem(menu, "", szItem);
 
     // Compare Mode
     Format(szItem, sizeof szItem, "Compare | %s", g_iMapInfo_CompareMode[client] == 1 ? "WR\n \n" : "PB\n \n");
     AddMenuItem(menu, "", szItem);
 
-    // EXPORT
-    AddMenuItem(menu, "", "Export Settings");
-
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
-public int CHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int param2)
+public int SUBMODULE_MAPINFO_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
 		{
-			case 0: MapInfo_Toggle(param1, true);
-			case 1: MapInfo_Position(param1);
-			case 2: MapInfo_Color(param1);
-            case 3: MapInfo_ShowMode(param1);
-            case 4: MapInfo_CompareMode(param1);
-            //case 5: Export(param1, 5, false, true);
+			case 0: MAPINFO_Toggle(param1, true);
+            case 1: MAPINFO_ShowMode(param1);
+            case 2: MAPINFO_CompareMode(param1);
 		}
 	}
 	else if (action == MenuAction_Cancel)
-		CHUD_MainMenu_Display(param1);
+		INFO_MENU(param1);
 	else if (action == MenuAction_End)
 		delete menu;
 
@@ -77,167 +58,49 @@ public int CHUD_MapInfo_Handler(Menu menu, MenuAction action, int param1, int pa
 /////
 //TOGGLE
 /////
-public void MapInfo_Toggle(int client, bool from_menu)
+public void MAPINFO_Toggle(int client, bool from_menu)
 {
-    if (g_bMapInfo[client]) {
+    if (g_bMapInfo[client])
 		g_bMapInfo[client] = false;
-		//CPrintToChat(client, "%t", "CenterSpeedOff", g_szChatPrefix);
-	}
-	else {
+	else
 		g_bMapInfo[client] = true;
-		//CPrintToChat(client, "%t", "CenterSpeedOn", g_szChatPrefix);
-	}
-
-    if (from_menu) {
-        CHUD_MAPINFO(client);
-    }
-}
-
-/////
-//POSITION
-/////
-public void MapInfo_Position(int client)
-{
-
-	Menu menu = CreateMenu(CHUD_MapInfo_Position_Handler);
-	SetMenuTitle(menu, "MapInfo | Position\n \n");
-
-	char Display_String[256];
-
-	Format(Display_String, 256, "Position X : %.2f", g_fMapInfo_POSX[client]);
-	AddMenuItem(menu, "", Display_String);
-
-	Format(Display_String, 256, "Position Y : %.2f", g_fMapInfo_POSY[client]);
-	AddMenuItem(menu, "", Display_String);
-
-	SetMenuExitBackButton(menu, true);
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-public int CHUD_MapInfo_Position_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	if (action == MenuAction_Select)
-	{
-		switch (param2)
-		{	
-			case 0: MapInfo_PosX(param1);
-			case 1: MapInfo_PosY(param1);
-		}
-	}
-	else if (action == MenuAction_Cancel)
-		CHUD_MAPINFO(param1);
-	else if (action == MenuAction_End)
-		delete menu;
-
-	return 0;
-}
-
-void MapInfo_PosX(int client)
-{
-	if (g_fMapInfo_POSX[client] < 1.0){
-		g_fMapInfo_POSX[client] += 0.1;
-	}
-	else
-		g_fMapInfo_POSX[client] = 0.0;
-
-	MapInfo_Position(client);
-}
-
-void MapInfo_PosY(int client)
-{
-	
-	if (g_fMapInfo_POSY[client] < 1.0)
-		g_fMapInfo_POSY[client] += 0.1;
-	else
-		g_fMapInfo_POSY[client] = 0.0;
-
-	MapInfo_Position(client);
-}
-
-
-/////
-//COLOR CHANGE
-/////
-public void MapInfo_Color(int client)
-{   
-    Menu menu = CreateMenu(MapInfo_Color_Change_Handler);
-    SetMenuTitle(menu, "MapInfo | Color\n \n");
-
-    //COLOR OPTIONS
-    char szBuffer[128];
-    Format(szBuffer, sizeof szBuffer, "%d", -2);
-
-    char szItemDisplay[32];
-
-    Format(szItemDisplay, sizeof szItemDisplay, "R | %d", g_iMapInfo_Color[client][0]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
-
-    Format(szItemDisplay, sizeof szItemDisplay, "G | %d", g_iMapInfo_Color[client][1]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
-
-    Format(szItemDisplay, sizeof szItemDisplay, "B | %d", g_iMapInfo_Color[client][2]);
-    AddMenuItem(menu, szBuffer, szItemDisplay);
     
-    SetMenuExitBackButton(menu, true);
-    DisplayMenu(menu, client, MENU_TIME_FOREVER);
-}
-
-public int MapInfo_Color_Change_Handler(Menu menu, MenuAction action, int param1, int param2)
-{
-	if (action == MenuAction_Select)
-		MapInfo_Color_Change(param1, -3, param2);
-	else if (action == MenuAction_Cancel)
-		CHUD_MAPINFO(param1);
-	else if (action == MenuAction_End)
-		delete menu;
-
-	return 0;
-}
-
-public void MapInfo_Color_Change(int client, int color_type, int color_index)
-{
-    CPrintToChat(client, "%t", "Color_Input");
-    g_iColorIndex[client] = color_index;
-    g_iColorType[client] = color_type;
-    g_iWaitingForResponse[client] = ChangeColor;
+    SUBMODULE_MAPINFO(client);
 }
 
 /////
 //COMPARE MODE
 /////
-void MapInfo_CompareMode(int client)
+void MAPINFO_CompareMode(int client)
 {
 	if (g_iMapInfo_CompareMode[client] != 2)
 		g_iMapInfo_CompareMode[client]++;
 	else
 		g_iMapInfo_CompareMode[client] = 1;
 
-	CHUD_MAPINFO(client);
+	SUBMODULE_MAPINFO(client);
 }
 
 /////
 //SHOW MODE
 /////
-void MapInfo_ShowMode(int client)
+void MAPINFO_ShowMode(int client)
 {
 	if (g_iMapInfo_ShowMode[client] != 2)
 		g_iMapInfo_ShowMode[client]++;
 	else
 		g_iMapInfo_ShowMode[client] = 1;
 
-	CHUD_MAPINFO(client);
+	SUBMODULE_MAPINFO(client);
 }
 
 /////
 //DISPLAY
 /////
-public void MapInfo_Display(int client)
+public void MAPINFO_Display(int client)
 {   
     if(g_bMapInfo[client] && !IsFakeClient(client)) {
         int target;
-
-        //FINAL STRING
-        char szMapInfo[128];
 
         if (IsPlayerAlive(client))
             target = client;
@@ -247,6 +110,13 @@ public void MapInfo_Display(int client)
         if(target == -1)
             return;
 
+        if(IsFakeClient(target)) {
+            for(int i = 0; i < INFO_SUBMODULES; i++)
+                if (g_iINFO_SUBMODULES_INDEXES[client][i] == MAPINFO_ID)
+                    Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+            return;
+        }
+        
         int wrcptimer;
         int pracmode;
         int stage;
@@ -272,45 +142,45 @@ public void MapInfo_Display(int client)
 
         //FORMAT SHOW MODE
         //PB
-        if ( g_iMapInfo_ShowMode[client] == 2) {
+        if (g_iMapInfo_ShowMode[client] == 2) {
 
             if (PBTime != -1.0) {
                 Format_Time(client, PBTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
                 Format(szShowModeFormatted, sizeof szShowModeFormatted, "PB %s |", szShowModeFormatted);
 
                 //FORMAT COMPARE MODE
-                if ( g_iMapInfo_CompareMode[client] == 2) {
-                    Format(szMapInfo, sizeof szMapInfo, "%s PB +00:00.000", szShowModeFormatted);
+                if (g_iMapInfo_CompareMode[client] == 2) {
+                    Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s PB +00:00.000", szShowModeFormatted);
                 }
-                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                else if (g_iMapInfo_CompareMode[client] == 1) {
                     if(WRTime != 9999999.0) {
                         Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                        Format(szMapInfo, sizeof szMapInfo, "%s WR +%s", szShowModeFormatted, szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s WR +%s", szShowModeFormatted, szCompareModeFormatted);
                     }
                     else {
-                        Format(szMapInfo, sizeof szMapInfo, "%s WR N/A", szShowModeFormatted, szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s WR N/A", szShowModeFormatted);
                     }
                 }
             }
             else {
                 //FORMAT COMPARE MODE
-                if ( g_iMapInfo_CompareMode[client] == 2) {
-                    Format(szMapInfo, sizeof szMapInfo, "PB N/A | PB N/A", szShowModeFormatted);
+                if (g_iMapInfo_CompareMode[client] == 2) {
+                    Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "PB N/A | PB N/A");
                 }
-                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                else if (g_iMapInfo_CompareMode[client] == 1) {
                     if(WRTime != 9999999.0) {
                         Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                        Format(szMapInfo, sizeof szMapInfo, "PB N/A | WR +%s", szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "PB N/A | WR +%s", szCompareModeFormatted);
                     }
                     else {
-                        Format(szMapInfo, sizeof szMapInfo, "PB N/A | WR N/A");
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "PB N/A | WR N/A");
                     }
                 }
             }
 
         }
         //WR
-        else if ( g_iMapInfo_ShowMode[client] == 1) {
+        else if (g_iMapInfo_ShowMode[client] == 1) {
             if (WRTime != 9999999.0) {
                 Format_Time(client, WRTime, szShowModeFormatted, sizeof szShowModeFormatted, true);
                 Format(szShowModeFormatted, sizeof szShowModeFormatted, "WR %s |", szShowModeFormatted);
@@ -319,85 +189,126 @@ public void MapInfo_Display(int client)
                 if ( g_iMapInfo_CompareMode[client] == 2) {
                     if (PBTime != -1.0) {
                         Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                        Format(szMapInfo, sizeof szMapInfo, "%s PB -%s", szShowModeFormatted, szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s PB -%s", szShowModeFormatted, szCompareModeFormatted);
                     }
                     else {
-                        Format(szMapInfo, sizeof szMapInfo, "%s PB N/A", szShowModeFormatted, szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s PB N/A", szShowModeFormatted);
                     }
                 }
-                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                else if (g_iMapInfo_CompareMode[client] == 1) {
                     Format_Time(client, WRTime - PBTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                    Format(szMapInfo, sizeof szMapInfo, "%s WR +00:00.000", szShowModeFormatted, szCompareModeFormatted);
+                    Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "%s WR +00:00.000", szShowModeFormatted);
                 }
             }
             else {
                 //FORMAT COMPARE MODE
-                if ( g_iMapInfo_CompareMode[client] == 2) {
+                if (g_iMapInfo_CompareMode[client] == 2) {
                     if (PBTime != -1.0) {
                         Format_Time(client, PBTime - WRTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                        Format(szMapInfo, sizeof szMapInfo, "WR N/A | PB -%s", szCompareModeFormatted);
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "WR N/A | PB -%s", szCompareModeFormatted);
                     }
                     else {
-                        Format(szMapInfo, sizeof szMapInfo, "WR N/A | PB N/A");
+                        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "WR N/A | PB N/A");
                     }
                 }
-                else if ( g_iMapInfo_CompareMode[client] == 1) {
+                else if (g_iMapInfo_CompareMode[client] == 1) {
                     Format_Time(client, WRTime - PBTime, szCompareModeFormatted, sizeof szCompareModeFormatted, true);
-                    Format(szMapInfo, sizeof szMapInfo, "WR N/A | WR N/A");
+                    Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "WR N/A | WR N/A");
                 }
             }
         }
 
-        SetHudTextParams(g_fMapInfo_POSX[client] == 0.5 ? -1.0 : g_fMapInfo_POSX[client], g_fMapInfo_POSY[client] == 0.5 ? -1.0 : g_fMapInfo_POSY[client], 1.0, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2], 255, 0, 0.0, 0.0, 0.0);
-        //ShowSyncHudText(client, MapInfo_Handle, szMapInfo);
+        //CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
+        for(int i = 0; i < INFO_SUBMODULES; i++)
+            if (g_iINFO_SUBMODULES_INDEXES[client][i] == MAPINFO_ID)
+                Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szMAPINFO_SUBMODULE[client]);
+    }
+    else {
+        Format(g_szMAPINFO_SUBMODULE[client], sizeof g_szMAPINFO_SUBMODULE[], "");
     }
 }
 
 /////
-//COOKIES
+//SQL
 /////
-public void MapInfo_ConvertStringToData(int client, char szData[512])
-{           
-    char szModules[5][16];
-    ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
-    for(int i = 0; i < 5; i++)
-        ReplaceString(szModules[i], sizeof szModules[],  "|", "", false);
+public void db_GET_MAPINFO(int client, int module, int submodule)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
 
-    g_bMapInfo[client] = StringToInt(szModules[0]) == 1 ? true : false;
-
-    char szPosition[2][8];
-    ExplodeString(szModules[1], ":", szPosition, sizeof szPosition, sizeof szPosition[]);
-    g_fMapInfo_POSX[client] = StringToFloat(szPosition[0]);
-    g_fMapInfo_POSY[client] = StringToFloat(szPosition[1]);
-
-    char szColor[3][8];
-    ExplodeString(szModules[2], ":", szColor, sizeof szColor, sizeof szColor[]);
-    g_iMapInfo_Color[client][0] = StringToInt(szColor[0]);
-    g_iMapInfo_Color[client][1] = StringToInt(szColor[1]);
-    g_iMapInfo_Color[client][2] = StringToInt(szColor[2]);
-
-    g_iMapInfo_ShowMode[client] = StringToInt(szModules[3]);
-    g_iMapInfo_CompareMode[client] = StringToInt(szModules[4]);
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "SELECT * FROM chud_sub_mapinfo WHERE steamid = '%s';", g_szSteamID[client]);
+	SQL_TQuery(g_hDb, SQL_LoadMAPINFOCallback, szQuery, pack, DBPrio_Low);
 }
 
-char[] MapInfo_ConvertDataToString(int client)
-{           
-	char szData[512];
+public void SQL_LoadMAPINFOCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[Clean HUD] SQL Error (SQL_LoadMAPINFOCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
 
-	//ENABLED
-	Format(szData, sizeof szData, "%d|", g_bMapInfo[client]);
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
 
-	//POSITION
-	Format(szData, sizeof szData, "%s%.1f:%.1f|", szData, g_fMapInfo_POSX[client], g_fMapInfo_POSY[client]);
+	if (SQL_HasResultSet(hndl) && SQL_FetchRow(hndl)) {
 
-	//COLOR
-	Format(szData, sizeof szData, "%s%d:%d:%d|", szData, g_iMapInfo_Color[client][0], g_iMapInfo_Color[client][1], g_iMapInfo_Color[client][2]);
+		g_bMapInfo[client] = (SQL_FetchInt(hndl, 1) == 1 ? true : false);
+	}
+	else {
+		char szQuery[1024];
+		Format(szQuery, sizeof szQuery, "INSERT INTO chud_sub_mapinfo (steamid) VALUES('%s')", g_szSteamID[client]);
+		SQL_TQuery(g_hDb, SQL_CheckCallback, szQuery, client, DBPrio_Low);
 
-	//SHOW MODE
-	Format(szData, sizeof szData, "%s%d|", szData, g_iMapInfo_ShowMode[client]);
+		MAPINFO_SetDefaults(client);
+	}
 
-    //COMPARE MODE
-	Format(szData, sizeof szData, "%s%d", szData, g_iMapInfo_CompareMode[client]);
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (MAPINFO_ID == g_INFO_SUBMODULES)
+		LoadModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
+	else
+		LoadSubModule(client, module, submodule + 1);
+}
 
-	return szData;
+public void db_SET_MAPINFO(int client, int module, int submodule)
+{
+	DataPack pack = new DataPack();
+	pack.WriteCell(client);
+	pack.WriteCell(module);
+	pack.WriteCell(submodule);
+
+	char szQuery[1024];
+	Format(szQuery, sizeof szQuery, "UPDATE chud_sub_mapinfo SET enabled = '%i' WHERE steamid = '%s';", g_bMapInfo[client] ? 1 : 0, g_szSteamID[client]);
+	SQL_TQuery(g_hDb, db_SET_MAPINFOCallback, szQuery, pack, DBPrio_Low);
+}
+
+public void db_SET_MAPINFOCallback(Handle owner, Handle hndl, const char[] error, any pack)
+{
+	if (hndl == null)
+	{
+		LogError("[Clean HUD] SQL Error (db_SET_MAPINFOCallback): %s", error);
+		CloseHandle(pack);
+		return;
+	}
+
+	ResetPack(pack);
+	int client = ReadPackCell(pack);
+	int module = ReadPackCell(pack);
+	int submodule = ReadPackCell(pack);
+	CloseHandle(pack);
+
+	//IF THIS IS THE LAST SUBMODULE GO TO THE NEXT MODULE
+	if (MAPINFO_ID == g_INFO_SUBMODULES)
+		SaveModule(client, module + 1);
+	//OTHERWISE CONTINUE TO THE NEXT SUBMODULE
+	else
+		SaveSubModule(client, module, submodule + 1);
 }

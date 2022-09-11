@@ -90,7 +90,7 @@ public void STOPWATCH_Format(int client)
 				Format(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szTIMER_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szSTOPWATCH_SUBMODULE[client]);
 	}
 	else {
-		Format(g_szSTOPWATCH_SUBMODULE[client], sizeof g_szSTOPWATCH_SUBMODULE, "");
+		Format(g_szSTOPWATCH_SUBMODULE[client], sizeof g_szSTOPWATCH_SUBMODULE[], "");
 	}
 }
 
