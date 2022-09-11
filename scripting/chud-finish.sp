@@ -283,7 +283,7 @@ void Finish_CompareMode(int client)
 /////
 //FORMAT
 /////
-public void Finish_Format(int client, float runtime, float pb_diff, float wr_diff, int zonegroup)
+public void Finish_Format(int client, float runtime, float pb_diff, float wr_diff, int zonegroup, bool practice)
 {
 	char szCurrentRunFormatted[64];
 	char szPBDiffFormatted[64];
@@ -295,23 +295,23 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 		if(pb_diff != 999999.0) {
 			if( zonegroup == 0) {
 				if( pb_diff >= 0)
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB +%s", szCurrentRunFormatted, szPBDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | PB +%s", practice ? "[Practice] " : "", szCurrentRunFormatted, szPBDiffFormatted);
 				else
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB -%s", szCurrentRunFormatted, szPBDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | PB -%s", practice ? "[Practice] " : "", szCurrentRunFormatted, szPBDiffFormatted);
 			}
 			else {
 				if( pb_diff >= 0)
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | PB +%s", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | PB +%s", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
 				else
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | PB -%s", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | PB -%s", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted, szPBDiffFormatted);
 			}
 		}
 		else {
 			if( zonegroup == 0) {
-				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | PB N/A", szCurrentRunFormatted);
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | PB N/A", practice ? "[Practice] " : "", szCurrentRunFormatted);
 			}
 			else {
-				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | PB N/A", zonegroup, szCurrentRunFormatted);
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | PB N/A", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted);
 			}
 		}
 	}
@@ -322,23 +322,23 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 		if(wr_diff != 999999.0) {
 			if( zonegroup == 0) {
 				if (wr_diff >= 0)
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR +%s", szCurrentRunFormatted, szWRDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | WR +%s", practice ? "[Practice] " : "", szCurrentRunFormatted, szWRDiffFormatted);
 				else
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR -%s", szCurrentRunFormatted, szWRDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | WR -%s", practice ? "[Practice] " : "", szCurrentRunFormatted, szWRDiffFormatted);
 			}
 			else {
 				if (wr_diff >= 0)
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | WR +%s", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | WR +%s", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
 				else
-					Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | WR -%s", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
+					Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | WR -%s", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted, szWRDiffFormatted);
 			}
 		}
 		else {
 			if( zonegroup == 0) {
-				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Map Finished in %s | WR N/A", szCurrentRunFormatted);
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sMap Finished in %s | WR N/A", practice ? "[Practice] " : "", szCurrentRunFormatted);
 			}
 			else {
-				Format(szFinishFormatted[client], sizeof szFinishFormatted, "Bonus %d Finished in %s | WR N/A", zonegroup, szCurrentRunFormatted);
+				Format(szFinishFormatted[client], sizeof szFinishFormatted, "%sBonus %d Finished in %s | WR N/A", practice ? "[Practice] " : "", zonegroup, szCurrentRunFormatted);
 			}
 		}
 	}
