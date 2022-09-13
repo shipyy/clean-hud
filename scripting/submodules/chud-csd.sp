@@ -79,7 +79,11 @@ void CSD_Axis(int client)
 /////
 public void CSD_Format(int client)
 {
-	if (g_bCSD[client] && !IsFakeClient(client)) {
+	if (g_bCSD[client]) {
+
+		if (IsFakeClient(client))
+			return;
+
 		int target;
 
 		if (IsPlayerAlive(client))

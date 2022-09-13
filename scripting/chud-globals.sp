@@ -70,6 +70,12 @@ int g_iColorIndex[MAXPLAYERS + 1];
 int g_iColorType[MAXPLAYERS + 1];
 int g_iArrayToChange[MAXPLAYERS + 1];
 
+int g_iRefreshRate[MAXPLAYERS + 1];
+int g_iRefreshRateValue[MAXPLAYERS + 1];
+int g_iClientTick[MAXPLAYERS + 1];
+int g_iCurrentTick[MAXPLAYERS + 1];
+float g_fTickrate;
+
 char g_szSteamID[MAXPLAYERS + 1][32];
 
 //EEDITING

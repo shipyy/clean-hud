@@ -38,7 +38,7 @@ public void SPEED_MENU(int client)
 		AddMenuItem(menu, "", "Toggle   | Off");
     
 	// Position
-	Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1]);
+	Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1]);
 	AddMenuItem(menu, "", szItem);
 
     // Color
@@ -121,8 +121,8 @@ public int SPEED_Position_Handler(Menu menu, MenuAction action, int param1, int 
 		{	
 			case 0: SPEED_PosX(param1, 1);
 			case 1: SPEED_PosX(param1, -1);
-			case 2: SPEED_PosY(param1, 1);
-			case 3: SPEED_PosY(param1, -1);
+			case 2: SPEED_PosY(param1, -1);
+			case 3: SPEED_PosY(param1, 1);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -136,8 +136,8 @@ public int SPEED_Position_Handler(Menu menu, MenuAction action, int param1, int 
 void SPEED_PosX(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fSPEED_MODULE_POSITION[client][0] = (g_fSPEED_MODULE_POSITION[client][0] + 0.1) > 1.0 ? 1.0 : g_fSPEED_MODULE_POSITION[client][0] + 0.1;
-        case -1 : g_fSPEED_MODULE_POSITION[client][0] = (g_fSPEED_MODULE_POSITION[client][0] - 0.1) < 0.0 ? 0.0 : g_fSPEED_MODULE_POSITION[client][0] - 0.1;
+        case 1 : g_fSPEED_MODULE_POSITION[client][0] = (g_fSPEED_MODULE_POSITION[client][0] + 0.05) > 1.0 ? 1.0 : g_fSPEED_MODULE_POSITION[client][0] + 0.05;
+        case -1 : g_fSPEED_MODULE_POSITION[client][0] = (g_fSPEED_MODULE_POSITION[client][0] - 0.05) < 0.0 ? 0.0 : g_fSPEED_MODULE_POSITION[client][0] - 0.05;
     }
 
     SPEED_Position(client);
@@ -146,8 +146,8 @@ void SPEED_PosX(int client, int direction)
 void SPEED_PosY(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fSPEED_MODULE_POSITION[client][1] = (g_fSPEED_MODULE_POSITION[client][1] + 0.1) > 1.0 ? 1.0 : g_fSPEED_MODULE_POSITION[client][1] + 0.1;
-        case -1 : g_fSPEED_MODULE_POSITION[client][1] = (g_fSPEED_MODULE_POSITION[client][1] - 0.1) < 0.0 ? 0.0 : g_fSPEED_MODULE_POSITION[client][1] - 0.1;
+        case 1 : g_fSPEED_MODULE_POSITION[client][1] = (g_fSPEED_MODULE_POSITION[client][1] + 0.05) > 1.0 ? 1.0 : g_fSPEED_MODULE_POSITION[client][1] + 0.05;
+        case -1 : g_fSPEED_MODULE_POSITION[client][1] = (g_fSPEED_MODULE_POSITION[client][1] - 0.05) < 0.0 ? 0.0 : g_fSPEED_MODULE_POSITION[client][1] - 0.05;
     }
 
     SPEED_Position(client);
@@ -413,7 +413,7 @@ public void SPEED_DISPLAY(int client)
 		int displayColor[3];
 		displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 
-		SetHudTextParams(posx, posy, 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 		ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
 	}
 }
@@ -476,7 +476,7 @@ public void SQL_LoadSPEEDCallback(Handle owner, Handle hndl, const char[] error,
 		SQL_FetchString(hndl, 6, SPEEDFormatOrder, sizeof SPEEDFormatOrder);
 		ExplodeString(SPEEDFormatOrder, "|", SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT, sizeof SPEEDFormatOrder_SPLIT[]);
 		for(int i = 0; i < SPEED_SUBMODULES; i++)
-			g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(SPEEDFormatOrder_SPLIT[0]);
+			g_iSPEED_SUBMODULES_INDEXES[client][i] = StringToInt(SPEEDFormatOrder_SPLIT[i]);
 	}
 	else {
 		char szQuery[1024];
@@ -505,8 +505,8 @@ public void db_SET_SPEED(int client)
 	char szFormatOrder_temp[32];
 
 	//POSITION
-	Format(szPosX, sizeof szPosX, "%.1f", g_fSPEED_MODULE_POSITION[client][0]);
-	Format(szPosY, sizeof szPosY, "%.1f", g_fSPEED_MODULE_POSITION[client][1]);
+	Format(szPosX, sizeof szPosX, "%.2f", g_fSPEED_MODULE_POSITION[client][0]);
+	Format(szPosY, sizeof szPosY, "%.2f", g_fSPEED_MODULE_POSITION[client][1]);
 	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
 
 	//COLORS
@@ -527,13 +527,16 @@ public void db_SET_SPEED(int client)
 
 	//FORMAT ORDER BY ID
 	for(int i = 0; i < SPEED_SUBMODULES; i++) {
-		IntToString(g_iSPEED_MODULE_COLOR[client][client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
+		IntToString(g_iSPEED_SUBMODULES_INDEXES[client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
 		Format(szFormatOrder_temp, sizeof szFormatOrder_temp, "%s|", szFormatOrder_temp);
 		StrCat(szFormatOrder, sizeof szFormatOrder, szFormatOrder_temp);
 	}
-	for(int i = 0; i < 32; i++)
-		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
+	for(int i = 0; i < 32; i++) {
+		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0') {
 			szFormatOrder[i] = '\0';
+			break;
+		}
+	}
 
 	Format(szQuery, sizeof szQuery, "UPDATE chud_SPEED SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bSPEED_MODULE[client] ? 1 : 0, szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_SPEEDCallback, szQuery, client, DBPrio_Low);

@@ -133,7 +133,10 @@ public void CP_Format(int client, float runtime, float pb_runtime, float wr_runt
 /////
 public void CP_Display(int client)
 {
-	if (!IsFakeClient(client) && g_bCP[client]) {
+	if (g_bCP[client]) {
+		
+		if (IsFakeClient(client))
+			return;
 
 		int target;
 

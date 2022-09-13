@@ -37,7 +37,7 @@ public void INFO_MENU(int client)
         AddMenuItem(menu, "", "Toggle   | Off");
 
     // Position
-    Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fINFO_MODULE_POSITION[client][0], g_fINFO_MODULE_POSITION[client][1]);
+    Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fINFO_MODULE_POSITION[client][0], g_fINFO_MODULE_POSITION[client][1]);
     AddMenuItem(menu, "", szItem);
 
     // Color
@@ -136,8 +136,8 @@ public int INFO_Position_Handler(Menu menu, MenuAction action, int param1, int p
 void INFO_PosX(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fINFO_MODULE_POSITION[client][0] = (g_fINFO_MODULE_POSITION[client][0] + 0.1) > 1.0 ? 1.0 : g_fINFO_MODULE_POSITION[client][0] + 0.1;
-        case -1 : g_fINFO_MODULE_POSITION[client][0] = (g_fINFO_MODULE_POSITION[client][0] - 0.1) < 0.0 ? 0.0 : g_fINFO_MODULE_POSITION[client][0] - 0.1;
+        case 1 : g_fINFO_MODULE_POSITION[client][0] = (g_fINFO_MODULE_POSITION[client][0] + 0.05) > 1.0 ? 1.0 : g_fINFO_MODULE_POSITION[client][0] + 0.05;
+        case -1 : g_fINFO_MODULE_POSITION[client][0] = (g_fINFO_MODULE_POSITION[client][0] - 0.05) < 0.0 ? 0.0 : g_fINFO_MODULE_POSITION[client][0] - 0.05;
     }
 
     INFO_Position(client);
@@ -146,8 +146,8 @@ void INFO_PosX(int client, int direction)
 void INFO_PosY(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fINFO_MODULE_POSITION[client][1] = (g_fINFO_MODULE_POSITION[client][1] + 0.1) > 1.0 ? 1.0 : g_fINFO_MODULE_POSITION[client][1] + 0.1;
-        case -1 : g_fINFO_MODULE_POSITION[client][1] = (g_fINFO_MODULE_POSITION[client][1] - 0.1) < 0.0 ? 0.0 : g_fINFO_MODULE_POSITION[client][1] - 0.1;
+        case 1 : g_fINFO_MODULE_POSITION[client][1] = (g_fINFO_MODULE_POSITION[client][1] + 0.05) > 1.0 ? 1.0 : g_fINFO_MODULE_POSITION[client][1] + 0.05;
+        case -1 : g_fINFO_MODULE_POSITION[client][1] = (g_fINFO_MODULE_POSITION[client][1] - 0.05) < 0.0 ? 0.0 : g_fINFO_MODULE_POSITION[client][1] - 0.05;
     }
 
     INFO_Position(client);
@@ -321,7 +321,7 @@ public void INFO_DISPLAY(int client)
                 Format(g_szINFO_MODULE[client], sizeof g_szINFO_MODULE[], "%s\n%s", g_szINFO_MODULE[client], g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i]);
         }
 
-        SetHudTextParams(posx, posy, 1.0, g_iINFO_MODULE_COLOR[client][0], g_iINFO_MODULE_COLOR[client][1], g_iINFO_MODULE_COLOR[client][2], 255, 0, 0.0, 0.0, 0.0);
+        SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINFO_MODULE_COLOR[client][0], g_iINFO_MODULE_COLOR[client][1], g_iINFO_MODULE_COLOR[client][2], 255, 0, 0.0, 0.0, 0.0);
 
         ShowSyncHudText(client, Handle_INFO_MODULE, g_szINFO_MODULE[client]);
     }
@@ -372,7 +372,7 @@ public void SQL_LoadINFOCallback(Handle owner, Handle hndl, const char[] error, 
 		SQL_FetchString(hndl, 4, INFOFormatOrder, sizeof INFOFormatOrder);
 		ExplodeString(INFOFormatOrder, "|", INFOFormatOrder_SPLIT, sizeof INFOFormatOrder_SPLIT, sizeof INFOFormatOrder_SPLIT[]);
 		for(int i = 0; i < INFO_SUBMODULES; i++)
-			g_iINFO_SUBMODULES_INDEXES[client][i] = StringToInt(INFOFormatOrder_SPLIT[0]);
+			g_iINFO_SUBMODULES_INDEXES[client][i] = StringToInt(INFOFormatOrder_SPLIT[i]);
 	}
 	else {
 		char szQuery[1024];
@@ -397,8 +397,8 @@ public void db_SET_INFO(int client)
 	char szFormatOrder_temp[32];
 
 	//POSITION
-	Format(szPosX, sizeof szPosX, "%.1f", g_fINFO_MODULE_POSITION[client][0]);
-	Format(szPosY, sizeof szPosY, "%.1f", g_fINFO_MODULE_POSITION[client][1]);
+	Format(szPosX, sizeof szPosX, "%.2f", g_fINFO_MODULE_POSITION[client][0]);
+	Format(szPosY, sizeof szPosY, "%.2f", g_fINFO_MODULE_POSITION[client][1]);
 	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
 
 	//COLORS
@@ -409,13 +409,16 @@ public void db_SET_INFO(int client)
 
 	//FORMAT ORDER BY ID
 	for(int i = 0; i < INFO_SUBMODULES; i++) {
-		IntToString(g_iINFO_MODULE_COLOR[client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
+		IntToString(g_iINFO_SUBMODULES_INDEXES[client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
 		Format(szFormatOrder_temp, sizeof szFormatOrder_temp, "%s|", szFormatOrder_temp);
 		StrCat(szFormatOrder, sizeof szFormatOrder, szFormatOrder_temp);
 	}
-	for(int i = 0; i < 32; i++)
-		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
+	for(int i = 0; i < 32; i++) {
+		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0') {
 			szFormatOrder[i] = '\0';
+			break;
+		}
+	}
 
 	Format(szQuery, sizeof szQuery, "UPDATE chud_INFO SET enabled = '%i', pos = '%s', color = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bINFO_MODULE[client] ? 1 : 0, szPosition, szColor, szFormatOrder, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_INFOCallback, szQuery, client, DBPrio_Low);

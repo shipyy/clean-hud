@@ -59,7 +59,11 @@ public void STAGEINFO_Toggle(int client, bool from_menu)
 /////
 public void STAGEINFO_Display(int client)
 {   
-    if(g_bStageInfo[client] && !IsFakeClient(client)) {
+    if(g_bStageInfo[client]) {
+
+        if (IsFakeClient(client))
+			return;
+
         int target;
 
         if (IsPlayerAlive(client))

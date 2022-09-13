@@ -38,7 +38,7 @@ public void INPUT_MENU(int client)
         AddMenuItem(menu, "", "Toggle   | Off");
 
     // Position
-    Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fINPUT_MODULE_POSITION[client][0], g_fINPUT_MODULE_POSITION[client][1]);
+    Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fINPUT_MODULE_POSITION[client][0], g_fINPUT_MODULE_POSITION[client][1]);
     AddMenuItem(menu, "", szItem);
 
     // Color
@@ -137,8 +137,8 @@ public int INPUT_Position_Handler(Menu menu, MenuAction action, int param1, int 
 void INPUT_PosX(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fINPUT_MODULE_POSITION[client][0] = (g_fINPUT_MODULE_POSITION[client][0] + 0.1) > 1.0 ? 1.0 : g_fINPUT_MODULE_POSITION[client][0] + 0.1;
-        case -1 : g_fINPUT_MODULE_POSITION[client][0] = (g_fINPUT_MODULE_POSITION[client][0] - 0.1) < 0.0 ? 0.0 : g_fINPUT_MODULE_POSITION[client][0] - 0.1;
+        case 1 : g_fINPUT_MODULE_POSITION[client][0] = (g_fINPUT_MODULE_POSITION[client][0] + 0.05) > 1.0 ? 1.0 : g_fINPUT_MODULE_POSITION[client][0] + 0.05;
+        case -1 : g_fINPUT_MODULE_POSITION[client][0] = (g_fINPUT_MODULE_POSITION[client][0] - 0.05) < 0.0 ? 0.0 : g_fINPUT_MODULE_POSITION[client][0] - 0.05;
     }
 
     INPUT_Position(client);
@@ -147,8 +147,8 @@ void INPUT_PosX(int client, int direction)
 void INPUT_PosY(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fINPUT_MODULE_POSITION[client][1] = (g_fINPUT_MODULE_POSITION[client][1] + 0.1) > 1.0 ? 1.0 : g_fINPUT_MODULE_POSITION[client][1] + 0.1;
-        case -1 : g_fINPUT_MODULE_POSITION[client][1] = (g_fINPUT_MODULE_POSITION[client][1] - 0.1) < 0.0 ? 0.0 : g_fINPUT_MODULE_POSITION[client][1] - 0.1;
+        case 1 : g_fINPUT_MODULE_POSITION[client][1] = (g_fINPUT_MODULE_POSITION[client][1] + 0.05) > 1.0 ? 1.0 : g_fINPUT_MODULE_POSITION[client][1] + 0.05;
+        case -1 : g_fINPUT_MODULE_POSITION[client][1] = (g_fINPUT_MODULE_POSITION[client][1] - 0.05) < 0.0 ? 0.0 : g_fINPUT_MODULE_POSITION[client][1] - 0.05;
     }
 
     INPUT_Position(client);
@@ -365,15 +365,15 @@ public void INPUT_DISPLAY(int client)
 
         for(int i = 0; i < INPUT_SUBMODULES; i++) {
             if (StrContains(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], "+", false) == 0) {
-                SetHudTextParams(posx, posy, 1.0, g_iINPUT_MODULE_COLOR[client][0][0], g_iINPUT_MODULE_COLOR[client][0][1], g_iINPUT_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][0][0], g_iINPUT_MODULE_COLOR[client][0][1], g_iINPUT_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
                 break;
             }
             else if (StrContains(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) == 0) {
-                SetHudTextParams(posx, posy, 1.0, g_iINPUT_MODULE_COLOR[client][1][0], g_iINPUT_MODULE_COLOR[client][1][1], g_iINPUT_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][1][0], g_iINPUT_MODULE_COLOR[client][1][1], g_iINPUT_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
                 break;
             }
             else {
-                SetHudTextParams(posx, posy, 1.0, g_iINPUT_MODULE_COLOR[client][2][0], g_iINPUT_MODULE_COLOR[client][2][1], g_iINPUT_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][2][0], g_iINPUT_MODULE_COLOR[client][2][1], g_iINPUT_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
             }
         }
 
@@ -442,7 +442,7 @@ public void SQL_LoadINPUTCallback(Handle owner, Handle hndl, const char[] error,
 		SQL_FetchString(hndl, 6, INPUTFormatOrder, sizeof INPUTFormatOrder);
 		ExplodeString(INPUTFormatOrder, "|", INPUTFormatOrder_SPLIT, sizeof INPUTFormatOrder_SPLIT, sizeof INPUTFormatOrder_SPLIT[]);
 		for(int i = 0; i < INPUT_SUBMODULES; i++)
-			g_iINPUT_SUBMODULES_INDEXES[client][i] = StringToInt(INPUTFormatOrder_SPLIT[0]);
+			g_iINPUT_SUBMODULES_INDEXES[client][i] = StringToInt(INPUTFormatOrder_SPLIT[i]);
 	}
 	else {
 		char szQuery[1024];
@@ -471,8 +471,8 @@ public void db_SET_INPUT(int client)
 	char szFormatOrder_temp[32];
 
 	//POSITION
-	Format(szPosX, sizeof szPosX, "%.1f", g_fINPUT_MODULE_POSITION[client][0]);
-	Format(szPosY, sizeof szPosY, "%.1f", g_fINPUT_MODULE_POSITION[client][1]);
+	Format(szPosX, sizeof szPosX, "%.2f", g_fINPUT_MODULE_POSITION[client][0]);
+	Format(szPosY, sizeof szPosY, "%.2f", g_fINPUT_MODULE_POSITION[client][1]);
 	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
 
 	//COLORS
@@ -493,13 +493,16 @@ public void db_SET_INPUT(int client)
 
 	//FORMAT ORDER BY ID
 	for(int i = 0; i < INPUT_SUBMODULES; i++) {
-		IntToString(g_iINPUT_MODULE_COLOR[client][client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
+		IntToString(g_iINPUT_SUBMODULES_INDEXES[client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
 		Format(szFormatOrder_temp, sizeof szFormatOrder_temp, "%s|", szFormatOrder_temp);
 		StrCat(szFormatOrder, sizeof szFormatOrder, szFormatOrder_temp);
 	}
-	for(int i = 0; i < 32; i++)
-		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
+	for(int i = 0; i < 32; i++) {
+		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0') {
 			szFormatOrder[i] = '\0';
+			break;
+		}
+	}
 
 	Format(szQuery, sizeof szQuery, "UPDATE chud_INPUT SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bINPUT_MODULE[client] ? 1 : 0, szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_INPUTCallback, szQuery, client, DBPrio_Low);

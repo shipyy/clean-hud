@@ -111,7 +111,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 		switch (module) {
 			case 1 : {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
 					g_bSPEED_MODULE[client] ? 1 : 0, 
 					g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1],
 					g_iSPEED_MODULE_COLOR[client][0][0], g_iSPEED_MODULE_COLOR[client][0][1], g_iSPEED_MODULE_COLOR[client][0][2],
@@ -124,7 +124,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 2: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //21
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //21
 					g_bTIMER_MODULE[client] ? 1 : 0, 
 					g_fTIMER_MODULE_POSITION[client][0], g_fTIMER_MODULE_POSITION[client][1],
 					g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2],
@@ -139,7 +139,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 3: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //16
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //16
 					g_bINPUT_MODULE[client] ? 1 : 0, 
 					g_fINPUT_MODULE_POSITION[client][0], g_fINPUT_MODULE_POSITION[client][1],
 					g_iINPUT_MODULE_COLOR[client][0][0], g_iINPUT_MODULE_COLOR[client][0][1], g_iINPUT_MODULE_COLOR[client][0][2],
@@ -152,7 +152,7 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 			}
 			case 4: {
 				Format(szSettings, sizeof szSettings, 
-					"%d|%.1f|%.1f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //20
+					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //20
 					g_bINFO_MODULE[client] ? 1 : 0, 
 					g_fINFO_MODULE_POSITION[client][0], g_fINFO_MODULE_POSITION[client][1],
 					g_iINFO_MODULE_COLOR[client][0][0], g_iINFO_MODULE_COLOR[client][0][1], g_iINFO_MODULE_COLOR[client][0][2],
@@ -224,8 +224,6 @@ public void Import(int client, int module, char szImportSettings[1024], char szP
 	//72 fields
 	char Modules[74][8];
 	int fields = ExplodeString(szImportSettings, "|", Modules, sizeof Modules, sizeof Modules[]);
-
-	PrintToChatAll("module input %d ", module);
 
 	if (module != -1) {
 		switch (module) {
@@ -497,6 +495,10 @@ public void SetClientDefults(int client)
 	g_iColorIndex[client] = 0;
 	g_iColorType[client] = 0;
 	g_iArrayToChange[client] = 0;
+
+	g_iClientTick[client] = 0;
+	g_iCurrentTick[client] = g_iClientTick[client];
+	g_iRefreshRate[client] = 1;
 
 	for(int i = 0; i < 4; i++)
 		g_bEditing[client][i] = false;

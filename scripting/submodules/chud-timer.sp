@@ -59,7 +59,10 @@ public void Stopwatch_Toggle(int client)
 /////
 public void STOPWATCH_Format(int client)
 {
-    if (g_bStopwatch[client] && !IsFakeClient(client)) {
+    if (g_bStopwatch[client]) {
+
+		if (IsFakeClient(client))
+			return;
             
 		int target;
 		

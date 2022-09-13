@@ -126,7 +126,11 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 /////
 public void FINISH_Display(int client)
 {
-    if (!IsFakeClient(client) && g_bFinish[client]) {
+    if (g_bFinish[client]) {
+
+		if (IsFakeClient(client))
+			return;
+
 		int target;
 
 		if (IsPlayerAlive(client))

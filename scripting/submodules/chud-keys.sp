@@ -58,7 +58,10 @@ public void KEYS_Toggle(int client, bool from_menu)
 /////
 public void KEYS_Display(int client)
 {   
-	if (g_bKeys[client] && !IsFakeClient(client)) {
+	if (g_bKeys[client]) {
+
+		if (IsFakeClient(client))
+			return;
 
 		int target;
 

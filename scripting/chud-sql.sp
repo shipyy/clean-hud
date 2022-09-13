@@ -34,6 +34,7 @@ public void db_createTables()
 {
 	Transaction createTableTnx = SQL_CreateTransaction();
 
+	SQL_AddQuery(createTableTnx, sql_Create_OPTIONS);
 	SQL_AddQuery(createTableTnx, sql_Create_mod_SPEED);
 	SQL_AddQuery(createTableTnx, sql_Create_sub_CSD);
 	SQL_AddQuery(createTableTnx, sql_Create_mod_TIMER);

@@ -25,6 +25,7 @@ public Plugin myinfo =
 #include "chud-forwards.sp"
 #include "chud-queries.sp"
 #include "chud-sql.sp"
+#include "modules/chud-OPTIONS.sp"
 #include "modules/chud-SPEED.sp"
 #include "modules/chud-TIMER.sp"
 #include "modules/chud-INPUT.sp"
@@ -47,6 +48,9 @@ public void OnPluginStart()
     if (eGame != Engine_CSGO) {
         SetFailState("[Clean HUD] This plugin is for CSGO only.");
     }
+
+    //GET TICKRATE
+    g_fTickrate = (1 / GetTickInterval());
 
     //DATABASE
     db_setupDatabase();
@@ -77,10 +81,12 @@ public void OnClientPutInServer(int client)
 
     GetClientAuthId(client, AuthId_Steam2, g_szSteamID[client], MAX_NAME_LENGTH, true);
 
+    SDKHook(client, SDKHook_PostThinkPost, Hook_PostThinkPost);
+
     SetClientDefults(client);
 
     if(!IsFakeClient(client))
-        LoadModule(client, 1);
+        db_LoadOPTIONS(client);
     
     for(int i = 0; i < 4; i++)
         g_bEditing[client][i] = false;
@@ -102,6 +108,8 @@ public void OnMapStart()
 public void OnMapEnd()
 {
     for (int i = 1; i <= MaxClients; i++)
-        if (IsValidClient(i) && !IsFakeClient(i))
-            SaveModule(i, 1);
+        if (IsValidClient(i) && !IsFakeClient(i)) {
+            PrintToConsole(0, "\n\n===SAVING PLAYER OPTIONS ONMAPEND()===\n\n");
+            db_SET_OPTIONS(i);
+        }
 }

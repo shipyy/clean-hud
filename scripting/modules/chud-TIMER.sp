@@ -40,7 +40,7 @@ public void TIMER_MENU(int client)
         AddMenuItem(menu, "", "Toggle   | Off");
 
     // Position
-    Format(szItem, sizeof szItem, "Position   | %.1f %.1f", g_fTIMER_MODULE_POSITION[client][0], g_fTIMER_MODULE_POSITION[client][1]);
+    Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fTIMER_MODULE_POSITION[client][0], g_fTIMER_MODULE_POSITION[client][1]);
     AddMenuItem(menu, "", szItem);
 
     // Color
@@ -145,8 +145,8 @@ public int TIMER_Position_Handler(Menu menu, MenuAction action, int param1, int 
 		{	
 			case 0: TIMER_PosX(param1, 1);
 			case 1: TIMER_PosX(param1, -1);
-			case 2: TIMER_PosY(param1, 1);
-			case 3: TIMER_PosY(param1, -1);
+			case 2: TIMER_PosY(param1, -1);
+			case 3: TIMER_PosY(param1, 1);
 		}
 	}
 	else if (action == MenuAction_Cancel)
@@ -160,8 +160,8 @@ public int TIMER_Position_Handler(Menu menu, MenuAction action, int param1, int 
 void TIMER_PosX(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fTIMER_MODULE_POSITION[client][0] = (g_fTIMER_MODULE_POSITION[client][0] + 0.1) > 1.0 ? 1.0 : g_fTIMER_MODULE_POSITION[client][0] + 0.1;
-        case -1 : g_fTIMER_MODULE_POSITION[client][0] = (g_fTIMER_MODULE_POSITION[client][0] - 0.1) < 0.0 ? 0.0 : g_fTIMER_MODULE_POSITION[client][0] - 0.1;
+        case 1 : g_fTIMER_MODULE_POSITION[client][0] = (g_fTIMER_MODULE_POSITION[client][0] + 0.05) > 1.0 ? 1.0 : g_fTIMER_MODULE_POSITION[client][0] + 0.05;
+        case -1 : g_fTIMER_MODULE_POSITION[client][0] = (g_fTIMER_MODULE_POSITION[client][0] - 0.05) < 0.0 ? 0.0 : g_fTIMER_MODULE_POSITION[client][0] - 0.05;
     }
 
     TIMER_Position(client);
@@ -170,8 +170,8 @@ void TIMER_PosX(int client, int direction)
 void TIMER_PosY(int client, int direction)
 {
     switch (direction) {
-        case 1 : g_fTIMER_MODULE_POSITION[client][1] = (g_fTIMER_MODULE_POSITION[client][1] + 0.1) > 1.0 ? 1.0 : g_fTIMER_MODULE_POSITION[client][1] + 0.1;
-        case -1 : g_fTIMER_MODULE_POSITION[client][1] = (g_fTIMER_MODULE_POSITION[client][1] - 0.1) < 0.0 ? 0.0 : g_fTIMER_MODULE_POSITION[client][1] - 0.1;
+        case 1 : g_fTIMER_MODULE_POSITION[client][1] = (g_fTIMER_MODULE_POSITION[client][1] + 0.05) > 1.0 ? 1.0 : g_fTIMER_MODULE_POSITION[client][1] + 0.05;
+        case -1 : g_fTIMER_MODULE_POSITION[client][1] = (g_fTIMER_MODULE_POSITION[client][1] - 0.05) < 0.0 ? 0.0 : g_fTIMER_MODULE_POSITION[client][1] - 0.05;
     }
 
     TIMER_Position(client);
@@ -244,20 +244,20 @@ public void TIMER_Color_Change_MENU(int client, int type)
 
 public int TIMER_Color_Change_MENU_Handler(Menu menu, MenuAction action, int param1, int param2)
 {
-    char szBuffer[32];
-    if (action == MenuAction_Select){
-        GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-        TIMER_Color_Change(param1, StringToInt(szBuffer), param2);
-    }
-    else if (action == MenuAction_Cancel) {
-        GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
-        g_bEditingColor[param1][StringToInt(szBuffer)] = false;
-        TIMER_Color(param1);
-    }
-    else if (action == MenuAction_End)
-        delete menu;
+	char szBuffer[32];
+	if (action == MenuAction_Select){
+		GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
+		TIMER_Color_Change(param1, StringToInt(szBuffer), param2);
+	}
+	else if (action == MenuAction_Cancel) {
+		GetMenuItem(menu, 0, szBuffer, sizeof(szBuffer));
+		g_bEditingColor[param1][StringToInt(szBuffer)] = false;
+		TIMER_Color(param1);
+	}
+	else if (action == MenuAction_End)
+		delete menu;
 
-    return 0;
+	return 0;
 }
 
 public void TIMER_Color_Change(int client, int color_type, int color_index)
@@ -321,7 +321,6 @@ public int CHANGE_TIMER_FORMAT_ID_MENU_Handler(Menu menu, MenuAction action, int
         char szBuffer[32];
         GetMenuItem(menu, param2, szBuffer, sizeof(szBuffer));
         g_iTIMER_SUBMODULES_INDEXES[param1][StringToInt(szBuffer)] = param2;
-        PrintToChatAll("value of choice %d | %d", StringToInt(szBuffer), param2);
         TIMER_FORMATORDER(param1);
     }
     else if (action == MenuAction_Cancel)
@@ -371,63 +370,82 @@ public int TIMER_SUBMODULES_Handler(Menu menu, MenuAction action, int param1, in
 /////
 public void TIMER_DISPLAY(int client)
 {
-    if ((g_bTIMER_MODULE[client] || g_bEditing[client][1]) && !IsFakeClient(client)) {
+	if ((g_bTIMER_MODULE[client] || g_bEditing[client][1]) && !IsFakeClient(client)) {
 
-        float posx = g_fTIMER_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fTIMER_MODULE_POSITION[client][0];
-        float posy = g_fTIMER_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fTIMER_MODULE_POSITION[client][1];
+		float posx = g_fTIMER_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fTIMER_MODULE_POSITION[client][0];
+		float posy = g_fTIMER_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fTIMER_MODULE_POSITION[client][1];
 
-        if (g_bEditing[client][1]) {
+		STOPWATCH_Format(client);
+		CP_Display(client);
+		FINISH_Display(client);
 
-            if (g_bEditingColor[client][0]) {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-            }
-            else if (g_bEditingColor[client][1]) {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-            }
-            else if (g_bEditingColor[client][2]) {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-            }
-            else {
-                SetHudTextParams(posx, posy, 1.0, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
-            }
-
-            ShowSyncHudText(client, Handle_TIMER_MODULE, "%s", "00:00.000\n00:00.000\nMap Finished in 69:69.420 | WR +69:69.20");
-            return;
-        }
-
-        STOPWATCH_Format(client);
-        CP_Display(client);
-        FINISH_Display(client);
-
-        //CHECK FOR NON-SELECTED SUBMODULES
-        for(int i = 0; i < TIMER_SUBMODULES; i++)
-            if (g_iTIMER_SUBMODULES_INDEXES[client][i] == 0)
-                Format(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szTIMER_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+		//CHECK FOR NON-SELECTED SUBMODULES
+		for(int i = 0; i < TIMER_SUBMODULES; i++)
+			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == 0)
+				Format(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szTIMER_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
 
 
-        for(int i = 0; i < TIMER_SUBMODULES; i++) {
-            if (i == 0)
-                Format(g_szTIMER_MODULE[client], sizeof g_szTIMER_MODULE[], "%s", g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i]);
-            else
-                Format(g_szTIMER_MODULE[client], sizeof g_szTIMER_MODULE[], "%s\n%s", g_szTIMER_MODULE[client], g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i]);
-        }
+		for(int i = 0; i < TIMER_SUBMODULES; i++) {
+			if (i == 0)
+				Format(g_szTIMER_MODULE[client], sizeof g_szTIMER_MODULE[], "%s", g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i]);
+			else
+				Format(g_szTIMER_MODULE[client], sizeof g_szTIMER_MODULE[], "%s\n%s", g_szTIMER_MODULE[client], g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i]);
+		}
 
-        for(int i = 0; i < TIMER_SUBMODULES; i++) {
-            if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "+", false) == 0) {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-                break;
-            }
-            else if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) == 0) {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-                break;
-            }
-            else {
-                SetHudTextParams(posx, posy, 1.0, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-            }
-        }
+		if (g_bEditing[client][1]) {
 
-        ShowSyncHudText(client, Handle_TIMER_MODULE, g_szTIMER_MODULE[client]);
-    }
+			if (g_bEditingColor[client][0]) {
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][1]) {
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else if (g_bEditingColor[client][2]) {
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			}
+			else {
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
+			}
+
+			char szTemp[3][128];
+
+			for(int i = 0; i < TIMER_SUBMODULES; i++) {
+				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID)
+					szTemp[i] = "WR +00:00.000";
+				else if (g_iTIMER_SUBMODULES_INDEXES[client][i] == FINISH_ID)
+					szTemp[i] = "Map Finished in 12:34:567 | WR +12:34:567";
+				else
+					szTemp[i] = g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i];
+			}
+
+			ShowSyncHudText(client, Handle_TIMER_MODULE, "%s\n%s\n%s", szTemp[0], szTemp[1], szTemp[2]);
+			return;
+		}
+
+		if (g_bCP[client]) {
+			for(int i = 0; i < TIMER_SUBMODULES; i++) {
+				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID) {
+					if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) != -1) {
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+						break;
+					}
+					else if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "+", false) != -1) {
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+						break;
+					}
+					else {
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+						break;
+					}
+				}
+			}
+		}
+		else {
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+		}
+
+		ShowSyncHudText(client, Handle_TIMER_MODULE, g_szTIMER_MODULE[client]);
+	}
 }
 
 /////
@@ -460,10 +478,12 @@ public void SQL_LoadTIMERCallback(Handle owner, Handle hndl, const char[] error,
 		g_fTIMER_MODULE_POSITION[client][0] = StringToFloat(TIMER_Pos_SPLIT[0]);
 		g_fTIMER_MODULE_POSITION[client][1] = StringToFloat(TIMER_Pos_SPLIT[1]);
 
+		g_iTIMER_HOLDTIME[client] = SQL_FetchInt(hndl, 3);
+
 		char TIMERColor_SPLIT[3][12];
 		//GAIN COLOR
 		char TIMERColor_Gain[32];
-		SQL_FetchString(hndl, 3, TIMERColor_Gain, sizeof TIMERColor_Gain);
+		SQL_FetchString(hndl, 4, TIMERColor_Gain, sizeof TIMERColor_Gain);
 		ExplodeString(TIMERColor_Gain, "|", TIMERColor_SPLIT, sizeof TIMERColor_SPLIT, sizeof TIMERColor_SPLIT[]);
 		g_iTIMER_MODULE_COLOR[client][0][0] = StringToInt(TIMERColor_SPLIT[0]);
 		g_iTIMER_MODULE_COLOR[client][0][1] = StringToInt(TIMERColor_SPLIT[1]);
@@ -471,7 +491,7 @@ public void SQL_LoadTIMERCallback(Handle owner, Handle hndl, const char[] error,
 
 		//LOSS COLOR
 		char TIMERColor_Loss[32];
-		SQL_FetchString(hndl, 4, TIMERColor_Loss, sizeof TIMERColor_Loss);
+		SQL_FetchString(hndl, 5, TIMERColor_Loss, sizeof TIMERColor_Loss);
 		ExplodeString(TIMERColor_Loss, "|", TIMERColor_SPLIT, sizeof TIMERColor_SPLIT, sizeof TIMERColor_SPLIT[]);
 		g_iTIMER_MODULE_COLOR[client][1][0] = StringToInt(TIMERColor_SPLIT[0]);
 		g_iTIMER_MODULE_COLOR[client][1][1] = StringToInt(TIMERColor_SPLIT[1]);
@@ -479,7 +499,7 @@ public void SQL_LoadTIMERCallback(Handle owner, Handle hndl, const char[] error,
 
 		//MAINTAIN COLOR
 		char TIMERColor_Maintain[32];
-		SQL_FetchString(hndl, 5, TIMERColor_Maintain, sizeof TIMERColor_Maintain);
+		SQL_FetchString(hndl, 6, TIMERColor_Maintain, sizeof TIMERColor_Maintain);
 		ExplodeString(TIMERColor_Maintain, "|", TIMERColor_SPLIT, sizeof TIMERColor_SPLIT, sizeof TIMERColor_SPLIT[]);
 		g_iTIMER_MODULE_COLOR[client][2][0] = StringToInt(TIMERColor_SPLIT[0]);
 		g_iTIMER_MODULE_COLOR[client][2][1] = StringToInt(TIMERColor_SPLIT[1]);
@@ -488,10 +508,10 @@ public void SQL_LoadTIMERCallback(Handle owner, Handle hndl, const char[] error,
 		//FORMAT ORDER
 		char TIMERFormatOrder[32];
 		char TIMERFormatOrder_SPLIT[TIMER_SUBMODULES][12];
-		SQL_FetchString(hndl, 6, TIMERFormatOrder, sizeof TIMERFormatOrder);
+		SQL_FetchString(hndl, 7, TIMERFormatOrder, sizeof TIMERFormatOrder);
 		ExplodeString(TIMERFormatOrder, "|", TIMERFormatOrder_SPLIT, sizeof TIMERFormatOrder_SPLIT, sizeof TIMERFormatOrder_SPLIT[]);
 		for(int i = 0; i < TIMER_SUBMODULES; i++)
-			g_iTIMER_SUBMODULES_INDEXES[client][i] = StringToInt(TIMERFormatOrder_SPLIT[0]);
+			g_iTIMER_SUBMODULES_INDEXES[client][i] = StringToInt(TIMERFormatOrder_SPLIT[i]);
 	}
 	else {
 		char szQuery[1024];
@@ -520,8 +540,8 @@ public void db_SET_TIMER(int client)
 	char szFormatOrder_temp[32];
 
 	//POSITION
-	Format(szPosX, sizeof szPosX, "%.1f", g_fTIMER_MODULE_POSITION[client][0]);
-	Format(szPosY, sizeof szPosY, "%.1f", g_fTIMER_MODULE_POSITION[client][1]);
+	Format(szPosX, sizeof szPosX, "%.2f", g_fTIMER_MODULE_POSITION[client][0]);
+	Format(szPosY, sizeof szPosY, "%.2f", g_fTIMER_MODULE_POSITION[client][1]);
 	Format(szPosition, sizeof szPosition, "%s|%s", szPosX, szPosY);
 
 	//COLORS
@@ -542,15 +562,18 @@ public void db_SET_TIMER(int client)
 
 	//FORMAT ORDER BY ID
 	for(int i = 0; i < TIMER_SUBMODULES; i++) {
-		IntToString(g_iTIMER_MODULE_COLOR[client][client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
+		IntToString(g_iTIMER_SUBMODULES_INDEXES[client][i], szFormatOrder_temp, sizeof szFormatOrder_temp);
 		Format(szFormatOrder_temp, sizeof szFormatOrder_temp, "%s|", szFormatOrder_temp);
 		StrCat(szFormatOrder, sizeof szFormatOrder, szFormatOrder_temp);
 	}
-	for(int i = 0; i < 32; i++)
-		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0')
+	for(int i = 0; i < 32; i++) {
+		if (szFormatOrder[i] == '|' && szFormatOrder[i+1] == '\0') {
 			szFormatOrder[i] = '\0';
+			break;
+		}
+	}
 
-	Format(szQuery, sizeof szQuery, "UPDATE chud_TIMER SET enabled = '%i', pos = '%s', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bTIMER_MODULE[client] ? 1 : 0, szPosition, szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
+	Format(szQuery, sizeof szQuery, "UPDATE chud_TIMER SET enabled = '%i', pos = '%s', holdtime = '%i', gaincolor = '%s', losscolor = '%s', maintaincolor = '%s', FormatOrderbyID = '%s' WHERE steamid = '%s';", g_bTIMER_MODULE[client] ? 1 : 0, szPosition, g_iTIMER_HOLDTIME[client], szGain, szLoss, szMaintain, szFormatOrder, g_szSteamID[client]);
 	SQL_TQuery(g_hDb, db_SET_TIMERCallback, szQuery, client, DBPrio_Low);
 
 }

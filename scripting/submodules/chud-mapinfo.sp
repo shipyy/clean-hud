@@ -99,7 +99,11 @@ void MAPINFO_ShowMode(int client)
 /////
 public void MAPINFO_Display(int client)
 {   
-    if(g_bMapInfo[client] && !IsFakeClient(client)) {
+    if(g_bMapInfo[client]) {
+
+        if (IsFakeClient(client))
+			return;
+
         int target;
 
         if (IsPlayerAlive(client))

@@ -59,52 +59,56 @@ public void STAGEINDICATOR_Toggle(int client, bool from_menu)
 /////
 public void STAGEINDICATOR_Display(int client)
 {   
-    if(g_bStageIndicator[client] && !IsFakeClient(client)) {
-        int target;
+	if(g_bStageIndicator[client]) {
 
-        if (IsPlayerAlive(client))
-            target = client;
-        else
-            target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
+		if (IsFakeClient(client))
+			return;
 
-        if(target == -1)
-            return;
+		int target;
 
-        if(IsFakeClient(target)){
-            for(int i = 0; i < INFO_SUBMODULES; i++)
-                if (g_iINFO_SUBMODULES_INDEXES[client][i] == STAGEINDICATOR_ID)
-                    Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
-            return;
-        }
-            
+		if (IsPlayerAlive(client))
+			target = client;
+		else
+			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
 
-        int total_stages = surftimer_GetMapStages();
+		if(target == -1)
+			return;
 
-        int wrcptimer;
-        int pracmode;
-        int stage;
-        int bonus;
+		if(IsFakeClient(target)){
+			for(int i = 0; i < INFO_SUBMODULES; i++)
+				if (g_iINFO_SUBMODULES_INDEXES[client][i] == STAGEINDICATOR_ID)
+					Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+			return;
+		}
+			
 
-        if (total_stages != 0) {
-            surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
+		int total_stages = surftimer_GetMapStages();
 
-            if (bonus != 0)
-                Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Bonus %d", bonus);
-            else
-                Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Stage %d/%d", stage, total_stages);
-        }
-        else {
-            Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "");
-        }
+		int wrcptimer;
+		int pracmode;
+		int stage;
+		int bonus;
 
-        //CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
-        for(int i = 0; i < INFO_SUBMODULES; i++)
-            if (g_iINFO_SUBMODULES_INDEXES[client][i] == STAGEINDICATOR_ID)
-                Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szSTAGEINDICATOR_SUBMODULE[client]);
-    }
-    else {
-        Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "");
-    }
+		if (total_stages != 0) {
+			surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
+
+			if (bonus != 0)
+				Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Bonus %d", bonus);
+			else
+				Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "Stage %d/%d", stage, total_stages);
+		}
+		else {
+			Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "");
+		}
+
+		//CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
+		for(int i = 0; i < INFO_SUBMODULES; i++)
+			if (g_iINFO_SUBMODULES_INDEXES[client][i] == STAGEINDICATOR_ID)
+				Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szSTAGEINDICATOR_SUBMODULE[client]);
+	}
+	else {
+		Format(g_szSTAGEINDICATOR_SUBMODULE[client], sizeof g_szSTAGEINDICATOR_SUBMODULE[], "");
+	}
 }
 
 /////

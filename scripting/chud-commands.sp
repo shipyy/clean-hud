@@ -32,7 +32,10 @@ public void CHUD_MainMenu_Display(int client)
     AddMenuItem(menu, "", "INPUT");
 
     //MAP INFO
-    AddMenuItem(menu, "", "INFO");
+    AddMenuItem(menu, "", "INFO\n \n");
+
+    //GLOBAL OPTIONS
+    AddMenuItem(menu, "", "OPTIONS");
 
     
     SetMenuPagination(menu, 5);
@@ -48,6 +51,7 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
             case 1: TIMER_MENU(param1);
             case 2: INPUT_MENU(param1);
             case 3: INFO_MENU(param1);
+            case 4: OPTIONS_MENU(param1);
         }
     }
     else if (action == MenuAction_End) {

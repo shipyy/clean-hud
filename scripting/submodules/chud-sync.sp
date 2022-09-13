@@ -62,7 +62,10 @@ public void SYNC_Toggle(int client, bool from_menu)
 /////
 public void SYNC_Display(int client)
 {   
-    if (g_bSync[client] && !IsFakeClient(client)) {
+    if (g_bSync[client]) {
+
+		if (IsFakeClient(client))
+			return;
 
 		int target;
 		

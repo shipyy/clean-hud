@@ -6,10 +6,14 @@ void CreateHooks()
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsValidClient(client) && !IsFakeClient(client)) {
-		SPEED_DISPLAY(client);
-		TIMER_DISPLAY(client);
-		INPUT_DISPLAY(client);
-		INFO_DISPLAY(client);
+		if (g_iClientTick[client] - g_iCurrentTick[client] >= g_iRefreshRateValue[client]) {
+			g_iCurrentTick[client] += g_iRefreshRateValue[client];
+
+			SPEED_DISPLAY(client);
+			TIMER_DISPLAY(client);
+			INPUT_DISPLAY(client);
+			INFO_DISPLAY(client);
+		}
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -27,10 +31,16 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;
 
+	PrintToConsole(0, "\n\n===SAVING PLAYER OPTIONS BY DISCONNECT===\n\n");
 	//START SAVING EVERY MODULES AND THEIR SUBMODULES (STARTING AT MODULE INDEX 1)
-	SaveModule(client, 1);
+	db_SET_OPTIONS(client);
 
 	return Plugin_Handled;
+}
+
+public void Hook_PostThinkPost(int entity)
+{
+	++g_iClientTick[entity];
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
