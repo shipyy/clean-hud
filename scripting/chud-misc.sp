@@ -571,6 +571,7 @@ public void SetClientDefults(int client)
 
 	//SYNC
 	g_szSYNC_SUBMODULE[client] = "";
+	g_fLastSync[client] = 0.0;
 
 			//===INFO MODULE===
 	

@@ -16,6 +16,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		}
 	}
 
+	g_fLastSync[client] = surftimer_GetClientSync(client);
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;
 	g_imouseDir[client] = mouse;

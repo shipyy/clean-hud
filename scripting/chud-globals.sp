@@ -159,6 +159,7 @@ char g_szCSD_SUBMODULE[MAXPLAYERS + 1][128];
 bool g_bCSD[MAXPLAYERS + 1];
 int g_iCSD_SpeedAxis[MAXPLAYERS + 1];
 float g_fLastSpeed[MAXPLAYERS +1];
+float g_fLastSync[MAXPLAYERS +1];
 
 //===TIMER MODULE===
 //CHECKPOINTS

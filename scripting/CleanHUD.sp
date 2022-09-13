@@ -95,6 +95,7 @@ public void OnClientPutInServer(int client)
         g_bEditingColor[client][i] = false;
 
     g_fLastSpeed[client] = 0.0;
+    g_fLastSync[client] = 0.0;
     g_iLastButton[client] = 0;
     g_iWaitingForResponse[client] = None;
 }

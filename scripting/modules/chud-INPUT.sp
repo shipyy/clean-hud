@@ -244,6 +244,32 @@ public void INPUT_Color_Change(int client, int color_type, int color_index)
 	g_iWaitingForResponse[client] = ChangeColor;
 }
 
+int[] GetINPUTColour(int client, float sync)
+{	
+	int displayColor[3] = {255, 255, 255};
+	
+	//gaining sync or mainting
+	if (RoundToNearest(g_fLastSync[client]) < sync || (g_fLastSync[client] == sync && sync != 0.0) ) {
+		displayColor[0] = g_iINPUT_MODULE_COLOR[client][0][0];
+		displayColor[1] = g_iINPUT_MODULE_COLOR[client][0][1];
+		displayColor[2] = g_iINPUT_MODULE_COLOR[client][0][2];
+	}
+	//losing sync
+	else if (RoundToNearest(g_fLastSync[client]) > sync ) {
+		displayColor[0] = g_iINPUT_MODULE_COLOR[client][1][0];
+		displayColor[1] = g_iINPUT_MODULE_COLOR[client][1][1];
+		displayColor[2] = g_iINPUT_MODULE_COLOR[client][1][2];
+	}
+	//not moving (sync == 0)
+	else {
+		displayColor[0] = g_iSPEED_MODULE_COLOR[client][2][0];
+		displayColor[1] = g_iSPEED_MODULE_COLOR[client][2][1];
+		displayColor[2] = g_iSPEED_MODULE_COLOR[client][2][2];
+	}
+
+	return displayColor;
+}
+
 /////
 //FORMAT ORDER
 /////
@@ -342,43 +368,33 @@ public int INPUT_SUBMODULES_Handler(Menu menu, MenuAction action, int param1, in
 /////
 public void INPUT_DISPLAY(int client)
 {
-    if (g_bINPUT_MODULE[client]  && !IsFakeClient(client)) {
+	if (g_bINPUT_MODULE[client]  && !IsFakeClient(client)) {
 
-        float posx = g_fINPUT_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fINPUT_MODULE_POSITION[client][0];
-        float posy = g_fINPUT_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fINPUT_MODULE_POSITION[client][1];
+		float posx = g_fINPUT_MODULE_POSITION[client][0] == 0.5 ? -1.0 : g_fINPUT_MODULE_POSITION[client][0];
+		float posy = g_fINPUT_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fINPUT_MODULE_POSITION[client][1];
 
-        KEYS_Display(client);
-        SYNC_Display(client);
+		KEYS_Display(client);
+		SYNC_Display(client);
 
-        //CHECK FOR NON-SELECTED SUBMODULES
-        for(int i = 0; i < INPUT_SUBMODULES; i++)
-            if (g_iINPUT_SUBMODULES_INDEXES[client][i] == 0)
-                Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+		//CHECK FOR NON-SELECTED SUBMODULES
+		for(int i = 0; i < INPUT_SUBMODULES; i++)
+			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == 0)
+				Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
 
 
-        for(int i = 0; i < INPUT_SUBMODULES; i++) {
-            if (i == 0)
-                Format(g_szINPUT_MODULE[client], sizeof g_szINPUT_MODULE[], "%s", g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i]);
-            else
-                Format(g_szINPUT_MODULE[client], sizeof g_szINPUT_MODULE[], "%s\n%s", g_szINPUT_MODULE[client], g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i]);
-        }
+		for(int i = 0; i < INPUT_SUBMODULES; i++) {
+			if (i == 0)
+				Format(g_szINPUT_MODULE[client], sizeof g_szINPUT_MODULE[], "%s", g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i]);
+			else
+				Format(g_szINPUT_MODULE[client], sizeof g_szINPUT_MODULE[], "%s\n%s", g_szINPUT_MODULE[client], g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i]);
+		}
 
-        for(int i = 0; i < INPUT_SUBMODULES; i++) {
-            if (StrContains(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], "+", false) == 0) {
-                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][0][0], g_iINPUT_MODULE_COLOR[client][0][1], g_iINPUT_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
-                break;
-            }
-            else if (StrContains(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) == 0) {
-                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][1][0], g_iINPUT_MODULE_COLOR[client][1][1], g_iINPUT_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
-                break;
-            }
-            else {
-                SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][2][0], g_iINPUT_MODULE_COLOR[client][2][1], g_iINPUT_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
-            }
-        }
+		int displayColor[3];
+		displayColor = GetINPUTColour(client, StringToFloat(g_szSYNC_SUBMODULE[client]));
 
-        ShowSyncHudText(client, Handle_INPUT_MODULE, g_szINPUT_MODULE[client]);
-    }
+		SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		ShowSyncHudText(client, Handle_INPUT_MODULE, g_szINPUT_MODULE[client]);
+	}
 }
 
 /////
