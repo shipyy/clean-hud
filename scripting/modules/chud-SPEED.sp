@@ -415,7 +415,7 @@ public void SPEED_DISPLAY(int client)
 				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s\n%s", g_szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
 		}
 
-		if (g_bCSD[client] && bSyncInFormatOrder) {
+		if (g_bCSD[client] && bCSDInFormatOrder) {
 			int displayColor[3];
 			displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 

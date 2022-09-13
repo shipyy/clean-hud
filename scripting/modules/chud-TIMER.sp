@@ -379,7 +379,7 @@ public void TIMER_DISPLAY(int client)
 		CP_Display(client);
 		FINISH_Display(client);
 
-		bool ;
+		bool bCPInFormatOrder;
 
 		//CHECK FOR NON-SELECTED SUBMODULES
 		for(int i = 0; i < TIMER_SUBMODULES; i++) {
@@ -388,7 +388,7 @@ public void TIMER_DISPLAY(int client)
 			
 			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID)
 				bCPInFormatOrder = true;
-	}
+		}
 
 
 		for(int i = 0; i < TIMER_SUBMODULES; i++) {

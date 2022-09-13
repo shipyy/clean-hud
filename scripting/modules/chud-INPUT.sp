@@ -379,7 +379,7 @@ public void INPUT_DISPLAY(int client)
 		bool bSyncInFormatOrder;
 
 		//CHECK FOR NON-SELECTED SUBMODULES
-		for(int i = 0; i < INPUT_SUBMODULES; i++)
+		for(int i = 0; i < INPUT_SUBMODULES; i++) {
 			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
 			
