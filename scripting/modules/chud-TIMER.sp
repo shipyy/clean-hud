@@ -379,10 +379,16 @@ public void TIMER_DISPLAY(int client)
 		CP_Display(client);
 		FINISH_Display(client);
 
+		bool ;
+
 		//CHECK FOR NON-SELECTED SUBMODULES
-		for(int i = 0; i < TIMER_SUBMODULES; i++)
+		for(int i = 0; i < TIMER_SUBMODULES; i++) {
 			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szTIMER_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+			
+			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID)
+				bCPInFormatOrder = true;
+	}
 
 
 		for(int i = 0; i < TIMER_SUBMODULES; i++) {
@@ -422,7 +428,7 @@ public void TIMER_DISPLAY(int client)
 			return;
 		}
 
-		if (g_bCP[client]) {
+		if (g_bCP[client] && bCPInFormatOrder) {
 			for(int i = 0; i < TIMER_SUBMODULES; i++) {
 				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID) {
 					if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) != -1) {

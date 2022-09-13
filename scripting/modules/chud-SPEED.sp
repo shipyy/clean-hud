@@ -396,11 +396,16 @@ public void SPEED_DISPLAY(int client)
 		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
 
 		CSD_Format(client);
-
+		
+		bool bCSDInFormatOrder;
 		//CHECK FOR NON-SELECTED SUBMODULES
-		for(int i = 0; i < SPEED_SUBMODULES; i++)
+		for(int i = 0; i < SPEED_SUBMODULES; i++) {
 			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szSPEED_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+			
+			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == CSD_ID)
+				bCSDInFormatOrder = true;
+		}
 
 
 		for(int i = 0; i < SPEED_SUBMODULES; i++) {
@@ -410,10 +415,16 @@ public void SPEED_DISPLAY(int client)
 				Format(g_szSPEED_MODULE[client], sizeof g_szSPEED_MODULE[], "%s\n%s", g_szSPEED_MODULE[client], g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i]);
 		}
 
-		int displayColor[3];
-		displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
+		if (g_bCSD[client] && bSyncInFormatOrder) {
+			int displayColor[3];
+			displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 
-		SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		}
+		else {
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iSPEED_MODULE_COLOR[client][2][0], g_iSPEED_MODULE_COLOR[client][2][1], g_iSPEED_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+		}
+
 		ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
 	}
 }

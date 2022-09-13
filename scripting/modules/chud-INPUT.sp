@@ -376,10 +376,16 @@ public void INPUT_DISPLAY(int client)
 		KEYS_Display(client);
 		SYNC_Display(client);
 
+		bool bSyncInFormatOrder;
+
 		//CHECK FOR NON-SELECTED SUBMODULES
 		for(int i = 0; i < INPUT_SUBMODULES; i++)
 			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
+			
+			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == SYNC_ID)
+				bSyncInFormatOrder = true;
+		}
 
 
 		for(int i = 0; i < INPUT_SUBMODULES; i++) {
@@ -389,10 +395,16 @@ public void INPUT_DISPLAY(int client)
 				Format(g_szINPUT_MODULE[client], sizeof g_szINPUT_MODULE[], "%s\n%s", g_szINPUT_MODULE[client], g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i]);
 		}
 
-		int displayColor[3];
-		displayColor = GetINPUTColour(client, StringToFloat(g_szSYNC_SUBMODULE[client]));
+		if (g_bSync[client] && bSyncInFormatOrder) {
+			int displayColor[3];
+			displayColor = GetINPUTColour(client, StringToFloat(g_szSYNC_SUBMODULE[client]));
 
-		SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+		}
+		else {
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINPUT_MODULE_COLOR[client][2][0], g_iINPUT_MODULE_COLOR[client][2][1], g_iINPUT_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+		}
+
 		ShowSyncHudText(client, Handle_INPUT_MODULE, g_szINPUT_MODULE[client]);
 	}
 }
