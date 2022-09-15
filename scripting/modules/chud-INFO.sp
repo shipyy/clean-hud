@@ -321,7 +321,7 @@ public void INFO_DISPLAY(int client)
                 Format(g_szINFO_MODULE[client], sizeof g_szINFO_MODULE[], "%s\n%s", g_szINFO_MODULE[client], g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i]);
         }
 
-        SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iINFO_MODULE_COLOR[client][0], g_iINFO_MODULE_COLOR[client][1], g_iINFO_MODULE_COLOR[client][2], 255, 0, 0.0, 0.0, 0.0);
+        SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iINFO_MODULE_COLOR[client][0], g_iINFO_MODULE_COLOR[client][1], g_iINFO_MODULE_COLOR[client][2], 255, 0, 0.0, 0.0, 0.0);
         ShowSyncHudText(client, Handle_INFO_MODULE, g_szINFO_MODULE[client]);
     }
 }

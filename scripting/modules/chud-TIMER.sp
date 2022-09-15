@@ -401,16 +401,16 @@ public void TIMER_DISPLAY(int client)
 		if (g_bEditing[client][1]) {
 
 			if (g_bEditingColor[client][0]) {
-				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else if (g_bEditingColor[client][1]) {
-				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else if (g_bEditingColor[client][2]) {
-				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 			}
 			else {
-				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
+				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
 			}
 
 			char szTemp[3][128];
@@ -432,22 +432,22 @@ public void TIMER_DISPLAY(int client)
 			for(int i = 0; i < TIMER_SUBMODULES; i++) {
 				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID) {
 					if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "-", false) != -1) {
-						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2], 255, 0, 0.0, 0.0, 0.0);
 						break;
 					}
 					else if (StrContains(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], "+", false) != -1) {
-						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2], 255, 0, 0.0, 0.0, 0.0);
 						break;
 					}
 					else {
-						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+						SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 						break;
 					}
 				}
 			}
 		}
 		else {
-			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iTIMER_MODULE_COLOR[client][2][0], g_iTIMER_MODULE_COLOR[client][2][1], g_iTIMER_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 		}
 
 		ShowSyncHudText(client, Handle_TIMER_MODULE, g_szTIMER_MODULE[client]);

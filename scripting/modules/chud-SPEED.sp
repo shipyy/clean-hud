@@ -419,10 +419,10 @@ public void SPEED_DISPLAY(int client)
 			int displayColor[3];
 			displayColor = GetSpeedColour_Int(client, StringToInt(g_szCSD_SUBMODULE[client]));
 
-			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, displayColor[0], displayColor[1], displayColor[2], 255, 0, 0.0, 0.0, 0.0);
 		}
 		else {
-			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate, g_iSPEED_MODULE_COLOR[client][2][0], g_iSPEED_MODULE_COLOR[client][2][1], g_iSPEED_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
+			SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, g_iSPEED_MODULE_COLOR[client][2][0], g_iSPEED_MODULE_COLOR[client][2][1], g_iSPEED_MODULE_COLOR[client][2][2], 255, 0, 0.0, 0.0, 0.0);
 		}
 
 		ShowSyncHudText(client, Handle_SPEED_MODULE, g_szSPEED_MODULE[client]);
