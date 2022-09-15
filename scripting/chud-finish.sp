@@ -362,6 +362,9 @@ public void Finish_Display(int client)
 		
 		if(target == -1)
 			return;
+		
+		if(IsFakeClient(target))
+			return;
 
 		if (g_bEditing[client][6]) {
 
