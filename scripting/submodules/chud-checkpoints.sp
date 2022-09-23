@@ -12,7 +12,7 @@ public void SUBMODULE_CP(int client)
 		return;
 
 	Menu menu = CreateMenu(SUBMODULE_CP_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "Checkpoints Options Menu\n \n");
 

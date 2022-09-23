@@ -26,7 +26,7 @@ public void INFO_MENU(int client)
         return;
 
     Menu menu = CreateMenu(INFO_MENU_Handler);
-    char szItem[128];
+    char szItem[64];
 
     SetMenuTitle(menu, "INFO MODULE MENU\n \n");
 

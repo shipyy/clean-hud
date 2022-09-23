@@ -27,7 +27,7 @@ public void INPUT_MENU(int client)
         return;
 
     Menu menu = CreateMenu(INPUT_MENU_Handler);
-    char szItem[128];
+    char szItem[64];
 
     SetMenuTitle(menu, "INPUT MODULE MENU\n \n");
 
@@ -160,7 +160,7 @@ void INPUT_PosY(int client, int direction)
 public void INPUT_Color(int client)
 {
 	Menu menu = CreateMenu(INPUT_Color_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "INPUT MODULE | Color\n \n");
 

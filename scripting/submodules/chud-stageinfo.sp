@@ -93,7 +93,7 @@ public void STAGEINFO_Display(int client)
         char szStageWRName[MAX_NAME_LENGTH];
         float StageWRTime;
         float StagePBTime;
-        char szStageInfo[128];
+        char szStageInfo[64];
         char szStageWRDiffFormatted[32];
         char szStagePBFormatted[32];
         char szStageWRCPFormatted[32];

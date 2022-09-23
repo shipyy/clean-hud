@@ -12,7 +12,7 @@ public void SUBMODULE_CSD(int client)
 		return;
 
 	Menu menu = CreateMenu(CHUD_CSD_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "Center Speed Options Menu\n \n");
 

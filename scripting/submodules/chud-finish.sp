@@ -12,7 +12,7 @@ public void SUBMODULE_FINISH(int client)
 		return;
 
 	Menu menu = CreateMenu(SUBMODULE_FINISH_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "Finish Menu\n \n");
 

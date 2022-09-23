@@ -14,7 +14,7 @@ public void SUBMODULE_MAPINFO(int client)
         return;
 
     Menu menu = CreateMenu(SUBMODULE_MAPINFO_Handler);
-    char szItem[128];
+    char szItem[64];
 
     SetMenuTitle(menu, "MAPINFO Options Menu\n \n");
 

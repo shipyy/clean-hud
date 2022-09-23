@@ -29,7 +29,7 @@ public void TIMER_MENU(int client)
         return;
 
     Menu menu = CreateMenu(TIMER_MENU_Handler);
-    char szItem[128];
+    char szItem[64];
 
     SetMenuTitle(menu, "TIMER MODULE MENU\n \n");
 
@@ -183,7 +183,7 @@ void TIMER_PosY(int client, int direction)
 public void TIMER_Color(int client)
 {
 	Menu menu = CreateMenu(TIMER_Color_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "TIMER MODULE | Color\n \n");
 
@@ -413,7 +413,7 @@ public void TIMER_DISPLAY(int client)
 				SetHudTextParams(posx, posy, g_iRefreshRateValue[client] / g_fTickrate + 0.1, 255, 255, 255, 255, 0, 0.0, 0.0, 0.0);
 			}
 
-			char szTemp[3][128];
+			char szTemp[3][TIMER_SUBMODULES * 64];
 
 			for(int i = 0; i < TIMER_SUBMODULES; i++) {
 				if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID)

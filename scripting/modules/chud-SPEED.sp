@@ -27,7 +27,7 @@ public void SPEED_MENU(int client)
 		return;
 
 	Menu menu = CreateMenu(SPEED_MENU_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "SPEED MODULE MENU\n \n");
 
@@ -159,7 +159,7 @@ void SPEED_PosY(int client, int direction)
 public void SPEED_Color(int client)
 {
 	Menu menu = CreateMenu(SPEED_Color_Handler);
-	char szItem[128];
+	char szItem[64];
 
 	SetMenuTitle(menu, "SPEED MODULE | Color\n \n");
 
