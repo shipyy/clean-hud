@@ -87,17 +87,6 @@ public void OnClientPutInServer(int client)
 
     if(!IsFakeClient(client))
         db_LoadOPTIONS(client);
-    
-    for(int i = 0; i < 4; i++)
-        g_bEditing[client][i] = false;
-    
-    for(int i = 0; i < 3; i++)
-        g_bEditingColor[client][i] = false;
-
-    g_fLastSpeed[client] = 0.0;
-    g_fLastSync[client] = 0.0;
-    g_iLastButton[client] = 0;
-    g_iWaitingForResponse[client] = None;
 }
 
 public void OnMapStart()

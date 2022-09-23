@@ -491,7 +491,8 @@ public int getSubModuleID(int client, int module, int submodule)
 }
 
 public void SetClientDefults(int client)
-{
+{	
+	g_iWaitingForResponse[client] = None;
 	g_iColorIndex[client] = 0;
 	g_iColorType[client] = 0;
 	g_iArrayToChange[client] = 0;
