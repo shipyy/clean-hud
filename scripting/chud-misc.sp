@@ -1,5 +1,5 @@
 stock bool IsValidClient(int client)
-{   
+{
     if (client >= 1 && client <= MaxClients && IsClientInGame(client))
         return true;
     return false;
@@ -110,9 +110,9 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 	if (module != -1){
 		switch (module) {
 			case 1 : {
-				Format(szSettings, sizeof szSettings, 
+				Format(szSettings, sizeof szSettings,
 					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //15
-					g_bSPEED_MODULE[client] ? 1 : 0, 
+					g_bSPEED_MODULE[client] ? 1 : 0,
 					g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1],
 					g_iSPEED_MODULE_COLOR[client][0][0], g_iSPEED_MODULE_COLOR[client][0][1], g_iSPEED_MODULE_COLOR[client][0][2],
 					g_iSPEED_MODULE_COLOR[client][1][0], g_iSPEED_MODULE_COLOR[client][1][1], g_iSPEED_MODULE_COLOR[client][1][2],
@@ -123,9 +123,9 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				);
 			}
 			case 2: {
-				Format(szSettings, sizeof szSettings, 
+				Format(szSettings, sizeof szSettings,
 					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //21
-					g_bTIMER_MODULE[client] ? 1 : 0, 
+					g_bTIMER_MODULE[client] ? 1 : 0,
 					g_fTIMER_MODULE_POSITION[client][0], g_fTIMER_MODULE_POSITION[client][1],
 					g_iTIMER_MODULE_COLOR[client][0][0], g_iTIMER_MODULE_COLOR[client][0][1], g_iTIMER_MODULE_COLOR[client][0][2],
 					g_iTIMER_MODULE_COLOR[client][1][0], g_iTIMER_MODULE_COLOR[client][1][1], g_iTIMER_MODULE_COLOR[client][1][2],
@@ -138,9 +138,9 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				);
 			}
 			case 3: {
-				Format(szSettings, sizeof szSettings, 
+				Format(szSettings, sizeof szSettings,
 					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //16
-					g_bINPUT_MODULE[client] ? 1 : 0, 
+					g_bINPUT_MODULE[client] ? 1 : 0,
 					g_fINPUT_MODULE_POSITION[client][0], g_fINPUT_MODULE_POSITION[client][1],
 					g_iINPUT_MODULE_COLOR[client][0][0], g_iINPUT_MODULE_COLOR[client][0][1], g_iINPUT_MODULE_COLOR[client][0][2],
 					g_iINPUT_MODULE_COLOR[client][1][0], g_iINPUT_MODULE_COLOR[client][1][1], g_iINPUT_MODULE_COLOR[client][1][2],
@@ -151,9 +151,9 @@ char[] Export(int client, int module, bool just_string, bool from_menu)
 				);
 			}
 			case 4: {
-				Format(szSettings, sizeof szSettings, 
+				Format(szSettings, sizeof szSettings,
 					"%d|%.2f|%.2f|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d|%d", //20
-					g_bINFO_MODULE[client] ? 1 : 0, 
+					g_bINFO_MODULE[client] ? 1 : 0,
 					g_fINFO_MODULE_POSITION[client][0], g_fINFO_MODULE_POSITION[client][1],
 					g_iINFO_MODULE_COLOR[client][0][0], g_iINFO_MODULE_COLOR[client][0][1], g_iINFO_MODULE_COLOR[client][0][2],
 					g_iINFO_MODULE_COLOR[client][1][0], g_iINFO_MODULE_COLOR[client][1][1], g_iINFO_MODULE_COLOR[client][1][2],
@@ -210,17 +210,17 @@ public void Export_All(int client, bool from_menu)
 	char szSettings[1024];
 	for(int i = 0; i < MODULES_COUNT; i++)
 		Format(szSettings, sizeof szSettings, "%s|%s", szSettings, Export(client, i, true, from_menu));
-	
+
 	//ADD PLAYERNAME
 	Format(szSettings, sizeof szSettings, "%s %s", szSettings, Export(client, 7, true, from_menu));
-	
+
 	CPrintToChat(client, "%t", "Settings_Exported_All");
 	PrintToConsole(client, "To import settings use\nsm_chud_import <code>");
 	PrintToConsole(client, "Export Code - %s", szSettings);
 }
 
 public void Import(int client, int module, char szImportSettings[1024], char szPlayerName[MAX_NAME_LENGTH])
-{	
+{
 	//72 fields
 	char Modules[74][8];
 	int fields = ExplodeString(szImportSettings, "|", Modules, sizeof Modules, sizeof Modules[]);
@@ -491,7 +491,7 @@ public int getSubModuleID(int client, int module, int submodule)
 }
 
 public void SetClientDefults(int client)
-{	
+{
 	g_iWaitingForResponse[client] = None;
 	g_iColorIndex[client] = 0;
 	g_iColorType[client] = 0;
@@ -503,7 +503,7 @@ public void SetClientDefults(int client)
 
 	for(int i = 0; i < 4; i++)
 		g_bEditing[client][i] = false;
-	
+
 	for(int i = 0; i < 3; i++)
 		g_bEditingColor[client][i] = false;
 
@@ -544,13 +544,13 @@ public void SetClientDefults(int client)
 	/////
 
 			//===SPEED MODULE===
-	
+
 	//CSD
 	g_szCSD_SUBMODULE[client] = "";
 	g_fLastSpeed[client] = 0.0;
 
 			//===TIMER MODULE===
-	
+
 	//CHECKPOINTS
 	g_szCP_SUBMODULE[client] = "";
 	g_fLastDifferenceTime[client] = 0.0;
@@ -563,7 +563,7 @@ public void SetClientDefults(int client)
 	g_fLastDifferenceFinishTime[client] = 0.0;
 
 			//===INPUT MODULE===
-	
+
 	//KEYS
 	g_szKEYS_SUBMODULE[client] = "";
 	g_iLastButton[client] = 0;
@@ -575,7 +575,7 @@ public void SetClientDefults(int client)
 	g_fLastSync[client] = 0.0;
 
 			//===INFO MODULE===
-	
+
 	//MAP INFO
 	g_szMAPINFO_SUBMODULE[client] = "";
 

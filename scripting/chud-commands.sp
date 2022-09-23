@@ -37,14 +37,14 @@ public void CHUD_MainMenu_Display(int client)
     //GLOBAL OPTIONS
     AddMenuItem(menu, "", "OPTIONS");
 
-    
+
     SetMenuPagination(menu, 5);
     SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
 public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int param2)
-{   
+{
     if (action == MenuAction_Select) {
         switch(param2){
             case 0: SPEED_MENU(param1);
@@ -78,7 +78,7 @@ public Action Client_Import(int client, int args)
         GetCmdArg(2, szPlayerName, sizeof szPlayerName);
         Import(client, -1, szImportSettings, szPlayerName);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -93,6 +93,6 @@ public Action Client_Export(int client, int args)
     else
         Export(client, -1, false, false);
     */
-    
+
     return Plugin_Handled;
 }

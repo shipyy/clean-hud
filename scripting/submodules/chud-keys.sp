@@ -57,7 +57,7 @@ public void KEYS_Toggle(int client, bool from_menu)
 //DISPLAY
 /////
 public void KEYS_Display(int client)
-{   
+{
 	if (g_bKeys[client]) {
 
 		if (IsFakeClient(client))
@@ -69,15 +69,15 @@ public void KEYS_Display(int client)
 			target = client;
 		else
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-		
+
 		if(target == -1)
 			return;
-		
+
 		//KEYS
 		int Buttons;
 		Buttons = g_iLastButton[target];
 		char KEYS[10][5];
-		
+
 		KEYS[0] = (Buttons & IN_FORWARD == IN_FORWARD) ? "W" : "_";
 		KEYS[1] = (Buttons & IN_MOVELEFT == IN_MOVELEFT) ? "A" : "_";
 		KEYS[2] = (Buttons & IN_BACK == IN_BACK) ? "S" : "_";
@@ -91,12 +91,12 @@ public void KEYS_Display(int client)
 
 		//FINAL STRING
 		Format(g_szKEYS_SUBMODULE[client], sizeof g_szKEYS_SUBMODULE[], "%s %s %s\n%s %s %s\n%s    %s\n%s    %s", KEYS[8], KEYS[0], KEYS[9], KEYS[1], KEYS[2], KEYS[3], KEYS[4], KEYS[5], KEYS[6], KEYS[7]);
-		
+
 		//CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
 		for(int i = 0; i < INPUT_SUBMODULES; i++)
 			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == KEYS_ID)
 				Format(g_szINPUT_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINPUT_SUBMODULE_INDEXES_STRINGS[][], "%s", g_szKEYS_SUBMODULE[client]);
-		
+
 	}
 	else {
 		Format(g_szKEYS_SUBMODULE[client], sizeof g_szKEYS_SUBMODULE[], "");

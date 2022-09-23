@@ -20,7 +20,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;
 	g_imouseDir[client] = mouse;
-	
+
 	return Plugin_Continue;
 }
 

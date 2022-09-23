@@ -3,7 +3,7 @@ public MAPINFO_SetDefaults(int client)
     PrintToServer("Loading MAPINFO Defaults!");
 
     g_bMapInfo[client] = false;
-    
+
     g_iMapInfo_CompareMode[client] = 1;
     g_iMapInfo_ShowMode[client] = 2;
 }
@@ -23,7 +23,7 @@ public void SUBMODULE_MAPINFO(int client)
         AddMenuItem(menu, "", "Toggle    | On");
     else
         AddMenuItem(menu, "", "Toggle    | Off");
-    
+
     // Show Mode
     Format(szItem, sizeof szItem, "Show      | %s", g_iMapInfo_ShowMode[client] == 1 ? "WR" : "PB");
     AddMenuItem(menu, "", szItem);
@@ -64,7 +64,7 @@ public void MAPINFO_Toggle(int client, bool from_menu)
 		g_bMapInfo[client] = false;
 	else
 		g_bMapInfo[client] = true;
-    
+
     SUBMODULE_MAPINFO(client);
 }
 
@@ -98,7 +98,7 @@ void MAPINFO_ShowMode(int client)
 //DISPLAY
 /////
 public void MAPINFO_Display(int client)
-{   
+{
     if(g_bMapInfo[client]) {
 
         if (IsFakeClient(client))
@@ -120,13 +120,13 @@ public void MAPINFO_Display(int client)
                     Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
             return;
         }
-        
+
         int wrcptimer;
         int pracmode;
         int stage;
         int bonus;
         surftimer_GetPlayerInfo(target, wrcptimer, pracmode, stage, bonus);
-        
+
         char szWRName[MAX_NAME_LENGTH], szWRTime[32];
         float WRTime;
         float PBTime;

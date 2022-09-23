@@ -118,7 +118,7 @@ public int INFO_Position_Handler(Menu menu, MenuAction action, int param1, int p
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
-		{	
+		{
 			case 0: INFO_PosX(param1, 1);
 			case 1: INFO_PosX(param1, -1);
 			case 2: INFO_PosY(param1, -1);
@@ -157,7 +157,7 @@ void INFO_PosY(int client, int direction)
 //COLOR
 /////
 public void INFO_Color(int client)
-{   
+{
     Menu menu = CreateMenu(INFO_Color_Change_Handler);
     SetMenuTitle(menu, "INFO | Color\n \n");
 
@@ -173,7 +173,7 @@ public void INFO_Color(int client)
 
     Format(szItemDisplay, sizeof szItemDisplay, "B | %d", g_iINFO_MODULE_COLOR[client][2]);
     AddMenuItem(menu, "", szItemDisplay);
-    
+
     SetMenuExitBackButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }

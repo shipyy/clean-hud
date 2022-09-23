@@ -9,11 +9,11 @@ public SPEED_SetDefaults(int client)
 	g_bSPEED_MODULE[client] = false;
 	g_fSPEED_MODULE_POSITION[client][0] = 0.5;
 	g_fSPEED_MODULE_POSITION[client][1] = 0.5;
-	
+
 	for (int i = 0; i < 3; i++)
 		for (int j = 0; j < 3; j++)
 			g_iSPEED_MODULE_COLOR[client][i][j] = 255;
-	
+
 	for (int i = 0; i < SPEED_SUBMODULES; i++)
 		g_iSPEED_SUBMODULES_INDEXES[client][i] = 0;
 }
@@ -36,7 +36,7 @@ public void SPEED_MENU(int client)
 		AddMenuItem(menu, "", "Toggle   | On");
 	else
 		AddMenuItem(menu, "", "Toggle   | Off");
-    
+
 	// Position
 	Format(szItem, sizeof szItem, "Position   | %.2f %.2f", g_fSPEED_MODULE_POSITION[client][0], g_fSPEED_MODULE_POSITION[client][1]);
 	AddMenuItem(menu, "", szItem);
@@ -118,7 +118,7 @@ public int SPEED_Position_Handler(Menu menu, MenuAction action, int param1, int 
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
-		{	
+		{
 			case 0: SPEED_PosX(param1, 1);
 			case 1: SPEED_PosX(param1, -1);
 			case 2: SPEED_PosY(param1, -1);
@@ -243,9 +243,9 @@ public void SPEED_Color_Change(int client, int color_type, int color_index)
 
 /*
 int[] GetSpeedColour_Float(int client, float speed)
-{	
+{
 	int displayColor[3] = {255, 255, 255};
-	
+
 	//gaining speed or mainting
 	if (g_fLastSpeed[client] < speed || (g_fLastSpeed[client] == speed && speed != 0.0) ) {
 		displayColor[0] = g_iSPEED_MODULE_COLOR[client][0][0];
@@ -270,9 +270,9 @@ int[] GetSpeedColour_Float(int client, float speed)
 */
 
 int[] GetSpeedColour_Int(int client, int speed)
-{	
+{
 	int displayColor[3] = {255, 255, 255};
-	
+
 	//gaining speed or mainting
 	if (RoundToNearest(g_fLastSpeed[client]) < speed || (RoundToNearest(g_fLastSpeed[client]) == speed && speed != 0.0) ) {
 		displayColor[0] = g_iSPEED_MODULE_COLOR[client][0][0];
@@ -396,13 +396,13 @@ public void SPEED_DISPLAY(int client)
 		float posy = g_fSPEED_MODULE_POSITION[client][1] == 0.5 ? -1.0 : g_fSPEED_MODULE_POSITION[client][1];
 
 		CSD_Format(client);
-		
+
 		bool bCSDInFormatOrder;
 		//CHECK FOR NON-SELECTED SUBMODULES
 		for(int i = 0; i < SPEED_SUBMODULES; i++) {
 			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szSPEED_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szSPEED_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
-			
+
 			if (g_iSPEED_SUBMODULES_INDEXES[client][i] == CSD_ID)
 				bCSDInFormatOrder = true;
 		}

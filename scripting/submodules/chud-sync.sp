@@ -61,14 +61,14 @@ public void SYNC_Toggle(int client, bool from_menu)
 //DISPlAY
 /////
 public void SYNC_Display(int client)
-{   
+{
     if (g_bSync[client]) {
 
 		if (IsFakeClient(client))
 			return;
 
 		int target;
-		
+
 		if (IsPlayerAlive(client))
 			target = client;
 		else
@@ -78,7 +78,7 @@ public void SYNC_Display(int client)
 			return;
 
 		Format(g_szSYNC_SUBMODULE[client], sizeof g_szSYNC_SUBMODULE[], "%.2f%", surftimer_GetClientSync(target));
-		
+
 		//CHECK IF THIS SUBMODULES ID (TIMER_ID -> 1) IS IN THE ORDER ID ARRAY OF ITS MODULE
 		for(int i = 0; i < INPUT_SUBMODULES; i++)
 			if (g_iINPUT_SUBMODULES_INDEXES[client][i] == SYNC_ID)

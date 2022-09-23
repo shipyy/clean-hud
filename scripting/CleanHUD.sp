@@ -57,7 +57,7 @@ public void OnPluginStart()
 
     //COMMANDS
     CreateCMDS();
-    
+
     //HOOKS
     CreateHooks();
 

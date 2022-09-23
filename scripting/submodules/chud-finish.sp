@@ -103,7 +103,7 @@ public void Finish_Format(int client, float runtime, float pb_diff, float wr_dif
 	}
 	else {
 		Format_Time(client, wr_diff, szWRDiffFormatted, sizeof szWRDiffFormatted, true);
-		
+
 		if( zonegroup == 0) {
 			if (wr_diff >= 0)
 				Format(g_szFINISH_SUBMODULE[client], sizeof g_szFINISH_SUBMODULE, "Map Finished in %s | WR +%s", szCurrentRunFormatted, szWRDiffFormatted);
@@ -137,7 +137,7 @@ public void FINISH_Display(int client)
 			target = client;
 		else
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-		
+
 		if(target == -1)
 			return;
 

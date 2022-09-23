@@ -50,7 +50,7 @@ public void STAGEINDICATOR_Toggle(int client, bool from_menu)
 		g_bStageIndicator[client] = false;
 	else
 		g_bStageIndicator[client] = true;
-    
+
     SUBMODULE_STAGEINDICATOR(client);
 }
 
@@ -58,7 +58,7 @@ public void STAGEINDICATOR_Toggle(int client, bool from_menu)
 //DISPLAY
 /////
 public void STAGEINDICATOR_Display(int client)
-{   
+{
 	if(g_bStageIndicator[client]) {
 
 		if (IsFakeClient(client))
@@ -80,7 +80,7 @@ public void STAGEINDICATOR_Display(int client)
 					Format(g_szINFO_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szINFO_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
 			return;
 		}
-			
+
 
 		int total_stages = surftimer_GetMapStages();
 

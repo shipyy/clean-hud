@@ -50,7 +50,7 @@ public void STAGEINFO_Toggle(int client, bool from_menu)
 		g_bStageInfo[client] = false;
 	else
 		g_bStageInfo[client] = true;
-    
+
     SUBMODULE_STAGEINFO(client);
 }
 
@@ -58,7 +58,7 @@ public void STAGEINFO_Toggle(int client, bool from_menu)
 //DISPLAY
 /////
 public void STAGEINFO_Display(int client)
-{   
+{
     if(g_bStageInfo[client]) {
 
         if (IsFakeClient(client))
@@ -109,7 +109,7 @@ public void STAGEINFO_Display(int client)
                     float stage_wr_diff = StageWRTime - StagePBTime;
                     if (stage_wr_diff != 0.0) {
                         Format_Time(client, stage_wr_diff, szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, true);
-                        
+
                         //SLOWER
                         if (stage_wr_diff <= 0.0) {
                             Format(szStageWRDiffFormatted, sizeof szStageWRDiffFormatted, "+%s", szStageWRDiffFormatted);

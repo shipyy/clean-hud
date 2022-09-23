@@ -63,17 +63,17 @@ public void STOPWATCH_Format(int client)
 
 		if (IsFakeClient(client))
 			return;
-            
+
 		int target;
-		
+
 		if (IsPlayerAlive(client))
 			target = client;
 		else
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-		
+
 		if(target == -1)
 			return;
-			
+
 		float PersonalBest;
 		int MapRank;
 		char country[16], countryCode[3], continentCode[3];

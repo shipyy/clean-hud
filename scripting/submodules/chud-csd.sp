@@ -93,7 +93,7 @@ public void CSD_Format(int client)
 			if (IsValidClient(target))
 				g_fLastSpeed[target] = GetSpeed(target);
 		}
-		
+
 		if(target == -1)
 			return;
 

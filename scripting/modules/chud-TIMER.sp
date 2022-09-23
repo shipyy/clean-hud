@@ -78,7 +78,7 @@ public int TIMER_MENU_Handler(Menu menu, MenuAction action, int param1, int para
             case 0: TIMER_Toggle(param1);
             case 1: TIMER_Position(param1);
             case 2: TIMER_Color(param1);
-            case 3: TIMER_HoldTime(param1); 
+            case 3: TIMER_HoldTime(param1);
             case 4: TIMER_FORMATORDER(param1);
             case 5: TIMER_CUSTOMIZE_SUBMODULES(param1);
             case 6: Export(param1, 2, false, true);
@@ -142,7 +142,7 @@ public int TIMER_Position_Handler(Menu menu, MenuAction action, int param1, int 
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
-		{	
+		{
 			case 0: TIMER_PosX(param1, 1);
 			case 1: TIMER_PosX(param1, -1);
 			case 2: TIMER_PosY(param1, -1);
@@ -385,7 +385,7 @@ public void TIMER_DISPLAY(int client)
 		for(int i = 0; i < TIMER_SUBMODULES; i++) {
 			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == 0)
 				Format(g_szTIMER_SUBMODULE_INDEXES_STRINGS[client][i], sizeof g_szTIMER_SUBMODULE_INDEXES_STRINGS[][], "%s", "");
-			
+
 			if (g_iTIMER_SUBMODULES_INDEXES[client][i] == CHECKPOINTS_ID)
 				bCPInFormatOrder = true;
 		}
