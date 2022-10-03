@@ -2,6 +2,7 @@ public void CreateCMDS()
 {
     //COMMANDS
     RegConsoleCmd("sm_chud", CHUD_MainMenu, "[Clean HUD] Opens main menu");
+    RegConsoleCmd("sm_chud_save", CHUD_Save, "[Clean HUD] Saves client settings to database");
     //TODO
     RegConsoleCmd("sm_chud_export", Client_Export, "[Clean HUD] Export Settings");
     RegConsoleCmd("sm_chud_import", Client_Import, "[Clean HUD] Import Settings");
@@ -95,4 +96,15 @@ public Action Client_Export(int client, int args)
     */
 
     return Plugin_Handled;
+}
+
+public Action CHUD_Save(int client, int args)
+{
+	if (!IsValidClient(client) || IsFakeClient(client))
+		return Plugin_Handled;
+
+	CPrintToChat(client, "%t", "Settings_Save");
+	db_SET_OPTIONS(client);
+
+	return Plugin_Handled;
 }
