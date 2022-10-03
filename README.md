@@ -3,6 +3,12 @@
 This plugins allows for a more in-depth customization of various aspects from [SurfTimer](https://github.com/surftimer/SurfTimer).
 </br>_Supported [SurfTimer](https://github.com/surftimer/SurfTimer)_ versions **1.1.2** or above.
 
+___Commands:___
+- sm_chud / !chud
+- sm_chud_save / !chud_save
+- sm_chud_export / !chud_export
+- sm_chud_imort / !chud_import
+
 ___Currently allows customization for:___
 1. Center Speed
 2. Checkpoints
