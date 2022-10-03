@@ -31,4 +31,8 @@
 	{
 		"en"		"{red}CHUD | {default}Exported All the Settings. Open {red}console{default} to get the code!"
 	}
+	"Settings_Save"
+	{
+		"en"		"{red}CHUD | {green}Settings saved!"
+	}
 }

@@ -78,7 +78,7 @@ float g_fTickrate;
 
 char g_szSteamID[MAXPLAYERS + 1][32];
 
-//EEDITING
+//EDITING
 /*
 0 - CSD
 1 - KEYS
