@@ -1,8 +1,3 @@
-void CreateHooks()
-{
-	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
-}
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsValidClient(client) && !IsFakeClient(client)) {
@@ -18,29 +13,26 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	g_fLastSpeed[client] = GetSpeed(client);
 	g_iLastButton[client] = buttons;
 	g_imouseDir[client] = mouse;
-	
+
 	return Plugin_Continue;
 }
 
-public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)
+public OnClientDisconnect(int client)
 {
-	int clientid = GetEventInt(event, "userid");
-	int client = GetClientOfUserId(clientid);
-
 	if (!IsValidClient(client) || IsFakeClient(client))
-		return Plugin_Handled;
-	
-	PrintToServer("=====SAVING COOKIES=====");
-	SaveCookies(client);
-	PrintToServer("=====COOKIES SAVED=====");
+		return;
 
-	return Plugin_Handled;
+	if (AreClientCookiesCached(client)) {
+		PrintToServer("=====SAVING COOKIES=====");
+		SaveCookies(client);
+		PrintToServer("=====COOKIES SAVED=====");
+	}
 }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if (WaitingForResponse[client] == None)
-		return Plugin_Handled;
+		return Plugin_Continue;
 
 	char Input[MAX_MESSAGE_LENGTH];
 	strcopy(Input, sizeof(Input), sArgs);

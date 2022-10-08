@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "0.0.2",
+	version     = "1.0.0",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
@@ -44,9 +44,6 @@ public void OnPluginStart()
 
     //COMMANDS
     CreateCMDS();
-    
-    //HOOKS
-    CreateHooks();
 
     //COOKI HANDLES
     g_hCSD_Cookie = RegClientCookie("CSD-cookie", "CSD data", CookieAccess_Public);
@@ -76,18 +73,11 @@ public void OnPluginStart()
     */
 }
 
-public void OnPluginEnd()
-{
-    for (int x = 1; x <= MaxClients; x++)
-        if (IsValidClient(x) && !IsFakeClient(x))
-            SaveCookies(x);
-}
-
 public void OnClientPutInServer(int client)
 {
     if (!IsValidClient(client))
         return;
-    
+
     if(AreClientCookiesCached(client))
         OnClientCookiesCached(client);
 
@@ -105,18 +95,18 @@ public void OnMapStart()
     LoadTranslations("cleanhud.phrases");
 }
 
-public void OnMapEnd()
+public void OnPluginEnd()
 {
     for(int i = 1; i <= MaxClients; i++)
         if (IsValidClient(i) && !IsFakeClient(i))
-		    SaveCookies(i);
+		    OnClientDisconnect(i);
 }
 
 public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))
         return;
-    
+
     PrintToServer("\n=====LOADING COOKIES=====\n");
     LoadCookies(client);
     PrintToServer("\n=====COOKIES LOADED=====\n");
