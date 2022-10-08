@@ -24,7 +24,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontBroadcast)
+public OnClientDisconnect(int client) 
 {
 	int clientid = GetEventInt(event, "userid");
 	int client = GetClientOfUserId(clientid);
@@ -32,8 +32,9 @@ public Action Event_PlayerDisconnect(Handle event, const char[] name, bool dontB
 	if (!IsValidClient(client) || IsFakeClient(client))
 		return Plugin_Handled;
 
-	PrintToConsole(0, "\n\n===SAVING PLAYER OPTIONS BY DISCONNECT===\n\n");
-	//START SAVING EVERY MODULES AND THEIR SUBMODULES (STARTING AT MODULE INDEX 1)
+	char szName[MAX_NAME_LENGTH];
+	GetClientName(client, szName, MAX_NAME_LENGTH);
+	PrintToConsole(0, "+++ Saving %s CHUD options +++", szName);
 	db_SET_OPTIONS(client);
 
 	return Plugin_Handled;
@@ -47,7 +48,7 @@ public void Hook_PostThinkPost(int entity)
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if (g_iWaitingForResponse[client] == None)
-		return Plugin_Continue;
+		return Plugin_Handled;
 
 	char Input[MAX_MESSAGE_LENGTH];
 	strcopy(Input, sizeof(Input), sArgs);

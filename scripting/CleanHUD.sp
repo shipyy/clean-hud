@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "1.0.0",
+	version     = "1.1.0",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
@@ -85,6 +85,9 @@ public void OnClientPutInServer(int client)
 
     SetClientDefults(client);
 
+    char szName[MAX_NAME_LENGTH];
+	GetClientName(client, szName, MAX_NAME_LENGTH);
+	PrintToConsole(0, "+++ Loading %s CHUD options +++", szName);
     if(!IsFakeClient(client))
         db_LoadOPTIONS(client);
 }
@@ -95,11 +98,11 @@ public void OnMapStart()
     LoadTranslations("cleanhud.phrases");
 }
 
-public void OnMapEnd()
+public void OnPluginEnd()
 {
     for (int i = 1; i <= MaxClients; i++)
         if (IsValidClient(i) && !IsFakeClient(i)) {
             PrintToConsole(0, "\n\n===SAVING PLAYER OPTIONS ONMAPEND()===\n\n");
-            db_SET_OPTIONS(i);
+            OnClientDisconnect(i);
         }
 }
