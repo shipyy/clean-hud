@@ -6,7 +6,7 @@ public Plugin myinfo =
 	name        = "Clean HUD",
 	author      = "https://github.com/shipyy",
 	description = "hud for surftimer",
-	version     = "1.1.0",
+	version     = "1.1.1",
 	url         = "https://github.com/shipyy/clean-hud"
 };
 
@@ -58,20 +58,10 @@ public void OnPluginStart()
     //COMMANDS
     CreateCMDS();
 
-    //HOOKS
-    CreateHooks();
-
     Init_SPEED_MODULE();
     Init_TIMER_MODULE();
     Init_INPUT_MODULE();
     Init_INFO_MODULE();
-}
-
-public void OnPluginEnd()
-{
-    for (int i = 1; i <= MaxClients; i++)
-        if (IsValidClient(i) && !IsFakeClient(i))
-            SaveModule(i, 1);
 }
 
 public void OnClientPutInServer(int client)
@@ -86,8 +76,8 @@ public void OnClientPutInServer(int client)
     SetClientDefults(client);
 
     char szName[MAX_NAME_LENGTH];
-	GetClientName(client, szName, MAX_NAME_LENGTH);
-	PrintToConsole(0, "+++ Loading %s CHUD options +++", szName);
+    GetClientName(client, szName, MAX_NAME_LENGTH);
+    PrintToConsole(0, "+++ Loading %s CHUD options +++", szName);
     if(!IsFakeClient(client))
         db_LoadOPTIONS(client);
 }

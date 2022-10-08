@@ -1,8 +1,3 @@
-void CreateHooks()
-{
-	HookEvent("player_disconnect", Event_PlayerDisconnect, EventHookMode_Pre);
-}
-
 public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
 {
 	if (IsValidClient(client) && !IsFakeClient(client)) {
@@ -24,20 +19,17 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public OnClientDisconnect(int client) 
+public void OnClientDisconnect(int client) 
 {
-	int clientid = GetEventInt(event, "userid");
-	int client = GetClientOfUserId(clientid);
-
 	if (!IsValidClient(client) || IsFakeClient(client))
-		return Plugin_Handled;
+		return;
 
 	char szName[MAX_NAME_LENGTH];
 	GetClientName(client, szName, MAX_NAME_LENGTH);
 	PrintToConsole(0, "+++ Saving %s CHUD options +++", szName);
 	db_SET_OPTIONS(client);
 
-	return Plugin_Handled;
+	return;
 }
 
 public void Hook_PostThinkPost(int entity)
