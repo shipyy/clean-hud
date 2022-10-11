@@ -77,9 +77,10 @@ public void OnClientPutInServer(int client)
 
     char szName[MAX_NAME_LENGTH];
     GetClientName(client, szName, MAX_NAME_LENGTH);
-    PrintToConsole(0, "+++ Loading %s CHUD options +++", szName);
-    if(!IsFakeClient(client))
+    if(!IsFakeClient(client)) {
+        PrintToConsole(0, "+++ Loading %s CHUD options +++", szName);
         db_LoadOPTIONS(client);
+    }
 }
 
 public void OnMapStart()
