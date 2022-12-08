@@ -17,18 +17,6 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 	return Plugin_Continue;
 }
 
-public OnClientDisconnect(int client)
-{
-	if (!IsValidClient(client) || IsFakeClient(client))
-		return;
-
-	if (AreClientCookiesCached(client)) {
-		PrintToServer("=====SAVING COOKIES=====");
-		SaveCookies(client);
-		PrintToServer("=====COOKIES SAVED=====");
-	}
-}
-
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
 	if (WaitingForResponse[client] == None)

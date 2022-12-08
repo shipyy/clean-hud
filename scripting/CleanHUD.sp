@@ -95,13 +95,6 @@ public void OnMapStart()
     LoadTranslations("cleanhud.phrases");
 }
 
-public void OnPluginEnd()
-{
-    for(int i = 1; i <= MaxClients; i++)
-        if (IsValidClient(i) && !IsFakeClient(i))
-		    OnClientDisconnect(i);
-}
-
 public void OnClientCookiesCached(int client)
 {
     if(!IsClientInGame(client) || IsFakeClient(client))
@@ -110,4 +103,16 @@ public void OnClientCookiesCached(int client)
     PrintToServer("\n=====LOADING COOKIES=====\n");
     LoadCookies(client);
     PrintToServer("\n=====COOKIES LOADED=====\n");
+}
+
+public void OnClientDisconnect(int client)
+{
+	if (!IsValidClient(client) || IsFakeClient(client))
+		return;
+
+	if (AreClientCookiesCached(client)) {
+		PrintToServer("=====SAVING COOKIES=====");
+		SaveCookies(client);
+		PrintToServer("=====COOKIES SAVED=====");
+	}
 }
