@@ -1,4 +1,4 @@
-public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16])
+public Action surftimer_OnCheckpoint(int client, float fRunTime, char sRunTime[54], float fPbCp, char sPbDiff[16], float fSrCp, char sSrDiff[16], int iCheckpoint)
 {
     CP_Format(client, fRunTime, fPbCp, fSrCp);
 
