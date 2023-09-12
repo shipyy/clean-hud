@@ -25,3 +25,18 @@ public Action surftimer_OnPracticeFinished(int client, float fRunTime, float fPB
 
     return Plugin_Handled;
 }
+
+public Action surftimer_OnMapStart(int client, int prestrafe, char pre_PBDiff[128], char pre_SRDiff[128])
+{
+    PRESTRAFE_Format(client, prestrafe, pre_PBDiff, pre_SRDiff);
+
+    return Plugin_Handled;
+}
+
+public Action surftimer_OnStageStart(int client, int prestrafe, char pre_PBDiff[128], char pre_SRDiff[128])
+{
+    if ( !surftimer_GetTimerStatus(client) )
+        PRESTRAFE_Format(client, prestrafe, pre_PBDiff, pre_SRDiff);
+
+    return Plugin_Handled;
+}

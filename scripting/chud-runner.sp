@@ -8,6 +8,7 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 		MapInfo_Display(client);
 		CP_Display(client);
 		Finish_Display(client);
+		PRESTRAFE_Display(client);
 	}
 
 	g_fLastSpeed[client] = GetSpeed(client);
@@ -16,6 +17,33 @@ public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3
 
 	return Plugin_Continue;
 }
+
+// public Action OnPlayerRunCmd(int client, int& buttons, int& impulse, float vel[3], float angles[3], int& weapon, int& subtype, int& cmdnum, int& tickcount, int& seed, int mouse[2])
+// {
+// 	g_fLastSpeed[client] = GetSpeed(client);
+// 	g_iLastButton[client] = buttons;
+// 	g_imouseDir[client] = mouse;
+
+// 	return Plugin_Continue;
+// }
+
+// public Action ClientRunner(Handle Timer)
+// {
+// 	for (int client = 1; client <= MaxClients; client++) {
+// 		if (IsValidClient(client) && !IsFakeClient(client)) {
+// 			CSD_Display(client);
+// 			Keys_Display(client);
+// 			Sync_Display(client);
+// 			Timer_Display(client);
+// 			MapInfo_Display(client);
+// 			CP_Display(client);
+// 			Finish_Display(client);
+// 			PRESTRAFE_Display(client);
+// 		}
+// 	}
+
+// 	return Plugin_Continue;
+// }
 
 public Action OnClientSayCommand(int client, const char[] command, const char[] sArgs)
 {
@@ -35,6 +63,7 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 				case 2: CP_Color_Change_MENU(client, g_iColorType[client]);
 				case 3: Timer_Color_Change_MENU(client, g_iColorType[client]);
 				case 4: Finish_Color_Change_MENU(client, g_iColorType[client]);
+				case 5: PRESTRAFE_Color_Change_MENU(client, g_iColorType[client]);
 			}
 		}
 		else {
@@ -78,6 +107,10 @@ public Action OnClientSayCommand(int client, const char[] command, const char[] 
 						case 4: {
 							g_iFinish_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //FINISH
 							Finish_Color_Change_MENU(client, g_iColorType[client]);
+						}
+						case 5: {
+							g_iPRESTRAFE_Color[client][g_iColorType[client]][g_iColorIndex[client]] = color_value; //PRESTRAFE
+							PRESTRAFE_Color_Change_MENU(client, g_iColorType[client]);
 						}
 					}
 				}

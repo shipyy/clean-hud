@@ -15,7 +15,7 @@ int g_iColorIndex[MAXPLAYERS + 1];
 int g_iColorType[MAXPLAYERS + 1];
 int g_iArrayToChange[MAXPLAYERS + 1];
 
-bool g_bEditing[MAXPLAYERS + 1][7];
+bool g_bEditing[MAXPLAYERS + 1][8];
 bool g_bEditingColor[MAXPLAYERS + 1][3];
 
 //HANDLES
@@ -26,6 +26,7 @@ Handle CP_Handle;
 Handle Timer_Handle;
 Handle MapInfo_Handle;
 Handle Finish_Handle;
+Handle PRESTRAFE_Handle;
 
 /////
 //PLAYERS DATA
@@ -87,3 +88,13 @@ int g_iFinish_HoldTime[MAXPLAYERS + 1];
 int g_iFinish_CompareMode[MAXPLAYERS + 1]; // 0 PB | 1 WR
 char szFinishFormatted[MAXPLAYERS + 1][64];
 float g_fLastDifferenceFinishTime[MAXPLAYERS + 1];
+
+//PRESTRAFE
+bool g_bPRESTRAFE[MAXPLAYERS + 1];
+float g_fPRESTRAFE_POSX[MAXPLAYERS + 1];
+float g_fPRESTRAFE_POSY[MAXPLAYERS + 1];
+int g_iPRESTRAFE_Color[MAXPLAYERS + 1][3][3]; // client | type(faster,slower,equal) | value(R,G,B)
+int g_iPRESTRAFE_HoldTime[MAXPLAYERS + 1];
+int g_iPRESTRAFE_CompareMode[MAXPLAYERS + 1]; // 1 WR | 2 WPB | 2 TOP10 | 4 G1 | 5 G2 | 6 G3 | 7 G4 | 8 G5
+float g_fLastDifferencePrestrafe[MAXPLAYERS + 1];
+char szPrestrafeFormatted[MAXPLAYERS + 1][8];

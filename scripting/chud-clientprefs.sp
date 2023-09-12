@@ -8,6 +8,7 @@ Handle g_hCP_Cookie;
 Handle g_hTimer_Cookie;
 Handle g_hMapInfo_Cookie;
 Handle g_hFinish_Cookie;
+Handle g_hPrestrafe_Cookie;
 
 char[] ConvertDataToString(int client, int module)
 {   
@@ -20,6 +21,7 @@ char[] ConvertDataToString(int client, int module)
         case 4 : szData = Timer_ConvertDataToString(client);
         case 5 : szData = MapInfo_ConvertDataToString(client);
         case 6 : szData = Finish_ConvertDataToString(client);
+        case 7 : szData = PRESTRAFE_ConvertDataToString(client);
     }
 
     return szData;
@@ -35,6 +37,7 @@ public void ConvertStringToData(int client, int module, char szData[512])
         case 4 : Timer_ConvertStringToData(client, szData);
         case 5 : MapInfo_ConvertStringToData(client, szData);
         case 6 : Finish_ConvertStringToData(client, szData);
+        case 7 : PRESTRAFE_ConvertStringToData(client, szData);
     }
 }
 
@@ -98,6 +101,14 @@ public void GetCookie(int client, int module)
                 ConvertStringToData(client, 6, szData);
             PrintToServer("* Finish COOKIES LOADED *");
         }
+        case 7 : {
+            GetClientCookie(client, g_hPrestrafe_Cookie, szData, sizeof szData);
+            if(strcmp(szData, "", false) == 0)
+                PRESTRAFE_SetDefaults(client);
+            else
+                ConvertStringToData(client, 7, szData);
+            PrintToServer("* Prestrafe COOKIES LOADED *");
+        }
     }
 }
 
@@ -132,6 +143,10 @@ public void SetCookie(int client, int module)
         case 6 : {
             szData = ConvertDataToString(client, module);
             SetClientCookie(client, g_hFinish_Cookie, szData);
+        }
+        case 7 : {
+            szData = ConvertDataToString(client, module);
+            SetClientCookie(client, g_hPrestrafe_Cookie, szData);
         }
     }
 }

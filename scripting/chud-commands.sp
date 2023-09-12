@@ -27,7 +27,7 @@ public void CHUD_MainMenu_Display(int client)
 
     //KEYS
     AddMenuItem(menu, "", "Keys");
-    
+
     //SYNC
     AddMenuItem(menu, "", "Sync");
 
@@ -41,19 +41,22 @@ public void CHUD_MainMenu_Display(int client)
     AddMenuItem(menu, "", "Map Info");
 
     //MAP FINISH
-    AddMenuItem(menu, "", "Map Finish\n \n");
+    AddMenuItem(menu, "", "Map Finish");
+
+    //PRESTRAFE
+    AddMenuItem(menu, "", "Prestrafe\n \n");
 
 
     //EXPORT
     AddMenuItem(menu, "", "Export Settings");
-    
+
     SetMenuPagination(menu, 5);
     SetMenuExitButton(menu, true);
     DisplayMenu(menu, client, MENU_TIME_FOREVER);
 }
 
 public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int param2)
-{   
+{
     if (action == MenuAction_Select) {
         switch(param2){
             case 0: CHUD_CSD(param1);
@@ -63,7 +66,8 @@ public int CHUD_MainMenu_Handler(Menu menu, MenuAction action, int param1, int p
             case 4: CHUD_TIMER(param1);
             case 5: CHUD_MAPINFO(param1);
             case 6: CHUD_FINISH(param1);
-            case 7: Export(param1, -1, true, true);
+            case 7: CHUD_PRESTRAFE(param1);
+            case 8: Export(param1, -1, true, true);
         }
     }
     else if (action == MenuAction_End) {
@@ -90,7 +94,7 @@ public Action Client_Import(int client, int args)
         GetCmdArg(2, szPlayerName, sizeof szPlayerName);
         Import(client, -1, szImportSettings, szPlayerName);
     }
-    
+
     return Plugin_Handled;
 }
 
@@ -103,6 +107,6 @@ public Action Client_Export(int client, int args)
         Export(client, GetCmdArgInt(1), true, false);
     else
         Export(client, -1, false, false);
-    
+
     return Plugin_Handled;
 }

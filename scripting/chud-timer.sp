@@ -109,7 +109,7 @@ public int CHUD_TIMER_Position_Handler(Menu menu, MenuAction action, int param1,
 	if (action == MenuAction_Select)
 	{
 		switch (param2)
-		{	
+		{
 			case 0: Timer_PosX(param1);
 			case 1: Timer_PosY(param1);
 		}
@@ -135,7 +135,7 @@ void Timer_PosX(int client)
 
 void Timer_PosY(int client)
 {
-	
+
 	if (g_fTimer_POSY[client] < 1.0)
 		g_fTimer_POSY[client] += 0.05;
 	else
@@ -235,17 +235,17 @@ public void Timer_Color_Change(int client, int color_type, int color_index)
 public void Timer_Display(int client)
 {
     if (g_bTimer[client] && !IsFakeClient(client)) {
-            
+
 		int target;
-		
+
 		if (IsPlayerAlive(client))
 			target = client;
 		else
 			target = GetEntPropEnt(client, Prop_Send, "m_hObserverTarget");
-		
+
 		if(target == -1)
 			return;
-		
+
 		if(IsFakeClient(target))
 			return;
 
@@ -254,7 +254,7 @@ public void Timer_Display(int client)
 			g_fLastSpeed[target] /= 0.5;
 		else if (target_style == 6)
 			g_fLastSpeed[target] /= 1.5;
-			
+
 		float PersonalBest;
 		int MapRank;
 		char country[64];
@@ -285,7 +285,7 @@ public void Timer_Display(int client)
 			Format(szFormattedCurrentTime, sizeof szFormattedCurrentTime, "00:00.000");
 		else if (CurrentTime == -1.0)
 			Format(szFormattedCurrentTime, sizeof szFormattedCurrentTime, "Timer Disabled");
-		
+
 		ShowSyncHudText(client, Timer_Handle, szFormattedCurrentTime);
 	}
 }
@@ -294,7 +294,7 @@ public void Timer_Display(int client)
 //COOKIES
 /////
 public void Timer_ConvertStringToData(int client, char szData[512])
-{           
+{
 	char szModules[5][16];
 	ExplodeString(szData, "|", szModules, sizeof szModules, sizeof szModules[]);
 	for(int i = 0; i < 5; i++)
@@ -321,7 +321,7 @@ public void Timer_ConvertStringToData(int client, char szData[512])
 }
 
 char[] Timer_ConvertDataToString(int client)
-{           
+{
 	char szData[512];
 
 	//ENABLED

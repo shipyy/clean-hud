@@ -160,6 +160,13 @@ native void surftimer_GetPlayerInfo(int& client, int& iWrcpTimer, int& iPracMode
 native float surftimer_GetClientSync(int client);
 
 /**
+ * teleport player to start zone
+ *
+ * @param client			The client's ID.
+ */
+native int surftimer_RestartTimer(int client);
+
+/**
  * Retrieves the client's current style.
  *
  * @param client			The client's ID.
@@ -181,6 +188,23 @@ native int surftimer_GetClientStyle(int client);
 native bool surftimer_SafeTeleport(int client, float fDestination[3], float fAngle[3], float fVelocity[3], bool bStopTimer = false);
 
 /*  FORWARDS  */
+
+/**
+ * Called when a client start a map.
+ *
+ * @param client				The client's ID.
+ * @return						Plugin_Handled, to stop the client from searching.
+ */
+forward Action surftimer_OnMapStart(int client, int prestrafe, char pre_PBDiff[128], char pre_SRDiff[128]);
+
+/**
+ * Called when a client start a stage.
+ *
+ * @param client				The client's ID.
+ * @return						Plugin_Handled, to stop the client from searching.
+ */
+forward Action surftimer_OnStageStart(int client, int prestrafe, char pre_PBDiff[128], char pre_SRDiff[128]);
+
 
 /**
  * Called when a client finishes a map.
@@ -216,7 +240,7 @@ forward Action surftimer_OnBonusFinished(int client, float fRunTime, char sRunTi
  * @param client			The client's ID.
  * @return						Plugin_Handled, to stop the player from searching.
  */
-forward Action surftimer_OnPracticeFinished(int client, float fRunTime, char sRunTime[54]);
+forward Action surftimer_OnPracticeFinished(int client, float fRunTime, float fPBDifference, float fWRDifference, int bonusid);
 
 /**
  * Called when a client sets a new record

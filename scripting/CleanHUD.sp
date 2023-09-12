@@ -32,6 +32,7 @@ public Plugin myinfo =
 #include "chud-timer.sp"
 #include "chud-mapinfo.sp"
 #include "chud-finish.sp"
+#include "chud-prestrafe.sp"
 #include "chud-misc.sp"
 #include "chud-runner.sp"
 
@@ -53,6 +54,7 @@ public void OnPluginStart()
     g_hTimer_Cookie = RegClientCookie("Timer-cookie", "Timer data", CookieAccess_Public);
     g_hMapInfo_Cookie = RegClientCookie("MapInfo-cookie", "MapInfo data", CookieAccess_Public);
     g_hFinish_Cookie = RegClientCookie("Finish-cookie", "Finish data", CookieAccess_Public);
+    g_hPrestrafe_Cookie = RegClientCookie("Prestrafe-cookie", "Prestrafe data", CookieAccess_Public);
 
     //INIT MODULES
     CSD_Handle = CreateHudSynchronizer();
@@ -62,6 +64,7 @@ public void OnPluginStart()
     Timer_Handle = CreateHudSynchronizer();
     MapInfo_Handle = CreateHudSynchronizer();
     Finish_Handle = CreateHudSynchronizer();
+    PRESTRAFE_Handle = CreateHudSynchronizer();
     /*
     Init_CSD();
     Init_KEYS();
@@ -93,6 +96,8 @@ public void OnMapStart()
 {
     //TRANSLATIONS
     LoadTranslations("cleanhud.phrases");
+
+    // CreateTimer(0.1, ClientRunner, INVALID_HANDLE, TIMER_FLAG_NO_MAPCHANGE | TIMER_REPEAT);
 }
 
 public void OnClientCookiesCached(int client)
@@ -115,4 +120,15 @@ public void OnClientDisconnect(int client)
 		SaveCookies(client);
 		PrintToServer("=====COOKIES SAVED=====");
 	}
+}
+
+public void OnPluginEnd(){
+    CloseHandle(CSD_Handle);
+    CloseHandle(Keys_Handle);
+    CloseHandle(Sync_Handle);
+    CloseHandle(CP_Handle);
+    CloseHandle(Timer_Handle);
+    CloseHandle(MapInfo_Handle);
+    CloseHandle(Finish_Handle);
+    CloseHandle(PRESTRAFE_Handle);
 }

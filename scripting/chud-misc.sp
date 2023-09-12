@@ -7,7 +7,7 @@ stock bool IsValidClient(int client)
 
 public void SetDefaults(int client)
 {
-    for(int i = 0; i < 7; i++)
+    for(int i = 0; i < 8; i++)
         g_bEditing[client][i] = false;
     
     for(int i = 0; i < 3; i++)
@@ -117,13 +117,13 @@ public void Format_Time(int client, float time, char[] string, int length, bool 
 
 public void LoadCookies(int client)
 {
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 8; i++)
 		GetCookie(client, i);
 }
 
 public void SaveCookies(int client)
 {
-	for(int i = 0; i < 7; i++)
+	for(int i = 0; i < 8; i++)
 		SetCookie(client, i);
 }
 
